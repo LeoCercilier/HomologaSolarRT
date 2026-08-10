@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
 
@@ -26,7 +27,7 @@
     .container {
       width: 100%;
       max-width: 420px;
-      margin: 0 auto;
+      margin: auto;
       padding: 24px 18px;
     }
 
@@ -94,10 +95,6 @@
       color: white;
     }
 
-    .btn-entrar:hover {
-      background: #115e59;
-    }
-
     .btn-cadastro {
       margin-top: 12px;
       background: #e2e8f0;
@@ -119,6 +116,7 @@
     }
 
   </style>
+
 </head>
 
 <body>
@@ -126,13 +124,20 @@
   <div class="container">
 
     <div class="logo">
+
       <h1>☀️ HomologaSolar RT</h1>
-      <p>Gestão inteligente de projetos fotovoltaicos</p>
+
+      <p>
+        Gestão inteligente de projetos fotovoltaicos
+      </p>
+
     </div>
+
 
     <div class="card">
 
       <div class="campo">
+
         <label for="email">
           E-mail
         </label>
@@ -142,10 +147,12 @@
           id="email"
           placeholder="seu@email.com"
         >
+
       </div>
 
 
       <div class="campo">
+
         <label for="senha">
           Senha
         </label>
@@ -155,6 +162,7 @@
           id="senha"
           placeholder="Sua senha"
         >
+
       </div>
 
 
@@ -181,14 +189,34 @@
 
     </div>
 
+
     <div class="rodape">
+
       HomologaSolar RT © 2026
+
     </div>
 
   </div>
 
 
+  <!-- Biblioteca oficial do Supabase -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <!-- Nossas configurações -->
+
+  <script src="supabase-config.js"></script>
+
+
   <script>
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
 
     function mostrarMensagem(texto) {
 
@@ -199,13 +227,14 @@
     }
 
 
-    function entrar() {
+    async function cadastrar() {
 
       const email =
-        document.getElementById("email").value;
+        document.getElementById("email").value.trim();
 
       const senha =
         document.getElementById("senha").value;
+
 
       if (!email || !senha) {
 
@@ -216,17 +245,105 @@
         return;
       }
 
+
+      if (senha.length < 6) {
+
+        mostrarMensagem(
+          "A senha precisa ter pelo menos 6 caracteres."
+        );
+
+        return;
+      }
+
+
       mostrarMensagem(
-        "Login será conectado ao Supabase na próxima etapa."
+        "Criando sua conta..."
+      );
+
+
+      const { data, error } =
+        await supabaseClient.auth.signUp({
+
+          email: email,
+
+          password: senha
+
+        });
+
+
+      if (error) {
+
+        console.error(error);
+
+        mostrarMensagem(
+          error.message
+        );
+
+        return;
+      }
+
+
+      console.log(data);
+
+
+      mostrarMensagem(
+        "Conta criada! Verifique seu e-mail para confirmar."
       );
 
     }
 
 
-    function cadastrar() {
+    async function entrar() {
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const senha =
+        document.getElementById("senha").value;
+
+
+      if (!email || !senha) {
+
+        mostrarMensagem(
+          "Preencha e-mail e senha."
+        );
+
+        return;
+      }
+
 
       mostrarMensagem(
-        "Cadastro será conectado ao Supabase na próxima etapa."
+        "Entrando..."
+      );
+
+
+      const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+
+          email: email,
+
+          password: senha
+
+        });
+
+
+      if (error) {
+
+        console.error(error);
+
+        mostrarMensagem(
+          error.message
+        );
+
+        return;
+      }
+
+
+      console.log(data);
+
+
+      mostrarMensagem(
+        "Login realizado com sucesso!"
       );
 
     }
@@ -234,4 +351,5 @@
   </script>
 
 </body>
-  </html>
+
+</html>
