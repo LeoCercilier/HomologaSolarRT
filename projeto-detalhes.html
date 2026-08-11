@@ -1412,6 +1412,47 @@ function calcularSistema() {
     impModulo *
     stringsPorMppt;
 
+  /* ================================
+     RESULTADO DA CORRENTE DO MPPT
+  ================================= */
+
+  if (
+    correnteMppt > 0 &&
+    correnteMaxMppt > 0
+  ) {
+
+    if (
+      correnteMppt > correnteMaxMppt
+    ) {
+
+      alertaTensao.textContent +=
+        " ⚠️ Corrente do MPPT (" +
+        correnteMppt.toFixed(2).replace(".", ",") +
+        " A) ultrapassa o limite informado (" +
+        correnteMaxMppt.toFixed(2).replace(".", ",") +
+        " A).";
+
+      alertaTensao.style.background =
+        "#fee2e2";
+
+      alertaTensao.style.color =
+        "#991b1b";
+
+    }
+
+    else {
+
+      alertaTensao.textContent +=
+        " ✅ Corrente do MPPT: " +
+        correnteMppt.toFixed(2).replace(".", ",") +
+        " A — dentro do limite de " +
+        correnteMaxMppt.toFixed(2).replace(".", ",") +
+        " A.";
+
+    }
+
+    }
+  
   document.getElementById(
     "potenciaString"
   ).textContent =
