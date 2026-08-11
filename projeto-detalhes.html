@@ -676,6 +676,18 @@ Trifásica
 >
   Preencha os dados elétricos para analisar o dimensionamento.
 </div>
+
+  <div
+  id="alertaTensaoString"
+  style="
+    margin-top:15px;
+    padding:14px;
+    border-radius:9px;
+    background:#f1f5f9;
+  "
+>
+  Preencha Voc, Vmp e módulos por string para analisar a tensão.
+  </div>
   
 <div class="campo">
 
@@ -1198,6 +1210,50 @@ function calcularSistema() {
     vocModulo *
     modulosPorString;
 
+    /* ================================
+     ANÁLISE DE TENSÃO DA STRING
+  ================================= */
+
+  const alertaTensao =
+    document.getElementById(
+      "alertaTensaoString"
+    );
+
+  if (
+    vocModulo > 0 &&
+    vmpModulo > 0 &&
+    modulosPorString > 0
+  ) {
+
+    alertaTensao.textContent =
+      "ℹ️ String configurada com " +
+      modulosPorString +
+      " módulos: Vmp " +
+      vmpString.toFixed(2).replace(".", ",") +
+      " V | Voc " +
+      vocString.toFixed(2).replace(".", ",") +
+      " V.";
+
+    alertaTensao.style.background =
+      "#e0f2fe";
+
+    alertaTensao.style.color =
+      "#075985";
+
+  }
+
+  else {
+
+    alertaTensao.textContent =
+      "Preencha Voc, Vmp e módulos por string para analisar a tensão.";
+
+    alertaTensao.style.background =
+      "#f1f5f9";
+
+    alertaTensao.style.color =
+      "#334155";
+
+  }
 
   const correnteString =
     impModulo;
