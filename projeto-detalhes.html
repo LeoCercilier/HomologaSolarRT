@@ -697,12 +697,14 @@ async function iniciar() {
 
 
     organizacaoAtual =
-      membro.organizacao_id;
+  membro.organizacao_id;
 
 
-    await carregarProjeto();
+await carregarProjeto();
 
-  }
+await carregarSistema();
+
+}
 
   catch (erro) {
 
@@ -896,6 +898,421 @@ function mostrarErro(mensagem) {
 
 }
 
+  let sistemaAtual = null;
+
+
+/* =========================================
+   CALCULAR SISTEMA
+========================================= */
+
+function calcularSistema() {
+
+  const potenciaModulo =
+    parseFloat(
+      document.getElementById(
+        "potencia_modulo_w"
+      ).value
+    ) || 0;
+
+  const quantidadeModulos =
+    parseInt(
+      document.getElementById(
+        "quantidade_modulos"
+      ).value
+    ) || 0;
+
+  const potenciaInversor =
+    parseFloat(
+      document.getElementById(
+        "potencia_inversor_kw"
+      ).value
+    ) || 0;
+
+  const quantidadeInversores =
+    parseInt(
+      document.getElementById(
+        "quantidade_inversores"
+      ).value
+    ) || 0;
+
+
+  const potenciaDC =
+    (
+      potenciaModulo *
+      quantidadeModulos
+    ) / 1000;
+
+
+  const potenciaAC =
+    potenciaInversor *
+    quantidadeInversores;
+
+
+  let ratio = 0;
+
+  if (potenciaAC > 0) {
+
+    ratio =
+      potenciaDC /
+      potenciaAC;
+
+  }
+
+
+  document.getElementById(
+    "potenciaDC"
+  ).textContent =
+    potenciaDC.toFixed(2)
+    .replace(".", ",")
+    + " kWp";
+
+
+  document.getElementById(
+    "potenciaAC"
+  ).textContent =
+    potenciaAC.toFixed(2)
+    .replace(".", ",")
+    + " kW";
+
+
+  document.getElementById(
+    "ratioDCAC"
+  ).textContent =
+    ratio.toFixed(3)
+    .replace(".", ",");
+
+}
+
+
+/* =========================================
+   CARREGAR SISTEMA
+========================================= */
+
+async function carregarSistema() {
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("sistemas_fotovoltaicos")
+    .select("*")
+    .eq(
+      "projeto_id",
+      projetoId
+    )
+    .eq(
+      "organizacao_id",
+      organizacaoAtual
+    )
+    .maybeSingle();
+
+
+  if (error)
+    throw error;
+
+
+  sistemaAtual = data;
+
+
+  if (!data)
+    return;
+
+
+  document.getElementById(
+    "fabricante_modulo"
+  ).value =
+    data.fabricante_modulo || "";
+
+
+  document.getElementById(
+    "modelo_modulo"
+  ).value =
+    data.modelo_modulo || "";
+
+
+  document.getElementById(
+    "potencia_modulo_w"
+  ).value =
+    data.potencia_modulo_w || "";
+
+
+  document.getElementById(
+    "quantidade_modulos"
+  ).value =
+    data.quantidade_modulos || "";
+
+
+  document.getElementById(
+    "fabricante_inversor"
+  ).value =
+    data.fabricante_inversor || "";
+
+
+  document.getElementById(
+    "modelo_inversor"
+  ).value =
+    data.modelo_inversor || "";
+
+
+  document.getElementById(
+    "potencia_inversor_kw"
+  ).value =
+    data.potencia_inversor_kw || "";
+
+
+  document.getElementById(
+    "quantidade_inversores"
+  ).value =
+    data.quantidade_inversores || "";
+
+
+  document.getElementById(
+    "distribuidora"
+  ).value =
+    data.distribuidora || "";
+
+
+  document.getElementById(
+    "tipo_ligacao"
+  ).value =
+    data.tipo_ligacao || "";
+
+
+  document.getElementById(
+    "numero_fases"
+  ).value =
+    data.numero_fases || "";
+
+
+  document.getElementById(
+    "tensao_nominal"
+  ).value =
+    data.tensao_nominal || "";
+
+
+  document.getElementById(
+    "observacoes_sistema"
+  ).value =
+    data.observacoes || "";
+
+
+  calcularSistema();
+
+}
+
+
+/* =========================================
+   SALVAR SISTEMA
+========================================= */
+
+async function salvarSistema() {
+
+  try {
+
+    const dados = {
+
+      organizacao_id:
+        organizacaoAtual,
+
+      projeto_id:
+        projetoId,
+
+      fabricante_modulo:
+        document.getElementById(
+          "fabricante_modulo"
+        ).value.trim() || null,
+
+      modelo_modulo:
+        document.getElementById(
+          "modelo_modulo"
+        ).value.trim() || null,
+
+      potencia_modulo_w:
+        parseFloat(
+          document.getElementById(
+            "potencia_modulo_w"
+          ).value
+        ) || null,
+
+      quantidade_modulos:
+        parseInt(
+          document.getElementById(
+            "quantidade_modulos"
+          ).value
+        ) || null,
+
+      fabricante_inversor:
+        document.getElementById(
+          "fabricante_inversor"
+        ).value.trim() || null,
+
+      modelo_inversor:
+        document.getElementById(
+          "modelo_inversor"
+        ).value.trim() || null,
+
+      potencia_inversor_kw:
+        parseFloat(
+          document.getElementById(
+            "potencia_inversor_kw"
+          ).value
+        ) || null,
+
+      quantidade_inversores:
+        parseInt(
+          document.getElementById(
+            "quantidade_inversores"
+          ).value
+        ) || null,
+
+      distribuidora:
+        document.getElementById(
+          "distribuidora"
+        ).value.trim() || null,
+
+      tipo_ligacao:
+        document.getElementById(
+          "tipo_ligacao"
+        ).value || null,
+
+      numero_fases:
+        parseInt(
+          document.getElementById(
+            "numero_fases"
+          ).value
+        ) || null,
+
+      tensao_nominal:
+        parseFloat(
+          document.getElementById(
+            "tensao_nominal"
+          ).value
+        ) || null,
+
+      observacoes:
+        document.getElementById(
+          "observacoes_sistema"
+        ).value.trim() || null,
+
+      criado_por:
+        usuarioAtual.id
+
+    };
+
+
+    let resultado;
+
+
+    if (sistemaAtual) {
+
+      resultado =
+        await supabaseClient
+          .from(
+            "sistemas_fotovoltaicos"
+          )
+          .update(dados)
+          .eq(
+            "id",
+            sistemaAtual.id
+          )
+          .eq(
+            "organizacao_id",
+            organizacaoAtual
+          )
+          .select()
+          .single();
+
+    }
+
+    else {
+
+      resultado =
+        await supabaseClient
+          .from(
+            "sistemas_fotovoltaicos"
+          )
+          .insert(dados)
+          .select()
+          .single();
+
+    }
+
+
+    if (resultado.error)
+      throw resultado.error;
+
+
+    sistemaAtual =
+      resultado.data;
+
+
+    mostrarMensagemSistema(
+      "Sistema fotovoltaico salvo com sucesso!",
+      true
+    );
+
+
+    calcularSistema();
+
+  }
+
+  catch (erro) {
+
+    mostrarMensagemSistema(
+      "ERRO: " + erro.message,
+      false
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   MENSAGEM DO SISTEMA
+========================================= */
+
+function mostrarMensagemSistema(
+  mensagem,
+  sucesso
+) {
+
+  const elemento =
+    document.getElementById(
+      "mensagemSistema"
+    );
+
+
+  elemento.textContent =
+    mensagem;
+
+
+  elemento.style.display =
+    "block";
+
+
+  if (sucesso) {
+
+    elemento.style.background =
+      "#dcfce7";
+
+    elemento.style.color =
+      "#166534";
+
+  }
+
+  else {
+
+    elemento.style.background =
+      "#fee2e2";
+
+    elemento.style.color =
+      "#991b1b";
+
+  }
+
+  }
 
 iniciar();
 
