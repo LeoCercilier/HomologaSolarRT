@@ -516,25 +516,28 @@
 
       } catch (erro) {
 
-        console.error(erro);
+  console.error(erro);
 
-        document.getElementById(
-          "carregando"
-        ).style.display = "none";
+  document.getElementById(
+    "carregando"
+  ).style.display = "none";
+
+  document.getElementById(
+    "conteudo"
+  ).style.display = "block";
 
 
-        const caixaErro =
-          document.getElementById("erro");
+  const caixaErro =
+    document.getElementById("erro");
 
 
-        caixaErro.style.display = "block";
+  caixaErro.style.display = "block";
 
-        caixaErro.textContent =
-          "Não foi possível carregar o painel: " +
-          erro.message;
+  caixaErro.textContent =
+    "ERRO: " +
+    erro.message;
 
-      }
-
+}
     }
 
 
