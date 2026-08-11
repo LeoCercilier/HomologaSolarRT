@@ -39,11 +39,11 @@
     header p {
       margin: 5px 0 0;
       font-size: 13px;
-      opacity: 0.9;
+      opacity: .9;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: auto;
       padding: 20px;
     }
@@ -53,69 +53,145 @@
     }
 
     .boas-vindas h2 {
-      margin-bottom: 5px;
+      margin: 0 0 6px;
     }
 
     .boas-vindas p {
+      margin: 0;
       color: #64748b;
     }
 
-    .grid {
+    .organizacao {
+      background: white;
+      padding: 18px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .organizacao small {
+      color: #64748b;
+    }
+
+    .organizacao h3 {
+      margin: 6px 0 0;
+    }
+
+    .estatisticas {
+      display: grid;
+      grid-template-columns: repeat(
+        auto-fit,
+        minmax(140px, 1fr)
+      );
+
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .estatistica {
+      background: white;
+      padding: 18px;
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .estatistica .numero {
+      font-size: 28px;
+      font-weight: bold;
+      color: #0f766e;
+    }
+
+    .estatistica .titulo {
+      margin-top: 5px;
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .acoes {
       display: grid;
       grid-template-columns: repeat(
         auto-fit,
         minmax(150px, 1fr)
       );
 
-      gap: 15px;
+      gap: 12px;
+      margin-bottom: 25px;
     }
 
-    .card {
-      background: white;
-      border-radius: 14px;
-      padding: 20px;
-
-      box-shadow:
-        0 4px 15px rgba(0,0,0,0.05);
-    }
-
-    .card h3 {
-      margin-top: 0;
-      font-size: 17px;
-    }
-
-    .card p {
-      color: #64748b;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .botao {
-      display: block;
-      width: 100%;
-
+    button {
       border: none;
       border-radius: 9px;
+      padding: 14px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
 
-      padding: 13px;
-
+    .principal {
       background: #0f766e;
       color: white;
-
-      font-size: 15px;
-      font-weight: bold;
-
-      cursor: pointer;
-
-      margin-top: 12px;
     }
 
-    .sair {
+    .secundario {
+      background: white;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+    }
+
+    .danger {
       background: #dc2626;
+      color: white;
     }
 
-    #usuario {
-      font-weight: bold;
+    .secao {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .secao h3 {
+      margin-top: 0;
+    }
+
+    .projeto {
+      border-top: 1px solid #e5e7eb;
+      padding: 14px 0;
+    }
+
+    .projeto:first-child {
+      border-top: none;
+    }
+
+    .projeto strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .projeto span {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .vazio {
+      color: #64748b;
+      font-size: 14px;
+      padding: 10px 0;
+    }
+
+    .erro {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 14px;
+      border-radius: 9px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .carregando {
+      text-align: center;
+      padding: 40px;
+      color: #64748b;
     }
 
   </style>
@@ -126,12 +202,10 @@
 
   <header>
 
-    <h1>
-      ☀️ HomologaSolar RT
-    </h1>
+    <h1>☀️ HomologaSolar RT</h1>
 
     <p>
-      Gestão de projetos fotovoltaicos
+      Gestão de homologação fotovoltaica
     </p>
 
   </header>
@@ -139,124 +213,128 @@
 
   <div class="container">
 
-    <div class="boas-vindas">
-
-      <h2>
-        Dashboard
-      </h2>
-
-      <p>
-        Usuário:
-        <span id="usuario">
-          carregando...
-        </span>
-      </p>
-
+    <div
+      id="carregando"
+      class="carregando"
+    >
+      Carregando seu painel...
     </div>
 
 
-    <div class="grid">
+    <div
+      id="conteudo"
+      style="display:none;"
+    >
 
+      <div class="boas-vindas">
 
-      <div class="card">
-
-        <h3>
-          📁 Projetos
-        </h3>
+        <h2>
+          Olá, <span id="nomeUsuario"></span>!
+        </h2>
 
         <p>
-          Crie e gerencie seus projetos
-          fotovoltaicos.
+          Bem-vindo ao seu painel de projetos.
         </p>
-
-        <button class="botao">
-          Novo projeto
-        </button>
 
       </div>
 
 
-      <div class="card">
+      <div
+        id="erro"
+        class="erro"
+      ></div>
 
-        <h3>
-          👥 Clientes
+
+      <div class="organizacao">
+
+        <small>
+          Sua organização
+        </small>
+
+        <h3 id="nomeOrganizacao">
+          —
         </h3>
-
-        <p>
-          Cadastre e gerencie seus clientes.
-        </p>
-
-        <button class="botao">
-          Clientes
-        </button>
 
       </div>
 
 
-      <div class="card">
+      <div class="estatisticas">
 
-        <h3>
-          👷 Responsáveis Técnicos
-        </h3>
+        <div class="estatistica">
 
-        <p>
-          Gerencie os RTs da organização.
-        </p>
+          <div
+            id="totalProjetos"
+            class="numero"
+          >
+            0
+          </div>
 
-        <button class="botao">
-          Responsáveis técnicos
-        </button>
+          <div class="titulo">
+            Projetos
+          </div>
+
+        </div>
+
+
+        <div class="estatistica">
+
+          <div
+            id="totalClientes"
+            class="numero"
+          >
+            0
+          </div>
+
+          <div class="titulo">
+            Clientes
+          </div>
+
+        </div>
+
+
+        <div class="estatistica">
+
+          <div
+            id="totalRTs"
+            class="numero"
+          >
+            0
+          </div>
+
+          <div class="titulo">
+            Responsáveis técnicos
+          </div>
+
+        </div>
 
       </div>
 
 
-      <div class="card">
-
-        <h3>
-          📄 Documentos
-        </h3>
-
-        <p>
-          Gere e acompanhe documentos
-          de homologação.
-        </p>
-
-        <button class="botao">
-          Documentos
-        </button>
-
-      </div>
-
-
-      <div class="card">
-
-        <h3>
-          ⚙️ Configurações
-        </h3>
-
-        <p>
-          Configurações da organização.
-        </p>
-
-        <button class="botao">
-          Configurações
-        </button>
-
-      </div>
-
-
-      <div class="card">
-
-        <h3>
-          🚪 Sair
-        </h3>
-
-        <p>
-          Encerrar sua sessão.
-        </p>
+      <div class="acoes">
 
         <button
-          class="botao sair"
+          class="principal"
+          onclick="novoProjeto()"
+        >
+          + Novo projeto
+        </button>
+
+        <button
+          class="secundario"
+          onclick="alert('Tela de clientes será criada na próxima etapa.')"
+        >
+          👥 Clientes
+        </button>
+
+        <button
+          class="secundario"
+          onclick="alert('Tela de responsáveis técnicos será criada na próxima etapa.')"
+        >
+          👷 RTs
+        </button>
+
+        <button
+          class="danger"
           onclick="sair()"
         >
           Sair
@@ -264,6 +342,22 @@
 
       </div>
 
+
+      <div class="secao">
+
+        <h3>
+          📁 Projetos recentes
+        </h3>
+
+        <div id="listaProjetos">
+
+          <div class="vazio">
+            Nenhum projeto cadastrado.
+          </div>
+
+        </div>
+
+      </div>
 
     </div>
 
@@ -284,28 +378,345 @@
       );
 
 
-    async function verificarUsuario() {
+    let usuarioAtual = null;
+    let organizacaoAtual = null;
+
+
+    async function iniciarDashboard() {
+
+      try {
+
+        const {
+          data: sessaoData
+        } =
+        await supabaseClient.auth.getSession();
+
+
+        if (
+          !sessaoData ||
+          !sessaoData.session
+        ) {
+
+          window.location.href =
+            "index.html";
+
+          return;
+        }
+
+
+        const {
+          data: usuarioData,
+          error: usuarioError
+        } =
+        await supabaseClient.auth.getUser();
+
+
+        if (
+          usuarioError ||
+          !usuarioData.user
+        ) {
+
+          window.location.href =
+            "index.html";
+
+          return;
+        }
+
+
+        usuarioAtual =
+          usuarioData.user;
+
+
+        document.getElementById(
+          "nomeUsuario"
+        ).textContent =
+          usuarioAtual.email.split("@")[0];
+
+
+        // ====================================
+        // DESCOBRIR A ORGANIZAÇÃO DO USUÁRIO
+        // ====================================
+
+        const {
+          data: membro,
+          error: membroError
+        } =
+        await supabaseClient
+          .from("organizacao_membros")
+          .select(`
+            organizacao_id,
+            funcao,
+            organizacoes (
+              id,
+              nome,
+              email
+            )
+          `)
+          .eq(
+            "usuario_id",
+            usuarioAtual.id
+          )
+          .eq(
+            "ativo",
+            true
+          )
+          .limit(1)
+          .maybeSingle();
+
+
+        if (membroError) {
+
+          throw membroError;
+
+        }
+
+
+        if (!membro) {
+
+          throw new Error(
+            "Este usuário não possui uma organização."
+          );
+
+        }
+
+
+        organizacaoAtual =
+          membro.organizacao_id;
+
+
+        document.getElementById(
+          "nomeOrganizacao"
+        ).textContent =
+          membro.organizacoes.nome;
+
+
+        // ====================================
+        // CARREGAR ESTATÍSTICAS
+        // ====================================
+
+        await carregarEstatisticas();
+
+
+        // ====================================
+        // CARREGAR PROJETOS
+        // ====================================
+
+        await carregarProjetos();
+
+
+        document.getElementById(
+          "carregando"
+        ).style.display = "none";
+
+
+        document.getElementById(
+          "conteudo"
+        ).style.display = "block";
+
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        document.getElementById(
+          "carregando"
+        ).style.display = "none";
+
+
+        const caixaErro =
+          document.getElementById("erro");
+
+
+        caixaErro.style.display = "block";
+
+        caixaErro.textContent =
+          "Não foi possível carregar o painel: " +
+          erro.message;
+
+      }
+
+    }
+
+
+    async function carregarEstatisticas() {
+
+      const [
+        projetos,
+        clientes,
+        rts
+      ] =
+      await Promise.all([
+
+        supabaseClient
+          .from("projetos")
+          .select(
+            "id",
+            {
+              count: "exact",
+              head: true
+            }
+          )
+          .eq(
+            "organizacao_id",
+            organizacaoAtual
+          ),
+
+        supabaseClient
+          .from("clientes")
+          .select(
+            "id",
+            {
+              count: "exact",
+              head: true
+            }
+          )
+          .eq(
+            "organizacao_id",
+            organizacaoAtual
+          ),
+
+        supabaseClient
+          .from("responsaveis_tecnicos")
+          .select(
+            "id",
+            {
+              count: "exact",
+              head: true
+            }
+          )
+          .eq(
+            "organizacao_id",
+            organizacaoAtual
+          )
+          .eq(
+            "ativo",
+            true
+          )
+
+      ]);
+
+
+      if (projetos.error)
+        throw projetos.error;
+
+      if (clientes.error)
+        throw clientes.error;
+
+      if (rts.error)
+        throw rts.error;
+
+
+      document.getElementById(
+        "totalProjetos"
+      ).textContent =
+        projetos.count || 0;
+
+
+      document.getElementById(
+        "totalClientes"
+      ).textContent =
+        clientes.count || 0;
+
+
+      document.getElementById(
+        "totalRTs"
+      ).textContent =
+        rts.count || 0;
+
+    }
+
+
+    async function carregarProjetos() {
 
       const {
         data,
         error
       } =
-      await supabaseClient.auth.getUser();
+      await supabaseClient
+        .from("projetos")
+        .select(`
+          id,
+          nome,
+          status,
+          criado_em
+        `)
+        .eq(
+          "organizacao_id",
+          organizacaoAtual
+        )
+        .order(
+          "criado_em",
+          {
+            ascending: false
+          }
+        )
+        .limit(5);
 
 
-      if (error || !data.user) {
+      if (error)
+        throw error;
 
-        window.location.href =
-          "index.html";
+
+      const lista =
+        document.getElementById(
+          "listaProjetos"
+        );
+
+
+      if (!data || data.length === 0) {
+
+        lista.innerHTML =
+          '<div class="vazio">Nenhum projeto cadastrado.</div>';
 
         return;
+
       }
 
 
-      document.getElementById(
-        "usuario"
-      ).textContent =
-        data.user.email;
+      lista.innerHTML = "";
+
+
+      data.forEach(projeto => {
+
+        const item =
+          document.createElement("div");
+
+        item.className = "projeto";
+
+
+        item.innerHTML = `
+          <strong>${escaparHtml(projeto.nome)}</strong>
+          <span>
+            Status: ${escaparHtml(projeto.status || "Sem status")}
+          </span>
+        `;
+
+
+        lista.appendChild(item);
+
+      });
+
+    }
+
+
+    function escaparHtml(texto) {
+
+      const div =
+        document.createElement("div");
+
+      div.textContent =
+        texto || "";
+
+      return div.innerHTML;
+
+    }
+
+
+    function novoProjeto() {
+
+      alert(
+        "A tela de criação de projeto será construída na próxima etapa."
+      );
 
     }
 
@@ -320,7 +731,7 @@
     }
 
 
-    verificarUsuario();
+    iniciarDashboard();
 
   </script>
 
