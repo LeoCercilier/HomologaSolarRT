@@ -1577,6 +1577,25 @@ document.getElementById(
   ).value =
     data.quantidade_inversores || "";
 
+  document.getElementById(
+  "tensao_max_entrada_v"
+).value =
+  data.tensao_max_entrada_v || "";
+
+document.getElementById(
+  "tensao_mppt_min_v"
+).value =
+  data.tensao_mppt_min_v || "";
+
+document.getElementById(
+  "tensao_mppt_max_v"
+).value =
+  data.tensao_mppt_max_v || "";
+
+document.getElementById(
+  "corrente_max_mppt_a"
+).value =
+  data.corrente_max_mppt_a || "";
 
   document.getElementById(
     "distribuidora"
@@ -1733,6 +1752,34 @@ strings_por_mppt:
           ).value
         ) || null,
 
+      tensao_max_entrada_v:
+  parseFloat(
+    document.getElementById(
+      "tensao_max_entrada_v"
+    ).value
+  ) || null,
+
+tensao_mppt_min_v:
+  parseFloat(
+    document.getElementById(
+      "tensao_mppt_min_v"
+    ).value
+  ) || null,
+
+tensao_mppt_max_v:
+  parseFloat(
+    document.getElementById(
+      "tensao_mppt_max_v"
+    ).value
+  ) || null,
+
+corrente_max_mppt_a:
+  parseFloat(
+    document.getElementById(
+      "corrente_max_mppt_a"
+    ).value
+  ) || null,
+      
       distribuidora:
         document.getElementById(
           "distribuidora"
