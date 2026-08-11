@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Clientes - HomologaSolar RT</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  color: #1f2937;
+}
+
+header {
+  background: #0f766e;
+  color: white;
+  padding: 18px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.topo h2 {
+  margin: 0;
+}
+
+button {
+  border: none;
+  border-radius: 9px;
+  padding: 12px 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-principal {
+  background: #0f766e;
+  color: white;
+}
+
+.btn-secundario {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+button:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.busca {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  font-size: 15px;
+}
+
+.lista {
+  display: grid;
+  gap: 12px;
+}
+
+.cliente {
+  background: white;
+  padding: 16px;
+  border-radius: 13px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.05);
+}
+
+.cliente strong {
+  display: block;
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+
+.cliente span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  margin-top: 3px;
+}
+
+.vazio {
+  background: white;
+  padding: 30px;
+  text-align: center;
+  border-radius: 13px;
+  color: #64748b;
+}
+
+.erro {
+  display: none;
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 14px;
+  border-radius: 9px;
+  margin-bottom: 15px;
+}
+
+.sucesso {
+  display: none;
+  background: #dcfce7;
+  color: #166534;
+  padding: 14px;
+  border-radius: 9px;
+  margin-bottom: 15px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.modal-conteudo {
+  background: white;
+  max-width: 600px;
+  margin: 30px auto;
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.modal-conteudo h2 {
+  margin-top: 0;
+}
+
+.campo {
+  margin-bottom: 12px;
+}
+
+.campo label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.campo input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.acoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.acoes button {
+  flex: 1;
+}
+
+.carregando {
+  text-align: center;
+  padding: 30px;
+  color: #64748b;
+}
+
+@media (max-width: 600px) {
+
+  .topo {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .linha {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>☀️ HomologaSolar RT</h1>
+
+</header>
+
+
+<div class="container">
+
+<div class="topo">
+
+<h2>Clientes</h2>
+
+<button
+  class="btn-principal"
+  onclick="abrirModal()"
+>
++ Novo cliente
+</button>
+
+</div>
+
+
+<div
+  id="erro"
+  class="erro"
+></div>
+
+
+<div
+  id="sucesso"
+  class="sucesso"
+></div>
+
+
+<input
+  id="busca"
+  class="busca"
+  type="search"
+  placeholder="🔎 Buscar cliente..."
+  oninput="filtrarClientes()"
+>
+
+
+<div
+  id="lista"
+  class="lista"
+>
+
+<div class="carregando">
+Carregando clientes...
+</div>
+
+</div>
+
+</div>
+
+
+<!-- MODAL -->
+
+<div
+  id="modal"
+  class="modal"
+>
+
+<div class="modal-conteudo">
+
+<h2>Novo cliente</h2>
+
+
+<form id="formCliente">
+
+<div class="campo">
+
+<label>
+Nome *
+</label>
+
+<input
+  id="nome"
+  required
+>
+
+</div>
+
+
+<div class="linha">
+
+<div class="campo">
+
+<label>
+CPF/CNPJ
+</label>
+
+<input
+  id="cpf_cnpj"
+>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Telefone
+</label>
+
+<input
+  id="telefone"
+>
+
+</div>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+E-mail
+</label>
+
+<input
+  id="email"
+  type="email"
+>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Endereço
+</label>
+
+<input
+  id="endereco"
+>
+
+</div>
+
+
+<div class="linha">
+
+<div class="campo">
+
+<label>
+Número
+</label>
+
+<input
+  id="numero"
+>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Complemento
+</label>
+
+<input
+  id="complemento"
+>
+
+</div>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Bairro
+</label>
+
+<input
+  id="bairro"
+>
+
+</div>
+
+
+<div class="linha">
+
+<div class="campo">
+
+<label>
+Cidade
+</label>
+
+<input
+  id="cidade"
+>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Estado
+</label>
+
+<input
+  id="estado"
+  maxlength="2"
+>
+
+</div>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+CEP
+</label>
+
+<input
+  id="cep"
+>
+
+</div>
+
+
+<div class="acoes">
+
+<button
+  type="button"
+  class="btn-secundario"
+  onclick="fecharModal()"
+>
+Cancelar
+</button>
+
+<button
+  type="submit"
+  class="btn-principal"
+  id="btnSalvar"
+>
+Salvar cliente
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase-config.js"></script>
+
+
+<script>
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+let usuarioAtual = null;
+let organizacaoAtual = null;
+let clientes = [];
+
+
+/* =========================================
+   INICIALIZAÇÃO
+========================================= */
+
+async function iniciar() {
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+    await supabaseClient.auth.getUser();
+
+
+    if (
+      error ||
+      !data.user
+    ) {
+
+      window.location.href =
+        "index.html";
+
+      return;
+
+    }
+
+
+    usuarioAtual =
+      data.user;
+
+
+    /* ================================
+       DESCOBRIR ORGANIZAÇÃO
+    ================================= */
+
+    const {
+      data: membro,
+      error: erroMembro
+    } =
+    await supabaseClient
+      .from("organizacao_membros")
+      .select(`
+        organizacao_id
+      `)
+      .eq(
+        "usuario_id",
+        usuarioAtual.id
+      )
+      .eq(
+        "ativo",
+        true
+      )
+      .limit(1)
+      .maybeSingle();
+
+
+    if (erroMembro)
+      throw erroMembro;
+
+
+    if (!membro) {
+
+      throw new Error(
+        "Usuário sem organização."
+      );
+
+    }
+
+
+    organizacaoAtual =
+      membro.organizacao_id;
+
+
+    await carregarClientes();
+
+  }
+
+  catch (erro) {
+
+    mostrarErro(
+      erro.message
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   CARREGAR CLIENTES
+========================================= */
+
+async function carregarClientes() {
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("clientes")
+    .select(`
+      id,
+      nome,
+      cpf_cnpj,
+      email,
+      telefone,
+      cidade,
+      estado
+    `)
+    .eq(
+      "organizacao_id",
+      organizacaoAtual
+    )
+    .order(
+      "nome",
+      {
+        ascending: true
+      }
+    );
+
+
+  if (error)
+    throw error;
+
+
+  clientes =
+    data || [];
+
+
+  renderizarClientes(
+    clientes
+  );
+
+}
+
+
+/* =========================================
+   MOSTRAR CLIENTES
+========================================= */
+
+function renderizarClientes(lista) {
+
+  const elemento =
+    document.getElementById(
+      "lista"
+    );
+
+
+  if (
+    !lista ||
+    lista.length === 0
+  ) {
+
+    elemento.innerHTML = `
+      <div class="vazio">
+        Nenhum cliente cadastrado.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  elemento.innerHTML = "";
+
+
+  lista.forEach(cliente => {
+
+    const div =
+      document.createElement("div");
+
+    div.className =
+      "cliente";
+
+
+    div.innerHTML = `
+      <strong>
+        ${escaparHtml(cliente.nome)}
+      </strong>
+
+      ${
+        cliente.cpf_cnpj
+        ? `<span>CPF/CNPJ: ${escaparHtml(cliente.cpf_cnpj)}</span>`
+        : ""
+      }
+
+      ${
+        cliente.telefone
+        ? `<span>Telefone: ${escaparHtml(cliente.telefone)}</span>`
+        : ""
+      }
+
+      ${
+        cliente.cidade
+        ? `<span>
+            ${escaparHtml(cliente.cidade)}
+            ${cliente.estado ? " - " + escaparHtml(cliente.estado) : ""}
+          </span>`
+        : ""
+      }
+    `;
+
+
+    elemento.appendChild(div);
+
+  });
+
+}
+
+
+/* =========================================
+   BUSCA
+========================================= */
+
+function filtrarClientes() {
+
+  const termo =
+    document
+      .getElementById("busca")
+      .value
+      .toLowerCase()
+      .trim();
+
+
+  const filtrados =
+    clientes.filter(cliente => {
+
+      return (
+        (cliente.nome || "")
+          .toLowerCase()
+          .includes(termo)
+
+        ||
+
+        (cliente.cpf_cnpj || "")
+          .toLowerCase()
+          .includes(termo)
+
+        ||
+
+        (cliente.telefone || "")
+          .toLowerCase()
+          .includes(termo)
+
+      );
+
+    });
+
+
+  renderizarClientes(
+    filtrados
+  );
+
+}
+
+
+/* =========================================
+   MODAL
+========================================= */
+
+function abrirModal() {
+
+  document.getElementById(
+    "modal"
+  ).style.display = "block";
+
+}
+
+
+function fecharModal() {
+
+  document.getElementById(
+    "modal"
+  ).style.display = "none";
+
+  document.getElementById(
+    "formCliente"
+  ).reset();
+
+}
+
+
+/* =========================================
+   SALVAR CLIENTE
+========================================= */
+
+document
+  .getElementById("formCliente")
+  .addEventListener(
+    "submit",
+    async function(event) {
+
+      event.preventDefault();
+
+
+      const botao =
+        document.getElementById(
+          "btnSalvar"
+        );
+
+
+      botao.disabled = true;
+
+      botao.textContent =
+        "Salvando...";
+
+
+      try {
+
+        const {
+          error
+        } =
+        await supabaseClient
+          .from("clientes")
+          .insert({
+
+            organizacao_id:
+              organizacaoAtual,
+
+            nome:
+              document
+                .getElementById("nome")
+                .value
+                .trim(),
+
+            cpf_cnpj:
+              document
+                .getElementById("cpf_cnpj")
+                .value
+                .trim() || null,
+
+            email:
+              document
+                .getElementById("email")
+                .value
+                .trim() || null,
+
+            telefone:
+              document
+                .getElementById("telefone")
+                .value
+                .trim() || null,
+
+            endereco:
+              document
+                .getElementById("endereco")
+                .value
+                .trim() || null,
+
+            numero:
+              document
+                .getElementById("numero")
+                .value
+                .trim() || null,
+
+            complemento:
+              document
+                .getElementById("complemento")
+                .value
+                .trim() || null,
+
+            bairro:
+              document
+                .getElementById("bairro")
+                .value
+                .trim() || null,
+
+            cidade:
+              document
+                .getElementById("cidade")
+                .value
+                .trim() || null,
+
+            estado:
+              document
+                .getElementById("estado")
+                .value
+                .trim()
+                .toUpperCase() || null,
+
+            cep:
+              document
+                .getElementById("cep")
+                .value
+                .trim() || null,
+
+            criado_por:
+              usuarioAtual.id
+
+          });
+
+
+        if (error)
+          throw error;
+
+
+        fecharModal();
+
+
+        mostrarSucesso(
+          "Cliente cadastrado com sucesso!"
+        );
+
+
+        await carregarClientes();
+
+      }
+
+      catch (erro) {
+
+        mostrarErro(
+          erro.message
+        );
+
+      }
+
+      finally {
+
+        botao.disabled = false;
+
+        botao.textContent =
+          "Salvar cliente";
+
+      }
+
+    }
+  );
+
+
+/* =========================================
+   MENSAGENS
+========================================= */
+
+function mostrarErro(mensagem) {
+
+  const elemento =
+    document.getElementById(
+      "erro"
+    );
+
+  elemento.textContent =
+    "ERRO: " + mensagem;
+
+  elemento.style.display =
+    "block";
+
+
+  setTimeout(() => {
+
+    elemento.style.display =
+      "none";
+
+  }, 6000);
+
+}
+
+
+function mostrarSucesso(mensagem) {
+
+  const elemento =
+    document.getElementById(
+      "sucesso"
+    );
+
+  elemento.textContent =
+    mensagem;
+
+  elemento.style.display =
+    "block";
+
+
+  setTimeout(() => {
+
+    elemento.style.display =
+      "none";
+
+  }, 4000);
+
+}
+
+
+function escaparHtml(texto) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    texto || "";
+
+  return div.innerHTML;
+
+}
+
+
+iniciar();
+
+</script>
+
+</body>
+
+  </html>
