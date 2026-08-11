@@ -311,12 +311,216 @@ Projeto
 
 <h3>☀️ Sistema Fotovoltaico</h3>
 
-<p>
-Os dados técnicos do sistema serão preenchidos nesta seção.
-</p>
+<div id="mensagemSistema"></div>
+
+<h4>Módulos fotovoltaicos</h4>
+
+<div class="grid">
+
+<div class="campo">
+<strong>Fabricante</strong>
+<input
+  type="text"
+  id="fabricante_modulo"
+  placeholder="Ex.: Jinko"
+>
+</div>
+
+<div class="campo">
+<strong>Modelo</strong>
+<input
+  type="text"
+  id="modelo_modulo"
+  placeholder="Ex.: Tiger Neo"
+>
+</div>
+
+<div class="campo">
+<strong>Potência do módulo (W)</strong>
+<input
+  type="number"
+  id="potencia_modulo_w"
+  step="0.01"
+  min="0"
+  placeholder="Ex.: 550"
+  oninput="calcularSistema()"
+>
+</div>
+
+<div class="campo">
+<strong>Quantidade de módulos</strong>
+<input
+  type="number"
+  id="quantidade_modulos"
+  min="1"
+  step="1"
+  placeholder="Ex.: 20"
+  oninput="calcularSistema()"
+>
+</div>
 
 </div>
 
+
+<h4>Inversor</h4>
+
+<div class="grid">
+
+<div class="campo">
+<strong>Fabricante</strong>
+<input
+  type="text"
+  id="fabricante_inversor"
+  placeholder="Ex.: Growatt"
+>
+</div>
+
+<div class="campo">
+<strong>Modelo</strong>
+<input
+  type="text"
+  id="modelo_inversor"
+  placeholder="Ex.: MIN 8000TL-X"
+>
+</div>
+
+<div class="campo">
+<strong>Potência do inversor (kW)</strong>
+<input
+  type="number"
+  id="potencia_inversor_kw"
+  step="0.001"
+  min="0"
+  placeholder="Ex.: 8"
+  oninput="calcularSistema()"
+>
+</div>
+
+<div class="campo">
+<strong>Quantidade de inversores</strong>
+<input
+  type="number"
+  id="quantidade_inversores"
+  min="1"
+  step="1"
+  placeholder="Ex.: 1"
+  oninput="calcularSistema()"
+>
+</div>
+
+</div>
+
+
+<h4>Conexão</h4>
+
+<div class="grid">
+
+<div class="campo">
+<strong>Distribuidora</strong>
+<input
+  type="text"
+  id="distribuidora"
+  placeholder="Ex.: Enel"
+>
+</div>
+
+<div class="campo">
+<strong>Tipo de ligação</strong>
+
+<select id="tipo_ligacao">
+
+<option value="">
+Selecione
+</option>
+
+<option value="monofasica">
+Monofásica
+</option>
+
+<option value="bifasica">
+Bifásica
+</option>
+
+<option value="trifasica">
+Trifásica
+</option>
+
+</select>
+
+</div>
+
+<div class="campo">
+<strong>Número de fases</strong>
+
+<input
+  type="number"
+  id="numero_fases"
+  min="1"
+  step="1"
+  placeholder="Ex.: 3"
+>
+
+</div>
+
+<div class="campo">
+<strong>Tensão nominal (V)</strong>
+
+<input
+  type="number"
+  id="tensao_nominal"
+  step="0.01"
+  min="0"
+  placeholder="Ex.: 220"
+>
+
+</div>
+
+</div>
+
+
+<h4>📊 Cálculos do sistema</h4>
+
+<div class="grid">
+
+<div class="campo">
+<strong>Potência DC</strong>
+<span id="potenciaDC">0,00 kWp</span>
+</div>
+
+<div class="campo">
+<strong>Potência AC</strong>
+<span id="potenciaAC">0,00 kW</span>
+</div>
+
+<div class="campo">
+<strong>Ratio DC/AC</strong>
+<span id="ratioDCAC">0,00</span>
+</div>
+
+</div>
+
+
+<div class="campo">
+
+<strong>Observações</strong>
+
+<textarea
+  id="observacoes_sistema"
+  placeholder="Observações técnicas do sistema..."
+></textarea>
+
+</div>
+
+
+<button
+  type="button"
+  class="btn-principal"
+  onclick="salvarSistema()"
+>
+💾 Salvar sistema fotovoltaico
+</button>
+
+</div>
 
 <div class="card">
 
