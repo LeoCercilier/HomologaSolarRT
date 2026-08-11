@@ -1397,6 +1397,20 @@ function calcularSistema() {
   const correnteString =
     impModulo;
 
+    /* ================================
+     VALIDAÇÃO DE CORRENTE DO MPPT
+  ================================= */
+
+  const correnteMaxMppt =
+    parseFloat(
+      document.getElementById(
+        "corrente_max_mppt_a"
+      ).value
+    ) || 0;
+
+  const correnteMppt =
+    impModulo *
+    stringsPorMppt;
 
   document.getElementById(
     "potenciaString"
