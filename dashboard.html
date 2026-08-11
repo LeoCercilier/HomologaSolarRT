@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Dashboard - HomologaSolar RT</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      color: #1f2937;
+    }
+
+    header {
+      background: #0f766e;
+      color: white;
+      padding: 18px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .boas-vindas {
+      margin-bottom: 20px;
+    }
+
+    .boas-vindas h2 {
+      margin-bottom: 5px;
+    }
+
+    .boas-vindas p {
+      color: #64748b;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(
+        auto-fit,
+        minmax(150px, 1fr)
+      );
+
+      gap: 15px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+
+      box-shadow:
+        0 4px 15px rgba(0,0,0,0.05);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      font-size: 17px;
+    }
+
+    .card p {
+      color: #64748b;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .botao {
+      display: block;
+      width: 100%;
+
+      border: none;
+      border-radius: 9px;
+
+      padding: 13px;
+
+      background: #0f766e;
+      color: white;
+
+      font-size: 15px;
+      font-weight: bold;
+
+      cursor: pointer;
+
+      margin-top: 12px;
+    }
+
+    .sair {
+      background: #dc2626;
+    }
+
+    #usuario {
+      font-weight: bold;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <header>
+
+    <h1>
+      ☀️ HomologaSolar RT
+    </h1>
+
+    <p>
+      Gestão de projetos fotovoltaicos
+    </p>
+
+  </header>
+
+
+  <div class="container">
+
+    <div class="boas-vindas">
+
+      <h2>
+        Dashboard
+      </h2>
+
+      <p>
+        Usuário:
+        <span id="usuario">
+          carregando...
+        </span>
+      </p>
+
+    </div>
+
+
+    <div class="grid">
+
+
+      <div class="card">
+
+        <h3>
+          📁 Projetos
+        </h3>
+
+        <p>
+          Crie e gerencie seus projetos
+          fotovoltaicos.
+        </p>
+
+        <button class="botao">
+          Novo projeto
+        </button>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>
+          👥 Clientes
+        </h3>
+
+        <p>
+          Cadastre e gerencie seus clientes.
+        </p>
+
+        <button class="botao">
+          Clientes
+        </button>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>
+          👷 Responsáveis Técnicos
+        </h3>
+
+        <p>
+          Gerencie os RTs da organização.
+        </p>
+
+        <button class="botao">
+          Responsáveis técnicos
+        </button>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>
+          📄 Documentos
+        </h3>
+
+        <p>
+          Gere e acompanhe documentos
+          de homologação.
+        </p>
+
+        <button class="botao">
+          Documentos
+        </button>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>
+          ⚙️ Configurações
+        </h3>
+
+        <p>
+          Configurações da organização.
+        </p>
+
+        <button class="botao">
+          Configurações
+        </button>
+
+      </div>
+
+
+      <div class="card">
+
+        <h3>
+          🚪 Sair
+        </h3>
+
+        <p>
+          Encerrar sua sessão.
+        </p>
+
+        <button
+          class="botao sair"
+          onclick="sair()"
+        >
+          Sair
+        </button>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="supabase-config.js"></script>
+
+
+  <script>
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    async function verificarUsuario() {
+
+      const {
+        data,
+        error
+      } =
+      await supabaseClient.auth.getUser();
+
+
+      if (error || !data.user) {
+
+        window.location.href =
+          "index.html";
+
+        return;
+      }
+
+
+      document.getElementById(
+        "usuario"
+      ).textContent =
+        data.user.email;
+
+    }
+
+
+    async function sair() {
+
+      await supabaseClient.auth.signOut();
+
+      window.location.href =
+        "index.html";
+
+    }
+
+
+    verificarUsuario();
+
+  </script>
+
+</body>
+
+</html>
