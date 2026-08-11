@@ -1614,6 +1614,105 @@ function calcularSistema() {
 
   }
 
+    /* ================================
+     RESULTADO TÉCNICO GERAL
+  ================================= */
+
+  const resultadoTecnico =
+    document.getElementById(
+      "resultadoTecnico"
+    );
+
+  const problemasTecnicos = [];
+
+  if (
+    quantidadeModulos > 0 &&
+    quantidadeStrings > 0 &&
+    modulosPorString > 0 &&
+    quantidadeStrings * modulosPorString !== quantidadeModulos
+  ) {
+    problemasTecnicos.push(
+      "Quantidade de módulos incompatível com as strings."
+    );
+  }
+
+  if (
+    quantidadeStrings > 0 &&
+    quantidadeMppt > 0 &&
+    stringsPorMppt > 0 &&
+    quantidadeMppt * stringsPorMppt !== quantidadeStrings
+  ) {
+    problemasTecnicos.push(
+      "Quantidade de strings incompatível com os MPPTs."
+    );
+  }
+
+  if (
+    vocString > 0 &&
+    tensaoMaxEntrada > 0 &&
+    vocString > tensaoMaxEntrada
+  ) {
+    problemasTecnicos.push(
+      "Voc da string ultrapassa a tensão máxima do inversor."
+    );
+  }
+
+  if (
+    vmpString > 0 &&
+    tensaoMpptMin > 0 &&
+    tensaoMpptMax > 0 &&
+    (
+      vmpString < tensaoMpptMin ||
+      vmpString > tensaoMpptMax
+    )
+  ) {
+    problemasTecnicos.push(
+      "Vmp da string está fora da faixa de MPPT."
+    );
+  }
+
+  if (
+    correnteMppt > 0 &&
+    correnteMaxMppt > 0 &&
+    correnteMppt > correnteMaxMppt
+  ) {
+    problemasTecnicos.push(
+      "Corrente do MPPT ultrapassa o limite informado."
+    );
+  }
+
+
+  if (problemasTecnicos.length === 0) {
+
+    resultadoTecnico.innerHTML =
+      "✅ DIMENSIONAMENTO TECNICAMENTE CONSISTENTE<br><br>" +
+      "Os dados informados não apresentam incompatibilidades nas " +
+      "verificações realizadas.";
+
+    resultadoTecnico.style.background =
+      "#dcfce7";
+
+    resultadoTecnico.style.color =
+      "#166534";
+
+  }
+
+  else {
+
+    resultadoTecnico.innerHTML =
+      "⚠️ ATENÇÃO: FORAM ENCONTRADAS INCONSISTÊNCIAS<br><br>" +
+      problemasTecnicos
+        .map(item => "• " + item)
+        .join("<br>");
+
+    resultadoTecnico.style.background =
+      "#fee2e2";
+
+    resultadoTecnico.style.color =
+      "#991b1b";
+
+  }
+
     }
 
 
