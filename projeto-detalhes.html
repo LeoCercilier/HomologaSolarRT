@@ -1303,7 +1303,97 @@ function calcularSistema() {
       "#334155";
 
   }
+  
+  /* ================================
+     VALIDAÇÃO STRING × INVERSOR
+  ================================= */
 
+  const tensaoMaxEntrada =
+    parseFloat(
+      document.getElementById(
+        "tensao_max_entrada_v"
+      ).value
+    ) || 0;
+
+  const tensaoMpptMin =
+    parseFloat(
+      document.getElementById(
+        "tensao_mppt_min_v"
+      ).value
+    ) || 0;
+
+  const tensaoMpptMax =
+    parseFloat(
+      document.getElementById(
+        "tensao_mppt_max_v"
+      ).value
+    ) || 0;
+
+
+  if (
+    vocString > 0 &&
+    vmpString > 0 &&
+    tensaoMaxEntrada > 0 &&
+    tensaoMpptMin > 0 &&
+    tensaoMpptMax > 0
+  ) {
+
+    if (
+      vocString > tensaoMaxEntrada
+    ) {
+
+      alertaTensao.textContent =
+        "❌ ERRO: Voc da string (" +
+        vocString.toFixed(2).replace(".", ",") +
+        " V) ultrapassa a tensão máxima de entrada do inversor (" +
+        tensaoMaxEntrada.toFixed(2).replace(".", ",") +
+        " V).";
+
+      alertaTensao.style.background =
+        "#fee2e2";
+
+      alertaTensao.style.color =
+        "#991b1b";
+
+    }
+
+    else if (
+      vmpString < tensaoMpptMin ||
+      vmpString > tensaoMpptMax
+    ) {
+
+      alertaTensao.textContent =
+        "⚠️ ATENÇÃO: Vmp da string (" +
+        vmpString.toFixed(2).replace(".", ",") +
+        " V) está fora da faixa MPPT do inversor (" +
+        tensaoMpptMin.toFixed(2).replace(".", ",") +
+        " – " +
+        tensaoMpptMax.toFixed(2).replace(".", ",") +
+        " V).";
+
+      alertaTensao.style.background =
+        "#fef3c7";
+
+      alertaTensao.style.color =
+        "#92400e";
+
+    }
+
+    else {
+
+      alertaTensao.textContent =
+        "✅ Tensão da string compatível com os limites informados do inversor.";
+
+      alertaTensao.style.background =
+        "#dcfce7";
+
+      alertaTensao.style.color =
+        "#166534";
+
+    }
+
+  }
+  
   const correnteString =
     impModulo;
 
