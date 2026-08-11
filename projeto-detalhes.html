@@ -1050,6 +1050,16 @@ function calcularSistema() {
     ) || 0;
 
   const quantidadeModulos =
+function calcularSistema() {
+
+  const potenciaModulo =
+    parseFloat(
+      document.getElementById(
+        "potencia_modulo_w"
+      ).value
+    ) || 0;
+
+  const quantidadeModulos =
     parseInt(
       document.getElementById(
         "quantidade_modulos"
@@ -1070,6 +1080,59 @@ function calcularSistema() {
       ).value
     ) || 0;
 
+  const vocModulo =
+    parseFloat(
+      document.getElementById(
+        "voc_modulo"
+      ).value
+    ) || 0;
+
+  const vmpModulo =
+    parseFloat(
+      document.getElementById(
+        "vmp_modulo"
+      ).value
+    ) || 0;
+
+  const impModulo =
+    parseFloat(
+      document.getElementById(
+        "imp_modulo"
+      ).value
+    ) || 0;
+
+  const quantidadeStrings =
+    parseInt(
+      document.getElementById(
+        "quantidade_strings"
+      ).value
+    ) || 0;
+
+  const modulosPorString =
+    parseInt(
+      document.getElementById(
+        "modulos_por_string"
+      ).value
+    ) || 0;
+
+  const quantidadeMppt =
+    parseInt(
+      document.getElementById(
+        "quantidade_mppt"
+      ).value
+    ) || 0;
+
+  const stringsPorMppt =
+    parseInt(
+      document.getElementById(
+        "strings_por_mppt"
+      ).value
+    ) || 0;
+
+
+  /* ================================
+     POTÊNCIA DC
+  ================================= */
 
   const potenciaDC =
     (
@@ -1078,10 +1141,18 @@ function calcularSistema() {
     ) / 1000;
 
 
+  /* ================================
+     POTÊNCIA AC
+  ================================= */
+
   const potenciaAC =
     potenciaInversor *
     quantidadeInversores;
 
+
+  /* ================================
+     RATIO DC / AC
+  ================================= */
 
   let ratio = 0;
 
@@ -1116,7 +1187,178 @@ function calcularSistema() {
     ratio.toFixed(3)
     .replace(".", ",");
 
-}
+
+  /* ================================
+     CÁLCULOS POR STRING
+  ================================= */
+
+  const potenciaString =
+    (
+      potenciaModulo *
+      modulosPorString
+    ) / 1000;
+
+
+  const vmpString =
+    vmpModulo *
+    modulosPorString;
+
+
+  const vocString =
+    vocModulo *
+    modulosPorString;
+
+
+  const correnteString =
+    impModulo;
+
+
+  document.getElementById(
+    "potenciaString"
+  ).textContent =
+    potenciaString.toFixed(2)
+    .replace(".", ",")
+    + " kWp";
+
+
+  document.getElementById(
+    "vmpString"
+  ).textContent =
+    vmpString.toFixed(2)
+    .replace(".", ",")
+    + " V";
+
+
+  document.getElementById(
+    "vocString"
+  ).textContent =
+    vocString.toFixed(2)
+    .replace(".", ",")
+    + " V";
+
+
+  document.getElementById(
+    "correnteString"
+  ).textContent =
+    correnteString.toFixed(2)
+    .replace(".", ",")
+    + " A";
+
+
+  /* ================================
+     VALIDAÇÃO
+  ================================= */
+
+  const validacao =
+    document.getElementById(
+      "validacaoDimensionamento"
+    );
+
+
+  const erros = [];
+
+
+  if (
+    quantidadeModulos > 0 &&
+    quantidadeStrings > 0 &&
+    modulosPorString > 0
+  ) {
+
+    const modulosCalculados =
+      quantidadeStrings *
+      modulosPorString;
+
+
+    if (
+      modulosCalculados !==
+      quantidadeModulos
+    ) {
+
+      erros.push(
+        "Quantidade de módulos não corresponde às strings."
+      );
+
+    }
+
+  }
+
+
+  if (
+    quantidadeStrings > 0 &&
+    quantidadeMppt > 0 &&
+    stringsPorMppt > 0
+  ) {
+
+    const stringsCalculadas =
+      quantidadeMppt *
+      stringsPorMppt;
+
+
+    if (
+      stringsCalculadas !==
+      quantidadeStrings
+    ) {
+
+      erros.push(
+        "Quantidade de strings não corresponde aos MPPTs."
+      );
+
+    }
+
+  }
+
+
+  if (erros.length === 0) {
+
+    if (
+      quantidadeModulos > 0 &&
+      quantidadeStrings > 0 &&
+      modulosPorString > 0 &&
+      quantidadeMppt > 0 &&
+      stringsPorMppt > 0
+    ) {
+
+      validacao.textContent =
+        "✅ Dimensionamento consistente com os dados informados.";
+
+      validacao.style.background =
+        "#dcfce7";
+
+      validacao.style.color =
+        "#166534";
+
+    }
+
+    else {
+
+      validacao.textContent =
+        "Preencha os dados de strings e MPPT para analisar o dimensionamento.";
+
+      validacao.style.background =
+        "#f1f5f9";
+
+      validacao.style.color =
+        "#334155";
+
+    }
+
+  }
+
+  else {
+
+    validacao.innerHTML =
+      "⚠️ " +
+      erros.join("<br>⚠️ ");
+
+    validacao.style.background =
+      "#fee2e2";
+
+    validacao.style.color =
+      "#991b1b";
+
+  }
+
+    }
 
 
 /* =========================================
