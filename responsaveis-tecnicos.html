@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Responsáveis Técnicos - HomologaSolar RT</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  color: #1f2937;
+}
+
+header {
+  background: #0f766e;
+  color: white;
+  padding: 18px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.topo h2 {
+  margin: 0;
+}
+
+button {
+  border: none;
+  border-radius: 9px;
+  padding: 12px 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-principal {
+  background: #0f766e;
+  color: white;
+}
+
+.btn-secundario {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+button:disabled {
+  opacity: .6;
+}
+
+.lista {
+  display: grid;
+  gap: 12px;
+}
+
+.rt {
+  background: white;
+  padding: 16px;
+  border-radius: 13px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.05);
+}
+
+.rt strong {
+  display: block;
+  font-size: 17px;
+  margin-bottom: 6px;
+}
+
+.rt span {
+  display: block;
+  color: #64748b;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.vazio,
+.carregando {
+  background: white;
+  padding: 30px;
+  text-align: center;
+  border-radius: 13px;
+  color: #64748b;
+}
+
+.erro {
+  display: none;
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 14px;
+  border-radius: 9px;
+  margin-bottom: 15px;
+}
+
+.sucesso {
+  display: none;
+  background: #dcfce7;
+  color: #166534;
+  padding: 14px;
+  border-radius: 9px;
+  margin-bottom: 15px;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.modal-conteudo {
+  background: white;
+  max-width: 650px;
+  margin: 25px auto;
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.modal-conteudo h2 {
+  margin-top: 0;
+}
+
+.campo {
+  margin-bottom: 12px;
+}
+
+.campo label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.campo input,
+.campo textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.campo textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.acoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.acoes button {
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+
+  .topo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .linha {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>☀️ HomologaSolar RT</h1>
+</header>
+
+
+<div class="container">
+
+<div class="topo">
+
+<h2>Responsáveis Técnicos</h2>
+
+<button
+  class="btn-principal"
+  onclick="abrirModal()"
+>
++ Novo RT
+</button>
+
+</div>
+
+
+<div
+  id="erro"
+  class="erro"
+></div>
+
+
+<div
+  id="sucesso"
+  class="sucesso"
+></div>
+
+
+<div
+  id="lista"
+  class="lista"
+>
+
+<div class="carregando">
+Carregando responsáveis técnicos...
+</div>
+
+</div>
+
+</div>
+
+
+<div
+  id="modal"
+  class="modal"
+>
+
+<div class="modal-conteudo">
+
+<h2>Novo Responsável Técnico</h2>
+
+
+<form id="formRT">
+
+
+<div class="campo">
+
+<label>Nome *</label>
+
+<input
+  id="nome"
+  required
+>
+
+</div>
+
+
+<div class="linha">
+
+<div class="campo">
+
+<label>CPF</label>
+
+<input id="cpf">
+
+</div>
+
+
+<div class="campo">
+
+<label>CREA *</label>
+
+<input
+  id="crea"
+  required
+>
+
+</div>
+
+</div>
+
+
+<div class="linha">
+
+<div class="campo">
+
+<label>UF do CREA</label>
+
+<input
+  id="uf_crea"
+  maxlength="2"
+>
+
+</div>
+
+
+<div class="campo">
+
+<label>Registro profissional</label>
+
+<input id="registro_profissional">
+
+</div>
+
+</div>
+
+
+<div class="campo">
+
+<label>Título profissional</label>
+
+<input id="titulo_profissional">
+
+</div>
+
+
+<div class="linha">
+
+<div class="campo">
+
+<label>Telefone</label>
+
+<input id="telefone">
+
+</div>
+
+
+<div class="campo">
+
+<label>E-mail</label>
+
+<input
+  id="email"
+  type="email"
+>
+
+</div>
+
+</div>
+
+
+<div class="campo">
+
+<label>Endereço profissional</label>
+
+<input id="endereco_profissional">
+
+</div>
+
+
+<div class="campo">
+
+<label>Número da ART</label>
+
+<input id="numero_art">
+
+</div>
+
+
+<div class="campo">
+
+<label>Observações</label>
+
+<textarea id="observacoes"></textarea>
+
+</div>
+
+
+<div class="acoes">
+
+<button
+  type="button"
+  class="btn-secundario"
+  onclick="fecharModal()"
+>
+Cancelar
+</button>
+
+<button
+  type="submit"
+  class="btn-principal"
+  id="btnSalvar"
+>
+Salvar RT
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase-config.js"></script>
+
+
+<script>
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+let usuarioAtual = null;
+let organizacaoAtual = null;
+
+
+/* =========================================
+   INICIAR
+========================================= */
+
+async function iniciar() {
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+    await supabaseClient.auth.getUser();
+
+
+    if (
+      error ||
+      !data.user
+    ) {
+
+      window.location.href =
+        "index.html";
+
+      return;
+
+    }
+
+
+    usuarioAtual =
+      data.user;
+
+
+    const {
+      data: membro,
+      error: erroMembro
+    } =
+    await supabaseClient
+      .from("organizacao_membros")
+      .select("organizacao_id")
+      .eq(
+        "usuario_id",
+        usuarioAtual.id
+      )
+      .eq(
+        "ativo",
+        true
+      )
+      .limit(1)
+      .maybeSingle();
+
+
+    if (erroMembro)
+      throw erroMembro;
+
+
+    if (!membro) {
+
+      throw new Error(
+        "Usuário sem organização."
+      );
+
+    }
+
+
+    organizacaoAtual =
+      membro.organizacao_id;
+
+
+    await carregarRTs();
+
+  }
+
+  catch (erro) {
+
+    mostrarErro(
+      erro.message
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   CARREGAR RTS
+========================================= */
+
+async function carregarRTs() {
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("responsaveis_tecnicos")
+    .select(`
+      id,
+      nome,
+      cpf,
+      crea,
+      uf_crea,
+      registro_profissional,
+      titulo_profissional,
+      telefone,
+      email,
+      numero_art,
+      ativo
+    `)
+    .eq(
+      "organizacao_id",
+      organizacaoAtual
+    )
+    .eq(
+      "ativo",
+      true
+    )
+    .order(
+      "nome",
+      {
+        ascending: true
+      }
+    );
+
+
+  if (error)
+    throw error;
+
+
+  renderizarRTs(
+    data || []
+  );
+
+}
+
+
+/* =========================================
+   MOSTRAR RTS
+========================================= */
+
+function renderizarRTs(lista) {
+
+  const elemento =
+    document.getElementById(
+      "lista"
+    );
+
+
+  if (
+    !lista ||
+    lista.length === 0
+  ) {
+
+    elemento.innerHTML = `
+      <div class="vazio">
+        Nenhum responsável técnico cadastrado.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  elemento.innerHTML = "";
+
+
+  lista.forEach(rt => {
+
+    const div =
+      document.createElement("div");
+
+    div.className = "rt";
+
+
+    div.innerHTML = `
+      <strong>
+        ${escaparHtml(rt.nome)}
+      </strong>
+
+      <span>
+        CREA: ${escaparHtml(rt.crea)}
+        ${rt.uf_crea ? " - " + escaparHtml(rt.uf_crea) : ""}
+      </span>
+
+      ${
+        rt.titulo_profissional
+        ? `<span>${escaparHtml(rt.titulo_profissional)}</span>`
+        : ""
+      }
+
+      ${
+        rt.telefone
+        ? `<span>Telefone: ${escaparHtml(rt.telefone)}</span>`
+        : ""
+      }
+
+      ${
+        rt.email
+        ? `<span>${escaparHtml(rt.email)}</span>`
+        : ""
+      }
+    `;
+
+
+    elemento.appendChild(div);
+
+  });
+
+}
+
+
+/* =========================================
+   MODAL
+========================================= */
+
+function abrirModal() {
+
+  document.getElementById(
+    "modal"
+  ).style.display = "block";
+
+}
+
+
+function fecharModal() {
+
+  document.getElementById(
+    "modal"
+  ).style.display = "none";
+
+  document.getElementById(
+    "formRT"
+  ).reset();
+
+}
+
+
+/* =========================================
+   SALVAR RT
+========================================= */
+
+document
+  .getElementById("formRT")
+  .addEventListener(
+    "submit",
+    async function(event) {
+
+      event.preventDefault();
+
+
+      const botao =
+        document.getElementById(
+          "btnSalvar"
+        );
+
+
+      botao.disabled = true;
+
+      botao.textContent =
+        "Salvando...";
+
+
+      try {
+
+        const {
+          error
+        } =
+        await supabaseClient
+          .from("responsaveis_tecnicos")
+          .insert({
+
+            organizacao_id:
+              organizacaoAtual,
+
+            usuario_id:
+              usuarioAtual.id,
+
+            nome:
+              document
+                .getElementById("nome")
+                .value
+                .trim(),
+
+            cpf:
+              document
+                .getElementById("cpf")
+                .value
+                .trim() || null,
+
+            crea:
+              document
+                .getElementById("crea")
+                .value
+                .trim(),
+
+            uf_crea:
+              document
+                .getElementById("uf_crea")
+                .value
+                .trim()
+                .toUpperCase() || null,
+
+            registro_profissional:
+              document
+                .getElementById("registro_profissional")
+                .value
+                .trim() || null,
+
+            titulo_profissional:
+              document
+                .getElementById("titulo_profissional")
+                .value
+                .trim() || null,
+
+            telefone:
+              document
+                .getElementById("telefone")
+                .value
+                .trim() || null,
+
+            email:
+              document
+                .getElementById("email")
+                .value
+                .trim() || null,
+
+            endereco_profissional:
+              document
+                .getElementById("endereco_profissional")
+                .value
+                .trim() || null,
+
+            numero_art:
+              document
+                .getElementById("numero_art")
+                .value
+                .trim() || null,
+
+            observacoes:
+              document
+                .getElementById("observacoes")
+                .value
+                .trim() || null,
+
+            ativo: true
+
+          });
+
+
+        if (error)
+          throw error;
+
+
+        fecharModal();
+
+
+        mostrarSucesso(
+          "Responsável técnico cadastrado com sucesso!"
+        );
+
+
+        await carregarRTs();
+
+      }
+
+      catch (erro) {
+
+        mostrarErro(
+          erro.message
+        );
+
+      }
+
+      finally {
+
+        botao.disabled = false;
+
+        botao.textContent =
+          "Salvar RT";
+
+      }
+
+    }
+  );
+
+
+/* =========================================
+   MENSAGENS
+========================================= */
+
+function mostrarErro(mensagem) {
+
+  const elemento =
+    document.getElementById(
+      "erro"
+    );
+
+  elemento.textContent =
+    "ERRO: " + mensagem;
+
+  elemento.style.display =
+    "block";
+
+}
+
+
+function mostrarSucesso(mensagem) {
+
+  const elemento =
+    document.getElementById(
+      "sucesso"
+    );
+
+  elemento.textContent =
+    mensagem;
+
+  elemento.style.display =
+    "block";
+
+}
+
+
+function escaparHtml(texto) {
+
+  const div =
+    document.createElement("div");
+
+  div.textContent =
+    texto || "";
+
+  return div.innerHTML;
+
+}
+
+
+iniciar();
+
+</script>
+
+</body>
+
+  </html>
