@@ -681,23 +681,33 @@
 
       data.forEach(projeto => {
 
-        const item =
-          document.createElement("div");
+  const item =
+    document.createElement("div");
 
-        item.className = "projeto";
+  item.className = "projeto";
+
+  item.style.cursor = "pointer";
+
+  item.onclick = function() {
+
+    window.location.href =
+      "projeto-detalhes.html?id=" +
+      encodeURIComponent(projeto.id);
+
+  };
 
 
-        item.innerHTML = `
-          <strong>${escaparHtml(projeto.nome)}</strong>
-          <span>
-            Status: ${escaparHtml(projeto.status || "Sem status")}
-          </span>
-        `;
+  item.innerHTML = `
+    <strong>${escaparHtml(projeto.nome)}</strong>
+    <span>
+      Status: ${escaparHtml(projeto.status || "Sem status")}
+    </span>
+  `;
 
 
-        lista.appendChild(item);
+  lista.appendChild(item);
 
-      });
+});
 
     }
 
