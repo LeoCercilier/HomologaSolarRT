@@ -3400,8 +3400,8 @@ function atualizarFluxoHomologacao(status) {
       texto: "✅ Aprovado"
     },
     {
-      status: "reprovado",
-      texto: "❌ Reprovado"
+      status: "rejeitado",
+      texto: "❌ Rejeitado"
     }
   ];
 
@@ -3409,10 +3409,51 @@ function atualizarFluxoHomologacao(status) {
   fluxo.innerHTML = "";
 
 
+  /* =================================
+     DEFINIR ETAPA VISUAL ATUAL
+  ================================= */
+
+  let etapaAtual =
+    "rascunho";
+
+
+  if (
+    status === "em_analise"
+  ) {
+
+    etapaAtual =
+      "em_analise";
+
+  }
+
+  else if (
+    status === "aprovado"
+  ) {
+
+    etapaAtual =
+      "aprovado";
+
+  }
+
+  else if (
+    status === "rejeitado"
+  ) {
+
+    etapaAtual =
+      "rejeitado";
+
+  }
+
+
+  /* =================================
+     EXIBIR FLUXO
+  ================================= */
+
   etapas.forEach(etapa => {
 
     const item =
       document.createElement("div");
+
 
     item.textContent =
       etapa.texto;
@@ -3435,7 +3476,7 @@ function atualizarFluxoHomologacao(status) {
 
 
     if (
-      etapa.status === status
+      etapa.status === etapaAtual
     ) {
 
       item.style.background =
@@ -3454,7 +3495,7 @@ function atualizarFluxoHomologacao(status) {
 
   });
 
-      }
+}
 
 iniciar();
 
