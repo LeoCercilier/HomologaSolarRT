@@ -2156,6 +2156,55 @@ async function carregarDocumentos() {
 
 }
 
+  async function alterarStatusDocumento(
+  documentoId,
+  novoStatus
+) {
+
+  try {
+
+    const {
+      error
+    } =
+    await supabaseClient
+      .from("documentos_projeto")
+      .update({
+        status: novoStatus
+      })
+      .eq(
+        "id",
+        documentoId
+      )
+      .eq(
+        "projeto_id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      );
+
+    if (error)
+      throw error;
+
+
+    await carregarDocumentos();
+
+  }
+
+  catch (erro) {
+
+    alert(
+      "Erro ao atualizar documento: " +
+      erro.message
+    );
+
+    await carregarDocumentos();
+
+  }
+
+  }
+
   function escaparHtml(texto) {
 
   const div =
