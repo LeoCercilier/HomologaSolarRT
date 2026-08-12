@@ -780,6 +780,20 @@ Trifásica
 
   <h3>📄 Documentação para homologação</h3>
 
+<div
+  id="resumoDocumentacao"
+  style="
+    margin-bottom:15px;
+    padding:12px;
+    border-radius:9px;
+    background:#f1f5f9;
+    color:#334155;
+    font-weight:bold;
+  "
+>
+  Documentação: carregando...
+</div>
+  
   <div
     id="listaDocumentos"
     style="
@@ -2079,6 +2093,25 @@ async function carregarDocumentos() {
 
   lista.innerHTML = "";
 
+  const resumo =
+  document.getElementById(
+    "resumoDocumentacao"
+  );
+
+const totalDocumentos =
+  data.length;
+
+const concluidos =
+  data.filter(documento =>
+    documento.status === "validado"
+  ).length;
+
+resumo.textContent =
+  "Documentação: " +
+  concluidos +
+  " de " +
+  totalDocumentos +
+  " documentos validados";
 
   data.forEach(documento => {
 
