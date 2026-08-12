@@ -2034,7 +2034,7 @@ document.getElementById(
 
   }
   
-  /* =========================================
+    /* =========================================
    CARREGAR DOCUMENTAÇÃO
 ========================================= */
 
@@ -2044,6 +2044,12 @@ async function carregarDocumentos() {
     document.getElementById(
       "listaDocumentos"
     );
+
+  const resumo =
+    document.getElementById(
+      "resumoDocumentacao"
+    );
+
 
   const {
     data,
@@ -2073,11 +2079,15 @@ async function carregarDocumentos() {
       }
     );
 
+
   if (error)
     throw error;
 
 
   if (!data || data.length === 0) {
+
+    resumo.textContent =
+      "Documentação: nenhum documento cadastrado.";
 
     lista.innerHTML =
       `
@@ -2091,140 +2101,181 @@ async function carregarDocumentos() {
   }
 
 
+  /* ================================
+     RESUMO DA DOCUMENTAÇÃO
+  ================================= */
+
+  const totalDocumentos =
+    data.length;
+
+  const concluidos =
+    data.filter(
+      documento =>
+        documento.status === "validado"
+    ).length;
+
+
+  resumo.textContent =
+    "Documentação: " +
+    concluidos +
+    " de " +
+    totalDocumentos +
+    " documentos validados";
+
+
+  /* ================================
+     LIMPAR LISTA
+  ================================= */
+
   lista.innerHTML = "";
 
-  const resumo =
-  document.getElementById(
-    "resumoDocumentacao"
-  );
 
-const totalDocumentos =
-  data.length;
+  /* ================================
+     EXIBIR DOCUMENTOS
+  ================================= */
 
-const concluidos =
-  data.filter(documento =>
-    documento.status === "validado"
-  ).length;
+  data.forEach(documento => {
 
-resumo.textContent =
-  "Documentação: " +
-  concluidos +
-  " de " +
-  totalDocumentos +
-  " documentos validados";
-
-    data.forEach(documento => {
-
-  const item =
-    document.createElement("div");
+    const item =
+      document.createElement("div");
 
 
-  let corFundo = "#f8fafc";
-  let corBorda = "#e2e8f0";
-  let corStatus = "#92400e";
+    let corFundo = "#f8fafc";
+    let corBorda = "#e2e8f0";
+    let corStatus = "#92400e";
 
-  if (documento.status === "anexado") {
 
-    corFundo = "#eff6ff";
-    corBorda = "#bfdbfe";
-    corStatus = "#1d4ed8";
+    if (
+      documento.status === "anexado"
+    ) {
+
+      corFundo = "#eff6ff";
+      corBorda = "#bfdbfe";
+      corStatus = "#1d4ed8";
+
+    }
+
+    else if (
+      documento.status === "validado"
+    ) {
+
+      corFundo = "#f0fdf4";
+      corBorda = "#bbf7d0";
+      corStatus = "#166534";
+
+    }
+
+    else if (
+      documento.status === "rejeitado"
+    ) {
+
+      corFundo = "#fef2f2";
+      corBorda = "#fecaca";
+      corStatus = "#991b1b";
+
+    }
+
+
+    item.style.padding =
+      "14px";
+
+    item.style.border =
+      "1px solid " +
+      corBorda;
+
+    item.style.borderRadius =
+      "9px";
+
+    item.style.background =
+      corFundo;
+
+
+    item.innerHTML =
+      `
+      <strong>
+        ${escaparHtml(
+          documento.nome_documento
+        )}
+      </strong>
+
+      <div style="
+        margin-top:10px;
+      ">
+
+        <select
+          onchange="alterarStatusDocumento(
+            '${documento.id}',
+            this.value
+          )"
+          style="
+            width:100%;
+            padding:10px;
+            border:1px solid #cbd5e1;
+            border-radius:8px;
+            color:${corStatus};
+            font-weight:bold;
+            background:white;
+          "
+        >
+
+          <option
+            value="pendente"
+            ${
+              documento.status === "pendente"
+                ? "selected"
+                : ""
+            }
+          >
+            🟡 Pendente
+          </option>
+
+
+          <option
+            value="anexado"
+            ${
+              documento.status === "anexado"
+                ? "selected"
+                : ""
+            }
+          >
+            🔵 Anexado
+          </option>
+
+
+          <option
+            value="validado"
+            ${
+              documento.status === "validado"
+                ? "selected"
+                : ""
+            }
+          >
+            🟢 Validado
+          </option>
+
+
+          <option
+            value="rejeitado"
+            ${
+              documento.status === "rejeitado"
+                ? "selected"
+                : ""
+            }
+          >
+            🔴 Rejeitado
+          </option>
+
+        </select>
+
+      </div>
+      `;
+
+
+    lista.appendChild(item);
+
+  });
 
   }
-
-  else if (documento.status === "validado") {
-
-    corFundo = "#f0fdf4";
-    corBorda = "#bbf7d0";
-    corStatus = "#166534";
-
-  }
-
-  else if (documento.status === "rejeitado") {
-
-    corFundo = "#fef2f2";
-    corBorda = "#fecaca";
-    corStatus = "#991b1b";
-
-  }
-
-
-  item.style.padding =
-    "14px";
-
-  item.style.border =
-    "1px solid " + corBorda;
-
-  item.style.borderRadius =
-    "9px";
-
-  item.style.background =
-    corFundo;
-
-
-  item.innerHTML =
-    `
-    <strong>
-      ${escaparHtml(documento.nome_documento)}
-    </strong>
-
-    <div style="
-      margin-top:10px;
-    ">
-
-      <select
-        onchange="alterarStatusDocumento(
-          '${documento.id}',
-          this.value
-        )"
-        style="
-          width:100%;
-          padding:10px;
-          border:1px solid #cbd5e1;
-          border-radius:8px;
-          color:${corStatus};
-          font-weight:bold;
-        "
-      >
-
-        <option
-          value="pendente"
-          ${documento.status === "pendente" ? "selected" : ""}
-        >
-          🟡 Pendente
-        </option>
-
-        <option
-          value="anexado"
-          ${documento.status === "anexado" ? "selected" : ""}
-        >
-          🔵 Anexado
-        </option>
-
-        <option
-          value="validado"
-          ${documento.status === "validado" ? "selected" : ""}
-        >
-          🟢 Validado
-        </option>
-
-        <option
-          value="rejeitado"
-          ${documento.status === "rejeitado" ? "selected" : ""}
-        >
-          🔴 Rejeitado
-        </option>
-
-      </select>
-
-    </div>
-    `;
-
-
-  lista.appendChild(item);
-
-});
-
-}
 
   async function alterarStatusDocumento(
   documentoId,
