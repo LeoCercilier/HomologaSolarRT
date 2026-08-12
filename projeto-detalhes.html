@@ -2774,6 +2774,555 @@ function mostrarMensagemSistema(
 
   }
 
+  /* =========================================
+   GERAR RELATÓRIO PDF
+========================================= */
+
+async function gerarRelatorioPDF() {
+
+  try {
+
+    if (!sistemaAtual) {
+      alert(
+        "Salve o sistema fotovoltaico antes de gerar o relatório."
+      );
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf =
+      new jsPDF();
+
+    let y = 20;
+
+    const margem = 20;
+    const largura = 170;
+
+
+    function titulo(texto) {
+
+      pdf.setFontSize(16);
+      pdf.setFont(undefined, "bold");
+
+      pdf.text(
+        texto,
+        margem,
+        y
+      );
+
+      y += 10;
+
+    }
+
+
+    function subtitulo(texto) {
+
+      pdf.setFontSize(12);
+      pdf.setFont(undefined, "bold");
+
+      pdf.text(
+        texto,
+        margem,
+        y
+      );
+
+      y += 7;
+
+    }
+
+
+    function linha(texto) {
+
+      pdf.setFontSize(10);
+      pdf.setFont(undefined, "normal");
+
+      const linhas =
+        pdf.splitTextToSize(
+          texto,
+          largura
+        );
+
+      pdf.text(
+        linhas,
+        margem,
+        y
+      );
+
+      y +=
+        (linhas.length * 5) + 3;
+
+
+      if (y > 275) {
+
+        pdf.addPage();
+
+        y = 20;
+
+      }
+
+    }
+
+
+    /* =================================
+       CABEÇALHO
+    ================================= */
+
+    titulo(
+      "HOMOLOGASOLAR RT"
+    );
+
+    subtitulo(
+      "RELATÓRIO TÉCNICO DO PROJETO"
+    );
+
+    linha(
+      "Projeto: " +
+      (
+        document.getElementById(
+          "nomeProjeto"
+        ).textContent || "—"
+      )
+    );
+
+    linha(
+      "Status: " +
+      (
+        document.getElementById(
+          "statusProjeto"
+        ).textContent || "—"
+      )
+    );
+
+
+    y += 5;
+
+
+    /* =================================
+       CLIENTE
+    ================================= */
+
+    subtitulo(
+      "1. DADOS DO CLIENTE"
+    );
+
+    linha(
+      "Nome: " +
+      document.getElementById(
+        "clienteNome"
+      ).textContent
+    );
+
+    linha(
+      "CPF / CNPJ: " +
+      document.getElementById(
+        "clienteDocumento"
+      ).textContent
+    );
+
+    linha(
+      "Telefone: " +
+      document.getElementById(
+        "clienteTelefone"
+      ).textContent
+    );
+
+    linha(
+      "E-mail: " +
+      document.getElementById(
+        "clienteEmail"
+      ).textContent
+    );
+
+
+    /* =================================
+       RESPONSÁVEL TÉCNICO
+    ================================= */
+
+    subtitulo(
+      "2. RESPONSÁVEL TÉCNICO"
+    );
+
+    linha(
+      "Nome: " +
+      document.getElementById(
+        "rtNome"
+      ).textContent
+    );
+
+    linha(
+      "CREA: " +
+      document.getElementById(
+        "rtCrea"
+      ).textContent
+    );
+
+    linha(
+      "UF CREA: " +
+      document.getElementById(
+        "rtUf"
+      ).textContent
+    );
+
+    linha(
+      "Registro profissional: " +
+      document.getElementById(
+        "rtRegistro"
+      ).textContent
+    );
+
+
+    /* =================================
+       SISTEMA FOTOVOLTAICO
+    ================================= */
+
+    subtitulo(
+      "3. SISTEMA FOTOVOLTAICO"
+    );
+
+    linha(
+      "Fabricante do módulo: " +
+      (
+        sistemaAtual.fabricante_modulo || "—"
+      )
+    );
+
+    linha(
+      "Modelo do módulo: " +
+      (
+        sistemaAtual.modelo_modulo || "—"
+      )
+    );
+
+    linha(
+      "Potência do módulo: " +
+      (
+        sistemaAtual.potencia_modulo_w || "—"
+      ) +
+      " W"
+    );
+
+    linha(
+      "Quantidade de módulos: " +
+      (
+        sistemaAtual.quantidade_modulos || "—"
+      )
+    );
+
+    linha(
+      "Potência DC: " +
+      document.getElementById(
+        "potenciaDC"
+      ).textContent
+    );
+
+
+    /* =================================
+       DADOS ELÉTRICOS
+    ================================= */
+
+    subtitulo(
+      "4. DADOS ELÉTRICOS"
+    );
+
+    linha(
+      "Voc do módulo: " +
+      (
+        sistemaAtual.voc_modulo || "—"
+      ) +
+      " V"
+    );
+
+    linha(
+      "Vmp do módulo: " +
+      (
+        sistemaAtual.vmp_modulo || "—"
+      ) +
+      " V"
+    );
+
+    linha(
+      "Isc do módulo: " +
+      (
+        sistemaAtual.isc_modulo || "—"
+      ) +
+      " A"
+    );
+
+    linha(
+      "Imp do módulo: " +
+      (
+        sistemaAtual.imp_modulo || "—"
+      ) +
+      " A"
+    );
+
+
+    /* =================================
+       STRINGS / MPPT
+    ================================= */
+
+    subtitulo(
+      "5. STRINGS E MPPT"
+    );
+
+    linha(
+      "Quantidade de strings: " +
+      (
+        sistemaAtual.quantidade_strings || "—"
+      )
+    );
+
+    linha(
+      "Módulos por string: " +
+      (
+        sistemaAtual.modulos_por_string || "—"
+      )
+    );
+
+    linha(
+      "Quantidade de MPPTs: " +
+      (
+        sistemaAtual.quantidade_mppt || "—"
+      )
+    );
+
+    linha(
+      "Strings por MPPT: " +
+      (
+        sistemaAtual.strings_por_mppt || "—"
+      )
+    );
+
+    linha(
+      "Potência por string: " +
+      document.getElementById(
+        "potenciaString"
+      ).textContent
+    );
+
+    linha(
+      "Vmp da string: " +
+      document.getElementById(
+        "vmpString"
+      ).textContent
+    );
+
+    linha(
+      "Voc da string: " +
+      document.getElementById(
+        "vocString"
+      ).textContent
+    );
+
+    linha(
+      "Corrente por string: " +
+      document.getElementById(
+        "correnteString"
+      ).textContent
+    );
+
+
+    /* =================================
+       INVERSOR
+    ================================= */
+
+    subtitulo(
+      "6. INVERSOR"
+    );
+
+    linha(
+      "Fabricante: " +
+      (
+        sistemaAtual.fabricante_inversor || "—"
+      )
+    );
+
+    linha(
+      "Modelo: " +
+      (
+        sistemaAtual.modelo_inversor || "—"
+      )
+    );
+
+    linha(
+      "Potência: " +
+      (
+        sistemaAtual.potencia_inversor_kw || "—"
+      ) +
+      " kW"
+    );
+
+    linha(
+      "Quantidade: " +
+      (
+        sistemaAtual.quantidade_inversores || "—"
+      )
+    );
+
+    linha(
+      "Potência AC: " +
+      document.getElementById(
+        "potenciaAC"
+      ).textContent
+    );
+
+    linha(
+      "Ratio DC/AC: " +
+      document.getElementById(
+        "ratioDCAC"
+      ).textContent
+    );
+
+
+    /* =================================
+       VALIDAÇÃO
+    ================================= */
+
+    subtitulo(
+      "7. RESULTADO DO DIMENSIONAMENTO"
+    );
+
+    linha(
+      document.getElementById(
+        "resultadoTecnico"
+      ).textContent
+    );
+
+    linha(
+      document.getElementById(
+        "validacaoDimensionamento"
+      ).textContent
+    );
+
+
+    /* =================================
+       CONEXÃO
+    ================================= */
+
+    subtitulo(
+      "8. CONEXÃO ELÉTRICA"
+    );
+
+    linha(
+      "Distribuidora: " +
+      (
+        sistemaAtual.distribuidora || "—"
+      )
+    );
+
+    linha(
+      "Tipo de ligação: " +
+      (
+        sistemaAtual.tipo_ligacao || "—"
+      )
+    );
+
+    linha(
+      "Número de fases: " +
+      (
+        sistemaAtual.numero_fases || "—"
+      )
+    );
+
+    linha(
+      "Tensão nominal: " +
+      (
+        sistemaAtual.tensao_nominal || "—"
+      ) +
+      " V"
+    );
+
+
+    /* =================================
+       OBSERVAÇÕES
+    ================================= */
+
+    subtitulo(
+      "9. OBSERVAÇÕES TÉCNICAS"
+    );
+
+    linha(
+      sistemaAtual.observacoes ||
+      "Nenhuma observação registrada."
+    );
+
+
+    /* =================================
+       RODAPÉ
+    ================================= */
+
+    const totalPaginas =
+      pdf.internal.getNumberOfPages();
+
+    for (
+      let i = 1;
+      i <= totalPaginas;
+      i++
+    ) {
+
+      pdf.setPage(i);
+
+      pdf.setFontSize(8);
+
+      pdf.text(
+        "HomologaSolar RT",
+        margem,
+        290
+      );
+
+      pdf.text(
+        "Página " +
+        i +
+        " de " +
+        totalPaginas,
+        150,
+        290
+      );
+
+    }
+
+
+    /* =================================
+       SALVAR
+    ================================= */
+
+    const nomeProjeto =
+      document.getElementById(
+        "nomeProjeto"
+      ).textContent
+      || "projeto";
+
+    const nomeArquivo =
+      "Relatorio_" +
+      nomeProjeto
+        .replace(/[^a-z0-9]/gi, "_")
+        .substring(0, 50) +
+      ".pdf";
+
+
+    pdf.save(
+      nomeArquivo
+    );
+
+
+  }
+
+  catch (erro) {
+
+    console.error(
+      erro
+    );
+
+    alert(
+      "Erro ao gerar relatório: " +
+      erro.message
+    );
+
+  }
+
+        }
+
 iniciar();
 
 </script>
