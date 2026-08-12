@@ -2326,6 +2326,80 @@ async function carregarDocumentos() {
 
   }
 
+/* =========================================
+   SALVAR OBSERVAÇÃO DO DOCUMENTO
+========================================= */
+
+async function salvarObservacaoDocumento(
+  documentoId
+) {
+
+  try {
+
+    const campo =
+      document.getElementById(
+        "observacaoDocumento_" +
+        documentoId
+      );
+
+
+    if (!campo)
+      throw new Error(
+        "Campo de observação não encontrado."
+      );
+
+
+    const observacao =
+      campo.value.trim();
+
+
+    const {
+      error
+    } =
+    await supabaseClient
+      .from("documentos_projeto")
+      .update({
+        observacoes:
+          observacao || null
+      })
+      .eq(
+        "id",
+        documentoId
+      )
+      .eq(
+        "projeto_id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      );
+
+
+    if (error)
+      throw error;
+
+
+    alert(
+      "Observação salva com sucesso."
+    );
+
+
+    await carregarDocumentos();
+
+  }
+
+  catch (erro) {
+
+    alert(
+      "Erro ao salvar observação: " +
+      erro.message
+    );
+
+  }
+
+}
+  
   function escaparHtml(texto) {
 
   const div =
