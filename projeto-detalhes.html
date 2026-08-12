@@ -216,27 +216,65 @@ Carregando projeto...
 
 <div class="topo">
 
-<div>
+  <div>
 
-<h2 id="nomeProjeto">
-Projeto
-</h2>
+    <h2 id="nomeProjeto">
+      Projeto
+    </h2>
 
-<span
-  id="statusProjeto"
-  class="status"
->
-</span>
+    <span
+      id="statusProjeto"
+      class="status"
+    >
+    </span>
+
+  </div>
+
+  <button
+    class="btn-voltar"
+    onclick="window.location.href='dashboard.html'"
+  >
+    ← Voltar
+  </button>
 
 </div>
 
-
-<button
-  class="btn-voltar"
-  onclick="window.location.href='dashboard.html'"
+  <div
+  class="card"
+  style="
+    margin-top:15px;
+    margin-bottom:15px;
+  "
 >
-← Voltar
-</button>
+
+  <h3>🔄 Fluxo de homologação</h3>
+
+  <div
+    id="fluxoHomologacao"
+    style="
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      margin-top:15px;
+    "
+  >
+
+    <div>📝 Rascunho</div>
+
+    <div>📂 Documentação</div>
+
+    <div>📤 Enviado</div>
+
+    <div>🔎 Em análise</div>
+
+    <div>✅ Aprovado</div>
+
+    <div>❌ Reprovado</div>
+
+  </div>
+
+</div>
+
 
 </div>
 
