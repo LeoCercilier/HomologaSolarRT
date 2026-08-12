@@ -2095,20 +2095,60 @@ async function carregarDocumentos() {
       "9px";
 
     item.innerHTML =
-      `
-      <strong>
-        ${escaparHtml(documento.nome_documento)}
-      </strong>
+  `
+  <strong>
+    ${escaparHtml(documento.nome_documento)}
+  </strong>
 
-      <div style="
-        margin-top:6px;
-        font-size:13px;
-        color:#64748b;
-      ">
-        Status:
-        ${escaparHtml(documento.status)}
-      </div>
-      `;
+  <div style="
+    margin-top:10px;
+  ">
+
+    <select
+      onchange="alterarStatusDocumento(
+        '${documento.id}',
+        this.value
+      )"
+      style="
+        width:100%;
+        padding:10px;
+        border:1px solid #cbd5e1;
+        border-radius:8px;
+      "
+    >
+
+      <option
+        value="pendente"
+        ${documento.status === "pendente" ? "selected" : ""}
+      >
+        Pendente
+      </option>
+
+      <option
+        value="anexado"
+        ${documento.status === "anexado" ? "selected" : ""}
+      >
+        Anexado
+      </option>
+
+      <option
+        value="validado"
+        ${documento.status === "validado" ? "selected" : ""}
+      >
+        Validado
+      </option>
+
+      <option
+        value="rejeitado"
+        ${documento.status === "rejeitado" ? "selected" : ""}
+      >
+        Rejeitado
+      </option>
+
+    </select>
+
+  </div>
+  `;
 
     lista.appendChild(item);
 
