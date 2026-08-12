@@ -1094,6 +1094,9 @@ async function carregarProjeto() {
   ).textContent =
     data.status || "rascunho";
 
+  atualizarFluxoHomologacao(
+  data.status || "rascunho"
+);
 
   /* ================================
      CLIENTE
@@ -3360,6 +3363,98 @@ async function gerarRelatorioPDF() {
   }
 
         }
+  /* =========================================
+   ATUALIZAR FLUXO DE HOMOLOGAÇÃO
+========================================= */
+
+function atualizarFluxoHomologacao(status) {
+
+  const fluxo =
+    document.getElementById(
+      "fluxoHomologacao"
+    );
+
+  if (!fluxo)
+    return;
+
+
+  const etapas = [
+    {
+      status: "rascunho",
+      texto: "📝 Rascunho"
+    },
+    {
+      status: "documentacao",
+      texto: "📂 Documentação"
+    },
+    {
+      status: "enviado",
+      texto: "📤 Enviado"
+    },
+    {
+      status: "em_analise",
+      texto: "🔎 Em análise"
+    },
+    {
+      status: "aprovado",
+      texto: "✅ Aprovado"
+    },
+    {
+      status: "reprovado",
+      texto: "❌ Reprovado"
+    }
+  ];
+
+
+  fluxo.innerHTML = "";
+
+
+  etapas.forEach(etapa => {
+
+    const item =
+      document.createElement("div");
+
+    item.textContent =
+      etapa.texto;
+
+
+    item.style.padding =
+      "10px 12px";
+
+    item.style.borderRadius =
+      "8px";
+
+    item.style.fontWeight =
+      "bold";
+
+    item.style.background =
+      "#f1f5f9";
+
+    item.style.color =
+      "#64748b";
+
+
+    if (
+      etapa.status === status
+    ) {
+
+      item.style.background =
+        "#dcfce7";
+
+      item.style.color =
+        "#166534";
+
+      item.style.border =
+        "2px solid #22c55e";
+
+    }
+
+
+    fluxo.appendChild(item);
+
+  });
+
+      }
 
 iniciar();
 
