@@ -3423,9 +3423,37 @@ function atualizarFluxoHomologacao(status) {
   ================================= */
 
   let etapaAtual =
-  status || "rascunho";
+  "rascunho";
 
-  }
+
+if (
+  status === "em_analise"
+) {
+
+  etapaAtual =
+    "em_analise";
+
+}
+
+else if (
+  status === "aprovado"
+) {
+
+  etapaAtual =
+    "aprovado";
+
+}
+
+else if (
+  status === "rejeitado"
+) {
+
+  etapaAtual =
+    "rejeitado";
+
+}
+
+  
 
 
   /* =================================
