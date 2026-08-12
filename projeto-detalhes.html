@@ -935,7 +935,9 @@ await carregarProjeto();
 
 await carregarSistema();
 
-await carregarDocumentos();   
+await criarChecklistDocumentos();
+
+await carregarDocumentos();;   
 }
 
   catch (erro) {
@@ -1911,6 +1913,113 @@ document.getElementById(
 
 }
 
+  async function criarChecklistDocumentos() {
+
+  const documentosPadrao = [
+    {
+      nome_documento: "Documento do cliente",
+      tipo_documento: "cliente"
+    },
+    {
+      nome_documento: "Documento da unidade consumidora",
+      tipo_documento: "unidade_consumidora"
+    },
+    {
+      nome_documento: "Projeto elétrico",
+      tipo_documento: "projeto_eletrico"
+    },
+    {
+      nome_documento: "Memorial descritivo",
+      tipo_documento: "memorial_descritivo"
+    },
+    {
+      nome_documento: "Diagrama unifilar",
+      tipo_documento: "diagrama_unifilar"
+    },
+    {
+      nome_documento: "ART/TRT",
+      tipo_documento: "art_trt"
+    },
+    {
+      nome_documento: "Datasheet dos módulos",
+      tipo_documento: "datasheet_modulos"
+    },
+    {
+      nome_documento: "Datasheet do inversor",
+      tipo_documento: "datasheet_inversor"
+    }
+  ];
+
+
+  for (
+    const documento of documentosPadrao
+  ) {
+
+    const {
+      data,
+      error
+    } =
+    await supabaseClient
+      .from("documentos_projeto")
+      .select("id")
+      .eq(
+        "projeto_id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      )
+      .eq(
+        "tipo_documento",
+        documento.tipo_documento
+      )
+      .maybeSingle();
+
+
+    if (error)
+      throw error;
+
+
+    if (!data) {
+
+      const {
+        error: erroInsercao
+      } =
+      await supabaseClient
+        .from("documentos_projeto")
+        .insert({
+
+          organizacao_id:
+            organizacaoAtual,
+
+          projeto_id:
+            projetoId,
+
+          nome_documento:
+            documento.nome_documento,
+
+          tipo_documento:
+            documento.tipo_documento,
+
+          status:
+            "pendente",
+
+          criado_por:
+            usuarioAtual.id
+
+        });
+
+
+      if (erroInsercao)
+        throw erroInsercao;
+
+    }
+
+  }
+
+  }
+  
   /* =========================================
    CARREGAR DOCUMENTAÇÃO
 ========================================= */
