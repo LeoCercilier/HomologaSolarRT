@@ -2115,77 +2115,116 @@ resumo.textContent =
 
   data.forEach(documento => {
 
-    const item =
-      document.createElement("div");
+    data.forEach(documento => {
 
-    item.style.padding =
-      "14px";
+  const item =
+    document.createElement("div");
 
-    item.style.border =
-      "1px solid #e2e8f0";
 
-    item.style.borderRadius =
-      "9px";
+  let corFundo = "#f8fafc";
+  let corBorda = "#e2e8f0";
+  let corStatus = "#92400e";
 
-    item.innerHTML =
-  `
-  <strong>
-    ${escaparHtml(documento.nome_documento)}
-  </strong>
+  if (documento.status === "anexado") {
 
-  <div style="
-    margin-top:10px;
-  ">
+    corFundo = "#eff6ff";
+    corBorda = "#bfdbfe";
+    corStatus = "#1d4ed8";
 
-    <select
-      onchange="alterarStatusDocumento(
-        '${documento.id}',
-        this.value
-      )"
-      style="
-        width:100%;
-        padding:10px;
-        border:1px solid #cbd5e1;
-        border-radius:8px;
-      "
-    >
+  }
 
-      <option
-        value="pendente"
-        ${documento.status === "pendente" ? "selected" : ""}
+  else if (documento.status === "validado") {
+
+    corFundo = "#f0fdf4";
+    corBorda = "#bbf7d0";
+    corStatus = "#166534";
+
+  }
+
+  else if (documento.status === "rejeitado") {
+
+    corFundo = "#fef2f2";
+    corBorda = "#fecaca";
+    corStatus = "#991b1b";
+
+  }
+
+
+  item.style.padding =
+    "14px";
+
+  item.style.border =
+    "1px solid " + corBorda;
+
+  item.style.borderRadius =
+    "9px";
+
+  item.style.background =
+    corFundo;
+
+
+  item.innerHTML =
+    `
+    <strong>
+      ${escaparHtml(documento.nome_documento)}
+    </strong>
+
+    <div style="
+      margin-top:10px;
+    ">
+
+      <select
+        onchange="alterarStatusDocumento(
+          '${documento.id}',
+          this.value
+        )"
+        style="
+          width:100%;
+          padding:10px;
+          border:1px solid #cbd5e1;
+          border-radius:8px;
+          color:${corStatus};
+          font-weight:bold;
+        "
       >
-        Pendente
-      </option>
 
-      <option
-        value="anexado"
-        ${documento.status === "anexado" ? "selected" : ""}
-      >
-        Anexado
-      </option>
+        <option
+          value="pendente"
+          ${documento.status === "pendente" ? "selected" : ""}
+        >
+          🟡 Pendente
+        </option>
 
-      <option
-        value="validado"
-        ${documento.status === "validado" ? "selected" : ""}
-      >
-        Validado
-      </option>
+        <option
+          value="anexado"
+          ${documento.status === "anexado" ? "selected" : ""}
+        >
+          🔵 Anexado
+        </option>
 
-      <option
-        value="rejeitado"
-        ${documento.status === "rejeitado" ? "selected" : ""}
-      >
-        Rejeitado
-      </option>
+        <option
+          value="validado"
+          ${documento.status === "validado" ? "selected" : ""}
+        >
+          🟢 Validado
+        </option>
 
-    </select>
+        <option
+          value="rejeitado"
+          ${documento.status === "rejeitado" ? "selected" : ""}
+        >
+          🔴 Rejeitado
+        </option>
 
-  </div>
-  `;
+      </select>
 
-    lista.appendChild(item);
+    </div>
+    `;
 
-  });
+
+  lista.appendChild(item);
+
+});
 
 }
 
