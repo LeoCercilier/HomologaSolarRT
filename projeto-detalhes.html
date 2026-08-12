@@ -935,6 +935,7 @@ await carregarProjeto();
 
 await carregarSistema();
 
+await carregarDocumentos();   
 }
 
   catch (erro) {
@@ -1910,6 +1911,101 @@ document.getElementById(
 
 }
 
+  /* =========================================
+   CARREGAR DOCUMENTAÇÃO
+========================================= */
+
+async function carregarDocumentos() {
+
+  const lista =
+    document.getElementById(
+      "listaDocumentos"
+    );
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("documentos_projeto")
+    .select(`
+      id,
+      nome_documento,
+      tipo_documento,
+      status,
+      observacoes
+    `)
+    .eq(
+      "projeto_id",
+      projetoId
+    )
+    .eq(
+      "organizacao_id",
+      organizacaoAtual
+    )
+    .order(
+      "criado_em",
+      {
+        ascending: true
+      }
+    );
+
+  if (error)
+    throw error;
+
+
+  if (!data || data.length === 0) {
+
+    lista.innerHTML =
+      `
+      <div class="vazio">
+        Nenhum documento cadastrado.
+      </div>
+      `;
+
+    return;
+
+  }
+
+
+  lista.innerHTML = "";
+
+
+  data.forEach(documento => {
+
+    const item =
+      document.createElement("div");
+
+    item.style.padding =
+      "14px";
+
+    item.style.border =
+      "1px solid #e2e8f0";
+
+    item.style.borderRadius =
+      "9px";
+
+    item.innerHTML =
+      `
+      <strong>
+        ${escaparHtml(documento.nome_documento)}
+      </strong>
+
+      <div style="
+        margin-top:6px;
+        font-size:13px;
+        color:#64748b;
+      ">
+        Status:
+        ${escaparHtml(documento.status)}
+      </div>
+      `;
+
+    lista.appendChild(item);
+
+  });
+
+}
 
 /* =========================================
    SALVAR SISTEMA
