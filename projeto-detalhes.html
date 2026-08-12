@@ -3506,15 +3506,193 @@ function atualizarFluxoHomologacao(status) {
 
 }
 
-  /* =========================================
-   TESTE — AVANÇAR ETAPA
+
+/* =========================================
+   AVANÇAR ETAPA DE HOMOLOGAÇÃO
 ========================================= */
 
-function avancarEtapaHomologacao() {
+async function avancarEtapaHomologacao() {
 
-  alert(
-    "Botão Avançar etapa funcionando!"
-  );
+  try {
+
+    if (!projetoId) {
+
+      alert(
+        "Projeto não identificado."
+      );
+
+      return;
+
+    }
+
+
+    /* ================================
+       OBTER STATUS ATUAL
+    ================================= */
+
+    const {
+      data,
+      error
+    } =
+    await supabaseClient
+      .from("projetos")
+      .select("status")
+      .eq(
+        "id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      )
+      .single();
+
+
+    if (error)
+      throw error;
+
+
+    const statusAtual =
+      data.status || "rascunho";
+
+
+    /* ================================
+       DEFINIR PRÓXIMO STATUS
+    ================================= */
+
+    let proximoStatus =
+      null;
+
+
+    if (
+      statusAtual === "rascunho"
+    ) {
+
+      proximoStatus =
+        "em_analise";
+
+    }
+
+    else if (
+      statusAtual === "em_analise"
+    ) {
+
+      proximoStatus =
+        "aprovado";
+
+    }
+
+    else if (
+      statusAtual === "aprovado"
+    ) {
+
+      proximoStatus =
+        "finalizado";
+
+    }
+
+    else if (
+      statusAtual === "rejeitado"
+    ) {
+
+      proximoStatus =
+        "em_analise";
+
+    }
+
+    else if (
+      statusAtual === "finalizado"
+    ) {
+
+      alert(
+        "Este projeto já está finalizado."
+      );
+
+      return;
+
+    }
+
+    else if (
+      statusAtual === "arquivado"
+    ) {
+
+      alert(
+        "Este projeto está arquivado."
+      );
+
+      return;
+
+    }
+
+
+    if (!proximoStatus) {
+
+      alert(
+        "Não foi possível determinar a próxima etapa."
+      );
+
+      return;
+
+    }
+
+
+    /* ================================
+       ATUALIZAR BANCO
+    ================================= */
+
+    const {
+      error: erroAtualizacao
+    } =
+    await supabaseClient
+      .from("projetos")
+      .update({
+        status:
+          proximoStatus
+      })
+      .eq(
+        "id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      );
+
+
+    if (erroAtualizacao)
+      throw erroAtualizacao;
+
+
+    /* ================================
+       ATUALIZAR TELA
+    ================================= */
+
+    document.getElementById(
+      "statusProjeto"
+    ).textContent =
+      proximoStatus;
+
+
+    atualizarFluxoHomologacao(
+      proximoStatus
+    );
+
+
+    alert(
+      "Status atualizado para: " +
+      proximoStatus
+    );
+
+  }
+
+  catch (erro) {
+
+    alert(
+      "Erro ao avançar etapa: " +
+      erro.message
+    );
+
+  }
 
 }
 
