@@ -2114,591 +2114,503 @@ document.getElementById(
 
   }
   
-    /* =========================================
-   CARREGAR DOCUMENTAÇÃO
-========================================= */
 
-  async function carregarDocumentos() {
+			/* =========================================
+			CARREGAR DOCUMENTAÇÃO
+			========================================= */
 
-  const lista =
-    document.getElementById(
-      "listaDocumentos"
-    );
+			async function carregarDocumentos() {
 
-  const resumo =
-    document.getElementById(
-      "resumoDocumentacao"
-    );
+			const lista =
+			document.getElementById("listaDocumentos");
 
+			const resumo =
+			document.getElementById("resumoDocumentacao");
 
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("documentos_projeto")
-    .select(`
-      id,
-      nome_documento,
-      tipo_documento,
-      status,
-      observacoes
-    `)
-    .eq(
-      "projeto_id",
-      projetoId
-    )
-    .eq(
-      "organizacao_id",
-      organizacaoAtual
-    )
-    .order(
-      "criado_em",
-      {
-        ascending: true
-      }
-    );
-
-
-  if (error)
-    throw error;
-
-
-  if (!data || data.length === 0) {
-
-    resumo.textContent =
-      "Documentação: nenhum documento cadastrado.";
-
-    lista.innerHTML =
-      `
-      <div class="vazio">
-        Nenhum documento cadastrado.
-      </div>
-      `;
-
-    return;
-
-  }
-
-
-  /* ================================
-     RESUMO
-  ================================= */
-
-  const totalDocumentos =
-    data.length;
-
-  const concluidos =
-    data.filter(
-      documento =>
-        documento.status === "validado"
-    ).length;
-
+			try {
 
-  resumo.textContent =
-    "Documentação: " +
-    concluidos +
-    " de " +
-    totalDocumentos +
-    " documentos validados";
+			const {
+			data,
+			error
+			} =
+			await supabaseClient
+			.from("documentos_projeto")
+			.select(`
+			id,
+			nome_documento,
+			tipo_documento,
+			status,
+			observacoes,
+			nome_arquivo,
+			caminho_storage,
+			tamanho,
+			mime_type
+			`)
+			.eq("projeto_id", projetoId)
+			.eq("organizacao_id", organizacaoAtual)
+			.order("criado_em", {
+			ascending: true
+			});
 
+			if (error)
+			throw error;
 
-  lista.innerHTML = "";
-
-
-  /* ================================
-     EXIBIR DOCUMENTOS
-  ================================= */
 
-  data.forEach(documento => {
+			/* =====================================
+			NENHUM DOCUMENTO
+			===================================== */
 
-    const item =
-      document.createElement("div");
+			if (!data || data.length === 0) {
 
+			resumo.textContent =
+			"Documentação: nenhum documento cadastrado.";
 
-    let corFundo = "#f8fafc";
-    let corBorda = "#e2e8f0";
-    let corStatus = "#92400e";
+			lista.innerHTML = `
+			<div class="vazio">
+				Nenhum documento cadastrado.
+			</div>
+			`;
 
+			return;
+			}
 
-    if (
-      documento.status === "anexado"
-    ) {
 
-      async function carregarDocumentos() {
+			/* =====================================
+			RESUMO
+			===================================== */
 
-  const lista =
-    document.getElementById("listaDocumentos");
+			const totalDocumentos =
+			data.length;
 
-  const resumo =
-    document.getElementById("resumoDocumentacao");
+			const concluidos =
+			data.filter(
+			documento =>
+			documento.status === "validado"
+			).length;
 
+			resumo.textContent =
+			"Documentação: " +
+			concluidos +
+			" de " +
+			totalDocumentos +
+			" documentos validados";
 
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("documentos_projeto")
-    .select(`
-      id,
-      nome_documento,
-      tipo_documento,
-      status,
-      observacoes,
-      nome_arquivo,
-      caminho_storage,
-      tamanho,
-      mime_type
-    `)
-    .eq(
-      "projeto_id",
-      projetoId
-    )
-    .eq(
-      "organizacao_id",
-      organizacaoAtual
-    )
-    .order(
-      "criado_em",
-      {
-        ascending: true
-      }
-    );
 
+			lista.innerHTML = "";
 
-  if (error)
-    throw error;
 
+			/* =====================================
+			EXIBIR CADA DOCUMENTO
+			===================================== */
 
-  if (!data || data.length === 0) {
+			data.forEach(documento => {
 
-    resumo.textContent =
-      "Documentação: nenhum documento cadastrado.";
+			const item =
+			document.createElement("div");
 
-    lista.innerHTML =
-      `
-      <div class="vazio">
-        Nenhum documento cadastrado.
-      </div>
-      `;
 
-    return;
-  }
+			/* ===================================
+			CORES DO STATUS
+			=================================== */
 
+			let corFundo = "#f8fafc";
+			let corBorda = "#e2e8f0";
+			let corStatus = "#92400e";
 
-  /* ================================
-     RESUMO
-  ================================= */
+			if (documento.status === "anexado") {
 
-  const totalDocumentos =
-    data.length;
+			corFundo = "#eff6ff";
+			corBorda = "#bfdbfe";
+			corStatus = "#1d4ed8";
 
-  const concluidos =
-    data.filter(
-      documento =>
-        documento.status === "validado"
-    ).length;
+			}
 
+			else if (documento.status === "validado") {
 
-  resumo.textContent =
-    "Documentação: " +
-    concluidos +
-    " de " +
-    totalDocumentos +
-    " documentos validados";
+			corFundo = "#f0fdf4";
+			corBorda = "#bbf7d0";
+			corStatus = "#166534";
 
+			}
 
-  lista.innerHTML = "";
+			else if (documento.status === "rejeitado") {
 
+			corFundo = "#fef2f2";
+			corBorda = "#fecaca";
+			corStatus = "#991b1b";
 
-  /* ================================
-     EXIBIR DOCUMENTOS
-  ================================= */
+			}
 
-  data.forEach(documento => {
 
-    const item =
-      document.createElement("div");
+			/* ===================================
+			ESTILO DO ITEM
+			=================================== */
 
+			item.style.padding = "14px";
 
-    let corFundo = "#f8fafc";
-    let corBorda = "#e2e8f0";
-    let corStatus = "#92400e";
+			item.style.border =
+			"1px solid " + corBorda;
 
+			item.style.borderRadius = "9px";
 
-    if (
-      documento.status === "anexado"
-    ) {
+			item.style.background = corFundo;
 
-      corFundo = "#eff6ff";
-      corBorda = "#bfdbfe";
-      corStatus = "#1d4ed8";
 
-    }
+			/* ===================================
+			ÁREA DO ARQUIVO
+			=================================== */
 
-    else if (
-      documento.status === "validado"
-    ) {
+			let areaArquivo = "";
 
-      corFundo = "#f0fdf4";
-      corBorda = "#bbf7d0";
-      corStatus = "#166534";
 
-    }
+			if (documento.nome_arquivo) {
 
-    else if (
-      documento.status === "rejeitado"
-    ) {
+			let tamanhoTexto = "";
 
-      corFundo = "#fef2f2";
-      corBorda = "#fecaca";
-      corStatus = "#991b1b";
-    }
-
-
-    item.style.padding =
-      "14px";
-
-    item.style.border =
-      "1px solid " +
-      corBorda;
-
-    item.style.borderRadius =
-      "9px";
-
-    item.style.background =
-      corFundo;
-
-
-    /* ================================
-       INFORMAÇÃO DO ARQUIVO
-    ================================= */
-
-    let areaArquivo = "";
-
-
-    if (documento.nome_arquivo) {
-
-      let tamanhoTexto = "";
-
-      if (documento.tamanho) {
-
-        const tamanhoMB =
-          documento.tamanho /
-          (1024 * 1024);
-
-        tamanhoTexto =
-          tamanhoMB < 1
-            ? "(" +
-              Math.round(
-                documento.tamanho /
-                1024
-              ) +
-              " KB)"
-            : "(" +
-              tamanhoMB.toFixed(2) +
-              " MB)";
-      }
-
-
-      areaArquivo =
-        `
-        <div style="
-          margin-top:12px;
-          padding:10px;
-          background:white;
-          border:1px solid #cbd5e1;
-          border-radius:8px;
-        ">
-
-          <div style="
-            font-size:13px;
-            font-weight:bold;
-            word-break:break-all;
-          ">
-            📎 ${escaparHtml(
-              documento.nome_arquivo
-            )}
-          </div>
-
-          ${
-            tamanhoTexto
-              ? `
-                <div style="
-                  font-size:11px;
-                  color:#64748b;
-                  margin-top:3px;
-                ">
-                  ${tamanhoTexto}
-                </div>
-              `
-              : ""
-          }
-
-          <div style="
-            display:flex;
-            gap:8px;
-            margin-top:8px;
-            flex-wrap:wrap;
-          ">
-
-            <button
-              type="button"
-              onclick="baixarDocumento(
-                '${documento.caminho_storage}',
-                '${escaparHtml(documento.nome_arquivo)}'
-              )"
-              style="
-                padding:8px 12px;
-                border:none;
-                border-radius:7px;
-                background:#0f766e;
-                color:white;
-                cursor:pointer;
-              "
-            >
-              ⬇️ Baixar
-            </button>
-
-            <button
-              type="button"
-              onclick="excluirDocumento(
-                '${documento.id}',
-                '${documento.caminho_storage || ""}'
-              )"
-              style="
-                padding:8px 12px;
-                border:none;
-                border-radius:7px;
-                background:#dc2626;
-                color:white;
-                cursor:pointer;
-              "
-            >
-              🗑️ Remover
-            </button>
-
-          </div>
-
-        </div>
-        `;
-
-    } else {
-
-      areaArquivo =
-        `
-        <div style="
-          margin-top:10px;
-          padding:9px;
-          background:#fff7ed;
-          border:1px solid #fed7aa;
-          border-radius:8px;
-          color:#9a3412;
-          font-size:13px;
-        ">
-          📎 Nenhum arquivo anexado.
-        </div>
-        `;
-    }
-
-
-    /* ================================
-       ITEM COMPLETO
-    ================================= */
-
-    item.innerHTML =
-      `
-
-      <strong>
-        ${escaparHtml(
-          documento.nome_documento
-        )}
-      </strong>
-
-
-      <!-- STATUS -->
-
-      <div style="
-        margin-top:10px;
-      ">
-
-        <select
-          onchange="alterarStatusDocumento(
-            '${documento.id}',
-            this.value
-          )"
-          style="
-            width:100%;
-            padding:10px;
-            border:1px solid #cbd5e1;
-            border-radius:8px;
-            color:${corStatus};
-            font-weight:bold;
-            background:white;
-          "
-        >
-
-          <option
-            value="pendente"
-            ${
-              documento.status === "pendente"
-                ? "selected"
+
+			if (documento.tamanho) {
+
+			const tamanhoMB =
+            documento.tamanho /
+            (1024 * 1024);
+
+			tamanhoTexto =
+            tamanhoMB < 1
+
+			? "(" +
+			Math.round(
+			documento.tamanho / 1024
+			) +
+			" KB)"
+
+			: "(" +
+			tamanhoMB.toFixed(2) +
+			" MB)";
+			}
+
+
+			areaArquivo = `
+			<div style="
+				margin-top:12px;
+				padding:10px;
+				background:white;
+				border:1px solid #cbd5e1;
+				border-radius:8px;
+				">
+
+				<div style="
+					font-size:13px;
+					font-weight:bold;
+					word-break:break-all;
+					">
+					📎 ${escaparHtml(
+					documento.nome_arquivo
+					)}
+				</div>
+
+				${
+				tamanhoTexto
+                ? `
+				<div style="
+                    font-size:11px;
+                    color:#64748b;
+                    margin-top:3px;
+					">
+                    ${tamanhoTexto}
+				</div>
+                `
                 : ""
-            }
-          >
-            🟡 Pendente
-          </option>
+				}
 
-          <option
-            value="anexado"
-            ${
-              documento.status === "enviado"
-                ? "selected"
-                : ""
-            }
-          >
-            🔵 Anexado
-          </option>
+				<div style="
+					display:flex;
+					gap:8px;
+					margin-top:8px;
+					flex-wrap:wrap;
+					">
 
-          <option
-            value="validado"
-            ${
-              documento.status === "validado"
-                ? "selected"
-                : ""
-            }
-          >
-            🟢 Validado
-          </option>
-
-          <option
-            value="rejeitado"
-            ${
-              documento.status === "rejeitado"
-                ? "selected"
-                : ""
-            }
-          >
-            🔴 Rejeitado
-          </option>
-
-        </select>
-
-      </div>
+					<button
+						type="button"
+						onclick="baixarDocumento(
+						'${documento.caminho_storage}',
+						'${escaparHtml(
+						documento.nome_arquivo
+						)}'
+						)"
+						style="
+						padding:8px 12px;
+						border:none;
+						border-radius:7px;
+						background:#0f766e;
+						color:white;
+						cursor:pointer;
+						"
+					>
+						⬇️ Baixar
+					</button>
 
 
-      <!-- ARQUIVO -->
+					<button
+						type="button"
+						onclick="excluirDocumento(
+						'${documento.id}',
+						'${documento.caminho_storage || ""}'
+					)"
+					style="
+					padding:8px 12px;
+					border:none;
+					border-radius:7px;
+					background:#dc2626;
+					color:white;
+					cursor:pointer;
+					"
+					>
+					🗑️ Remover
+					</button>
 
-      ${areaArquivo}
+				</div>
 
+			</div>
+			`;
 
-      <!-- UPLOAD -->
+			}
 
-      <div style="
-        margin-top:12px;
-        padding:10px;
-        background:white;
-        border:1px dashed #94a3b8;
-        border-radius:8px;
-      ">
+			else {
 
-        <input
-          type="file"
-          id="arquivo_${documento.id}"
-          accept=".pdf,.jpg,.jpeg,.png,.webp"
-          style="
-            width:100%;
-            font-size:13px;
-          "
-        >
-
-        <button
-          type="button"
-          onclick="enviarDocumentoChecklist(
-            '${documento.id}',
-            '${documento.tipo_documento}'
-          )"
-          style="
-            width:100%;
-            margin-top:8px;
-            padding:10px;
-            border:none;
-            border-radius:7px;
-            background:#2563eb;
-            color:white;
-            font-weight:bold;
-            cursor:pointer;
-          "
-        >
-          📤 Anexar arquivo
-        </button>
-
-        <div
-          id="statusUpload_${documento.id}"
-          style="
-            margin-top:7px;
-            font-size:12px;
-            color:#64748b;
-          "
-        ></div>
-
-      </div>
+			areaArquivo = `
+			<div style="
+				margin-top:10px;
+				padding:9px;
+				background:#fff7ed;
+				border:1px solid #fed7aa;
+				border-radius:8px;
+				color:#9a3412;
+				font-size:13px;
+				">
+				📎 Nenhum arquivo anexado.
+			</div>
+			`;
+			}
 
 
-      <!-- OBSERVAÇÃO -->
+			/* ===================================
+			HTML COMPLETO
+			=================================== */
 
-      <div style="
-        margin-top:10px;
-      ">
+			item.innerHTML = `
 
-        <textarea
-          id="observacaoDocumento_${documento.id}"
-          placeholder="Observação sobre este documento..."
-          style="
-            width:100%;
-            min-height:70px;
-            padding:10px;
-            border:1px solid #cbd5e1;
-            border-radius:8px;
-            resize:vertical;
-            font-family:inherit;
-            background:white;
-          "
-        >${escaparHtml(
-          documento.observacoes || ""
-        )}</textarea>
+			<strong>
+				${escaparHtml(
+				documento.nome_documento
+				)}
+			</strong>
 
 
-        <button
-          type="button"
-          onclick="salvarObservacaoDocumento(
-            '${documento.id}'
-          )"
-          style="
-            width:100%;
-            margin-top:8px;
-            background:#0f766e;
-            color:white;
-            padding:10px;
-            border:none;
-            border-radius:7px;
-            cursor:pointer;
-          "
-        >
-          💾 Salvar observação
-        </button>
+			<!-- STATUS -->
 
-      </div>
+			<div style="
+				margin-top:10px;
+				">
 
-      `;
+				<select
+					onchange="alterarStatusDocumento(
+					'${documento.id}',
+					this.value
+					)"
+					style="
+					width:100%;
+					padding:10px;
+					border:1px solid #cbd5e1;
+					border-radius:8px;
+					color:${corStatus};
+					font-weight:bold;
+					background:white;
+					"
+				>
+
+					<option
+						value="pendente"
+						${
+						documento.status === "pendente"
+					? "selected"
+					: ""
+					}
+					>
+					🟡 Pendente
+					</option>
 
 
-    lista.appendChild(item);
+					<option
+						value="anexado"
+						${
+						documento.status === "anexado"
+					? "selected"
+					: ""
+					}
+					>
+					🔵 Anexado
+					</option>
 
-  });
 
-                    }
+					<option
+						value="validado"
+						${
+						documento.status === "validado"
+					? "selected"
+					: ""
+					}
+					>
+					🟢 Validado
+					</option>
+
+
+					<option
+						value="rejeitado"
+						${
+						documento.status === "rejeitado"
+					? "selected"
+					: ""
+					}
+					>
+					🔴 Rejeitado
+					</option>
+
+				</select>
+
+			</div>
+
+
+			<!-- ARQUIVO -->
+
+			${areaArquivo}
+
+
+			<!-- UPLOAD -->
+
+			<div style="
+				margin-top:12px;
+				padding:10px;
+				background:white;
+				border:1px dashed #94a3b8;
+				border-radius:8px;
+				">
+
+				<input
+					type="file"
+					id="arquivo_${documento.id}"
+					accept=".pdf,.jpg,.jpeg,.png,.webp"
+					style="
+					width:100%;
+					font-size:13px;
+					"
+				>
+
+
+					<button
+						type="button"
+						onclick="enviarDocumentoChecklist(
+						'${documento.id}',
+						'${documento.tipo_documento}'
+						)"
+						style="
+						width:100%;
+						margin-top:8px;
+						padding:10px;
+						border:none;
+						border-radius:7px;
+						background:#2563eb;
+						color:white;
+						font-weight:bold;
+						cursor:pointer;
+						"
+					>
+						📤 Anexar arquivo
+					</button>
+
+
+					<div
+						id="statusUpload_${documento.id}"
+						style="
+						margin-top:7px;
+						font-size:12px;
+						color:#64748b;
+						"
+					></div>
+
+			</div>
+
+
+			<!-- OBSERVAÇÃO -->
+
+			<div style="
+				margin-top:10px;
+				">
+
+				<textarea
+					id="observacaoDocumento_${documento.id}"
+					placeholder="Observação sobre este documento..."
+					style="
+					width:100%;
+					min-height:70px;
+					padding:10px;
+					border:1px solid #cbd5e1;
+					border-radius:8px;
+					resize:vertical;
+					font-family:inherit;
+					background:white;
+					"
+				>${escaparHtml(
+					documento.observacoes || ""
+					)}</textarea>
+
+
+				<button
+					type="button"
+					onclick="salvarObservacaoDocumento(
+					'${documento.id}'
+					)"
+					style="
+					width:100%;
+					margin-top:8px;
+					background:#0f766e;
+					color:white;
+					padding:10px;
+					border:none;
+					border-radius:7px;
+					cursor:pointer;
+					"
+				>
+					💾 Salvar observação
+				</button>
+
+			</div>
+
+			`;
+
+
+			lista.appendChild(item);
+
+			});
+
+			}
+
+			catch (erro) {
+
+			console.error(
+			"Erro ao carregar documentos:",
+			erro
+			);
+
+			resumo.textContent =
+			"Erro ao carregar documentação.";
+
+			lista.innerHTML = `
+			<div class="vazio">
+				Não foi possível carregar os documentos.
+			</div>
+			`;
+			}
+			}
       
   async function alterarStatusDocumento(
   documentoId,
