@@ -885,12 +885,14 @@ Trifásica
   <div style="margin-bottom: 15px;">
     <label style="display:block; font-weight:bold; margin-bottom:6px;">Tipo do documento</label>
     <select id="tipoDocumento" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1;">
-      <option value="art">ART</option>
-      <option value="diagrama_unifilar">Diagrama Unifilar</option>
-      <option value="memorial">Memorial Descritivo</option>
-      <option value="certificado_inversor">Certificado do Inversor</option>
-      <option value="formulario_acesso">Formulário de Acesso</option>
-      <option value="outro">Outro</option>
+  <option value="cliente">Documento do Cliente</option>
+  <option value="unidade_consumidora">Documento da Unidade Consumidora</option>
+  <option value="projeto_eletrico">Projeto Elétrico</option>
+  <option value="memorial_descritivo">Memorial Descritivo</option>
+  <option value="diagrama_unifilar">Diagrama Unifilar</option>
+  <option value="art_trt">ART/TRT</option>
+  <option value="datasheet_modulos">Datasheet dos Módulos</option>
+  <option value="datasheet_inversor">Datasheet do Inversor</option>
     </select>
   </div>
 
@@ -3740,7 +3742,7 @@ async function avancarEtapaHomologacao() {
    UPLOAD DE DOCUMENTOS
 ========================================= */
 
-async function enviarDocumento() {
+   async function enviarDocumento() {
   const tipo = document.getElementById("tipoDocumento").value;
   const inputArquivo = document.getElementById("arquivoDocumento");
   const arquivo = inputArquivo.files[0];
@@ -3754,7 +3756,8 @@ async function enviarDocumento() {
   }
 
   if (!projetoId || !organizacaoAtual) {
-    statusEl.textContent = "Erro: projeto ou organização não identificados.";
+    statusEl.textContent =
+      "Erro: projeto ou organização não identificados.";
     statusEl.style.color = "#dc2626";
     return;
   }
@@ -3765,183 +3768,334 @@ async function enviarDocumento() {
     statusEl.textContent = "Enviando documento...";
     statusEl.style.color = "#64748b";
 
-    // Caminho no Storage
-    const nomeLimpo = arquivo.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
-    const caminho = `${organizacaoAtual}/${projetoId}/${tipo}/${Date.now()}_${nomeLimpo}`;
+    /*
+     * Procura o documento que já foi criado
+     * pelo checklist.
+     */
+    const { data: documento, error: erroBusca } =
+      await supabaseClient
+        .from("documentos_projeto")
+        .select("*")
+        .eq("projeto_id", projetoId)
+        .eq("organizacao_id", organizacaoAtual)
+        .eq("tipo_documento", tipo)
+        .maybeSingle();
 
-    // 1. Upload no Storage
-    const { error: erroUpload } = await supabaseClient
-      .storage
-      .from("documentos")
-      .upload(caminho, arquivo, {
-        cacheControl: "3600",
-        upsert: false
-      });
+    if (erroBusca) throw erroBusca;
+
+    if (!documento) {
+      throw new Error(
+        "Documento não encontrado no checklist."
+      );
+    }
+
+    /*
+     * Se já existir um arquivo antigo,
+     * remove do Storage.
+     */
+    if (documento.caminho_storage) {
+      const { error: erroRemocao } =
+        await supabaseClient
+          .storage
+          .from("documentos")
+          .remove([documento.caminho_storage]);
+
+      if (erroRemocao) {
+        console.warn(
+          "Não foi possível remover o arquivo antigo:",
+          erroRemocao
+        );
+      }
+    }
+
+    /*
+     * Limpa caracteres problemáticos do nome.
+     */
+    const nomeLimpo =
+      arquivo.name.replace(
+        /[^a-zA-Z0-9.\-_]/g,
+        "_"
+      );
+
+    /*
+     * Novo caminho do arquivo.
+     */
+    const caminho =
+      `${organizacaoAtual}/${projetoId}/${tipo}/` +
+      `${Date.now()}_${nomeLimpo}`;
+
+    /*
+     * 1. Upload no Storage
+     */
+    const { error: erroUpload } =
+      await supabaseClient
+        .storage
+        .from("documentos")
+        .upload(
+          caminho,
+          arquivo,
+          {
+            cacheControl: "3600",
+            upsert: false
+          }
+        );
 
     if (erroUpload) throw erroUpload;
 
-    // 2. Salvar no banco (usando os nomes corretos das colunas)
-    const { error: erroBanco } = await supabaseClient
-      .from("documentos_projeto")
-      .insert({
-        projeto_id: projetoId,
-        organizacao_id: organizacaoAtual,
-        nome_documento: arquivo.name,          // obrigatório
-        tipo_documento: tipo,                  // coluna antiga
-        tipo: tipo,                            // coluna nova
-        nome_arquivo: arquivo.name,
-        caminho_storage: caminho,
-        arquivo_url: caminho,                  // preenchendo também
-        tamanho: arquivo.size,
-        mime_type: arquivo.type,
-        status: "anexado",
-        usuario_id: usuarioAtual.id,
-        criado_por: usuarioAtual.id
-      });
+    /*
+     * 2. Atualiza o documento EXISTENTE.
+     *
+     * IMPORTANTE:
+     * Não usamos INSERT.
+     */
+    const { error: erroBanco } =
+      await supabaseClient
+        .from("documentos_projeto")
+        .update({
+          nome_arquivo: arquivo.name,
+          caminho_storage: caminho,
+          arquivo_url: caminho,
+          tamanho: arquivo.size,
+          mime_type: arquivo.type,
+          status: "anexado",
+          usuario_id: usuarioAtual.id
+        })
+        .eq("id", documento.id);
 
-    if (erroBanco) throw erroBanco;
+    if (erroBanco) {
 
-    statusEl.textContent = "Documento enviado com sucesso!";
+      /*
+       * Se o banco falhar,
+       * remove o arquivo recém enviado.
+       */
+      await supabaseClient
+        .storage
+        .from("documentos")
+        .remove([caminho]);
+
+      throw erroBanco;
+    }
+
+    statusEl.textContent =
+      "Documento anexado com sucesso!";
+
     statusEl.style.color = "#16a34a";
 
-    // Limpar input
     inputArquivo.value = "";
 
-    // Atualizar lista
-    await carregarDocumentosUpload();
+    /*
+     * Atualiza o checklist principal.
+     */
+    if (
+      typeof carregarDocumentos ===
+      "function"
+    ) {
+      await carregarDocumentos();
+    }
 
   } catch (erro) {
+
     console.error(erro);
-    statusEl.textContent = "Erro ao enviar: " + (erro.message || "tente novamente");
-    statusEl.style.color = "#dc2626";
+
+    statusEl.textContent =
+      "Erro ao enviar: " +
+      (erro.message ||
+        "tente novamente");
+
+    statusEl.style.color =
+      "#dc2626";
+
   } finally {
+
     botao.disabled = false;
-    botao.textContent = "📤 Enviar Documento";
+    botao.textContent =
+      "📤 Enviar Documento";
   }
 }
 
-async function carregarDocumentosUpload() {
-  const lista = document.getElementById("listaDocumentosUpload");
 
-  if (!projetoId) {
-    lista.innerHTML = "<div style='color:#64748b;'>Projeto não identificado.</div>";
+/*
+ * Mantida apenas para compatibilidade
+ * com chamadas antigas.
+ */
+async function carregarDocumentosUpload() {
+
+  if (
+    typeof carregarDocumentos ===
+    "function"
+  ) {
+    await carregarDocumentos();
+  }
+}
+
+
+/*
+ * Baixar documento
+ */
+async function baixarDocumento(
+  caminho,
+  nomeArquivo
+) {
+
+  if (!caminho) {
+    alert(
+      "Este documento ainda não possui arquivo anexado."
+    );
     return;
   }
 
   try {
-    const { data, error } = await supabaseClient
-      .from("documentos_projeto")
-      .select("*")
-      .eq("projeto_id", projetoId)
-      .order("criado_em", { ascending: false });
 
-    if (error) throw error;
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .storage
+        .from("documentos")
+        .createSignedUrl(
+          caminho,
+          60
+        );
 
-    if (!data || data.length === 0) {
-      lista.innerHTML = "<div style='color:#64748b; font-size:14px;'>Nenhum documento enviado ainda.</div>";
-      return;
+    if (error)
+      throw error;
+
+    const link =
+      document.createElement("a");
+
+    link.href =
+      data.signedUrl;
+
+    link.download =
+      nomeArquivo ||
+      "documento";
+
+    link.target =
+      "_blank";
+
+    document.body.appendChild(
+      link
+    );
+
+    link.click();
+
+    document.body.removeChild(
+      link
+    );
+
+  } catch (erro) {
+
+    console.error(erro);
+
+    alert(
+      "Erro ao baixar o documento."
+    );
+  }
+}
+
+
+/*
+ * Remover arquivo sem apagar
+ * o documento do checklist.
+ */
+async function excluirDocumento(
+  id,
+  caminho
+) {
+
+  if (
+    !confirm(
+      "Tem certeza que deseja remover este arquivo?"
+    )
+  ) {
+    return;
+  }
+
+  try {
+
+    /*
+     * 1. Remove o arquivo do Storage.
+     */
+    if (caminho) {
+
+      const {
+        error: erroStorage
+      } =
+      await supabaseClient
+        .storage
+        .from("documentos")
+        .remove([
+          caminho
+        ]);
+
+      if (erroStorage)
+        throw erroStorage;
     }
 
-    lista.innerHTML = "";
-
-    data.forEach(doc => {
-      const item = document.createElement("div");
-      item.style.cssText = `
-        background: #f8fafc;
-        padding: 12px 14px;
-        border-radius: 9px;
-        margin-bottom: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
-      `;
-
-      const tipoFormatado = {
-        art: "ART",
-        diagrama_unifilar: "Diagrama Unifilar",
-        memorial: "Memorial",
-        certificado_inversor: "Certificado Inversor",
-        formulario_acesso: "Formulário de Acesso",
-        outro: "Outro"
-      }[doc.tipo] || doc.tipo;
-
-      item.innerHTML = `
-        <div style="flex:1; min-width:0;">
-          <strong style="display:block; font-size:14px;">${tipoFormatado}</strong>
-          <span style="font-size:12px; color:#64748b; word-break:break-all;">${doc.nome_arquivo}</span>
-        </div>
-        <div style="display:flex; gap:8px;">
-          <button onclick="baixarDocumento('${doc.caminho_storage}', '${doc.nome_arquivo}')" 
-            style="padding:6px 10px; font-size:12px; border:none; border-radius:6px; background:#0f766e; color:white; cursor:pointer;">
-            Baixar
-          </button>
-          <button onclick="excluirDocumento('${doc.id}', '${doc.caminho_storage}')" 
-            style="padding:6px 10px; font-size:12px; border:none; border-radius:6px; background:#dc2626; color:white; cursor:pointer;">
-            Excluir
-          </button>
-        </div>
-      `;
-
-      lista.appendChild(item);
-    });
-
-  } catch (erro) {
-    console.error(erro);
-    lista.innerHTML = `<div style="color:#dc2626;">Erro ao carregar documentos.</div>`;
-  }
-}
-
-async function baixarDocumento(caminho, nomeArquivo) {
-  try {
-    const { data, error } = await supabaseClient
-      .storage
-      .from("documentos")
-      .createSignedUrl(caminho, 60); // válido por 60 segundos
-
-    if (error) throw error;
-
-    // Abre o link
-    const link = document.createElement("a");
-    link.href = data.signedUrl;
-    link.download = nomeArquivo;
-    link.target = "_blank";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-  } catch (erro) {
-    console.error(erro);
-    alert("Erro ao baixar o documento.");
-  }
-}
-
-async function excluirDocumento(id, caminho) {
-  if (!confirm("Tem certeza que deseja excluir este documento?")) return;
-
-  try {
-    // 1. Apagar do Storage
+    /*
+     * 2. Mantém o documento no checklist.
+     *
+     * Apenas limpa os dados do arquivo
+     * e volta para pendente.
+     */
+    const {
+      error
+    } =
     await supabaseClient
-      .storage
-      .from("documentos")
-      .remove([caminho]);
-
-    // 2. Apagar do banco
-    const { error } = await supabaseClient
       .from("documentos_projeto")
-      .delete()
-      .eq("id", id);
+      .update({
 
-    if (error) throw error;
+        nome_arquivo:
+          null,
 
-    // Atualizar lista
-    await carregarDocumentosUpload();
+        caminho_storage:
+          null,
+
+        arquivo_url:
+          null,
+
+        tamanho:
+          null,
+
+        mime_type:
+          null,
+
+        status:
+          "pendente"
+
+      })
+      .eq(
+        "id",
+        id
+      );
+
+    if (error)
+      throw error;
+
+    /*
+     * Atualiza a tela.
+     */
+    if (
+      typeof carregarDocumentos ===
+      "function"
+    ) {
+      await carregarDocumentos();
+    }
+
+    alert(
+      "Arquivo removido com sucesso."
+    );
 
   } catch (erro) {
+
     console.error(erro);
-    alert("Erro ao excluir o documento.");
+
+    alert(
+      "Erro ao remover o arquivo."
+    );
   }
-  }
+  }       
 
 iniciar();
 
