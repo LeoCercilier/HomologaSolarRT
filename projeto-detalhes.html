@@ -877,6 +877,41 @@ Trifásica
   </div>
 
 </div>
+
+  <!-- ==================== UPLOAD DE DOCUMENTOS ==================== -->
+<div class="card">
+  <h3>📤 Upload de Documentos</h3>
+
+  <div style="margin-bottom: 15px;">
+    <label style="display:block; font-weight:bold; margin-bottom:6px;">Tipo do documento</label>
+    <select id="tipoDocumento" style="width:100%; padding:12px; border-radius:8px; border:1px solid #cbd5e1;">
+      <option value="art">ART</option>
+      <option value="diagrama_unifilar">Diagrama Unifilar</option>
+      <option value="memorial">Memorial Descritivo</option>
+      <option value="certificado_inversor">Certificado do Inversor</option>
+      <option value="formulario_acesso">Formulário de Acesso</option>
+      <option value="outro">Outro</option>
+    </select>
+  </div>
+
+  <div style="margin-bottom: 15px;">
+    <input type="file" id="arquivoDocumento" accept=".pdf,.jpg,.jpeg,.png,.webp" style="width:100%;">
+  </div>
+
+  <button type="button" class="btn-principal" onclick="enviarDocumento()" id="btnEnviarDoc">
+    📤 Enviar Documento
+  </button>
+
+  <div id="statusUpload" style="margin-top:12px; font-size:14px; color:#64748b;"></div>
+
+  <hr style="margin: 25px 0; border: none; border-top: 1px solid #e2e8f0;">
+
+  <h4 style="margin-bottom: 12px;">Documentos enviados</h4>
+  <div id="listaDocumentosUpload">
+    <div style="color:#64748b; font-size:14px;">Carregando documentos...</div>
+  </div>
+</div>
+<!-- ==================== FIM UPLOAD ==================== -->
   
 <div class="card">
 
