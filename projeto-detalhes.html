@@ -2611,6 +2611,242 @@ document.getElementById(
 			`;
 			}
 			}
+
+	/* =========================================
+   ENVIAR DOCUMENTO DO CHECKLIST
+========================================= */
+
+async function enviarDocumentoChecklist(
+  documentoId,
+  tipoDocumento
+) {
+
+  try {
+
+    const input =
+      document.getElementById(
+        "arquivo_" + documentoId
+      );
+
+    const statusUpload =
+      document.getElementById(
+        "statusUpload_" + documentoId
+      );
+
+
+    if (!input)
+      throw new Error(
+        "Campo de arquivo não encontrado."
+      );
+
+
+    if (!input.files || input.files.length === 0) {
+
+      alert(
+        "Selecione um arquivo antes de enviar."
+      );
+
+      return;
+    }
+
+
+    const arquivo =
+      input.files[0];
+
+
+    /* =====================================
+       LIMITES
+    ===================================== */
+
+    const tamanhoMaximo =
+      20 * 1024 * 1024; // 20 MB
+
+
+    if (arquivo.size > tamanhoMaximo) {
+
+      alert(
+        "O arquivo é muito grande. " +
+        "O tamanho máximo permitido é 20 MB."
+      );
+
+      return;
+    }
+
+
+    /* =====================================
+       STATUS
+    ===================================== */
+
+    if (statusUpload) {
+
+      statusUpload.textContent =
+        "⏳ Enviando arquivo...";
+
+      statusUpload.style.color =
+        "#2563eb";
+    }
+
+
+    /* =====================================
+       NOME DO ARQUIVO
+    ===================================== */
+
+    const extensao =
+      arquivo.name.includes(".")
+        ? arquivo.name
+            .split(".")
+            .pop()
+            .toLowerCase()
+        : "";
+
+
+    const nomeSeguro =
+      arquivo.name
+        .replace(
+          /[^a-zA-Z0-9._-]/g,
+          "_"
+        );
+
+
+    /* =====================================
+       CAMINHO NO STORAGE
+    ===================================== */
+
+    const caminhoStorage =
+      organizacaoAtual +
+      "/" +
+      projetoId +
+      "/" +
+      documentoId +
+      "_" +
+      Date.now() +
+      "_" +
+      nomeSeguro;
+
+
+    /* =====================================
+       UPLOAD
+    ===================================== */
+
+    const {
+      error: erroUpload
+    } =
+    await supabaseClient
+      .storage
+      .from("documentos")
+      .upload(
+        caminhoStorage,
+        arquivo,
+        {
+          cacheControl: "3600",
+          upsert: false,
+          contentType:
+            arquivo.type ||
+            "application/octet-stream"
+        }
+      );
+
+
+    if (erroUpload)
+      throw erroUpload;
+
+
+    /* =====================================
+       ATUALIZAR DOCUMENTO
+    ===================================== */
+
+    const {
+      error: erroBanco
+    } =
+    await supabaseClient
+      .from("documentos_projeto")
+      .update({
+
+        nome_arquivo:
+          arquivo.name,
+
+        caminho_storage:
+          caminhoStorage,
+
+        tamanho:
+          arquivo.size,
+
+        mime_type:
+          arquivo.type ||
+          null,
+
+        status:
+          "anexado"
+
+      })
+      .eq(
+        "id",
+        documentoId
+      )
+      .eq(
+        "projeto_id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      );
+
+
+    if (erroBanco)
+      throw erroBanco;
+
+
+    /* =====================================
+       SUCESSO
+    ===================================== */
+
+    if (statusUpload) {
+
+      statusUpload.textContent =
+        "✅ Arquivo enviado com sucesso.";
+
+      statusUpload.style.color =
+        "#166534";
+    }
+
+
+    await carregarDocumentos();
+
+  }
+
+  catch (erro) {
+
+    console.error(
+      "Erro ao enviar documento:",
+      erro
+    );
+
+
+    const statusUpload =
+      document.getElementById(
+        "statusUpload_" + documentoId
+      );
+
+
+    if (statusUpload) {
+
+      statusUpload.textContent =
+        "❌ Erro ao enviar arquivo.";
+
+      statusUpload.style.color =
+        "#991b1b";
+    }
+
+
+    alert(
+      "Erro ao enviar documento:\n\n" +
+      erro.message
+    );
+
+  }
+
+}
       
   async function alterarStatusDocumento(
   documentoId,
