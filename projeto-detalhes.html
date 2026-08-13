@@ -3765,7 +3765,7 @@ async function enviarDocumento() {
     statusEl.textContent = "Enviando documento...";
     statusEl.style.color = "#64748b";
 
-    // Caminho no Storage: organizacao/projeto/tipo/nome-do-arquivo
+    // Caminho no Storage
     const nomeLimpo = arquivo.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
     const caminho = `${organizacaoAtual}/${projetoId}/${tipo}/${Date.now()}_${nomeLimpo}`;
 
@@ -3780,19 +3780,23 @@ async function enviarDocumento() {
 
     if (erroUpload) throw erroUpload;
 
-    // 2. Salvar registro na tabela
+    // 2. Salvar no banco (usando os nomes corretos das colunas)
     const { error: erroBanco } = await supabaseClient
       .from("documentos_projeto")
       .insert({
         projeto_id: projetoId,
         organizacao_id: organizacaoAtual,
-        tipo: tipo,
+        nome_documento: arquivo.name,          // obrigatório
+        tipo_documento: tipo,                  // coluna antiga
+        tipo: tipo,                            // coluna nova
         nome_arquivo: arquivo.name,
         caminho_storage: caminho,
+        arquivo_url: caminho,                  // preenchendo também
         tamanho: arquivo.size,
         mime_type: arquivo.type,
         status: "enviado",
-        usuario_id: usuarioAtual.id
+        usuario_id: usuarioAtual.id,
+        criado_por: usuarioAtual.id
       });
 
     if (erroBanco) throw erroBanco;
