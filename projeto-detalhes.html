@@ -3734,6 +3734,209 @@ async function avancarEtapaHomologacao() {
 
 }
 
+  /* =========================================
+   UPLOAD DE DOCUMENTOS
+========================================= */
+
+async function enviarDocumento() {
+  const tipo = document.getElementById("tipoDocumento").value;
+  const inputArquivo = document.getElementById("arquivoDocumento");
+  const arquivo = inputArquivo.files[0];
+  const statusEl = document.getElementById("statusUpload");
+  const botao = document.getElementById("btnEnviarDoc");
+
+  if (!arquivo) {
+    statusEl.textContent = "Selecione um arquivo primeiro.";
+    statusEl.style.color = "#dc2626";
+    return;
+  }
+
+  if (!projetoId || !organizacaoAtual) {
+    statusEl.textContent = "Erro: projeto ou organização não identificados.";
+    statusEl.style.color = "#dc2626";
+    return;
+  }
+
+  try {
+    botao.disabled = true;
+    botao.textContent = "Enviando...";
+    statusEl.textContent = "Enviando documento...";
+    statusEl.style.color = "#64748b";
+
+    // Caminho no Storage: organizacao/projeto/tipo/nome-do-arquivo
+    const nomeLimpo = arquivo.name.replace(/[^a-zA-Z0-9.\-_]/g, "_");
+    const caminho = `${organizacaoAtual}/${projetoId}/${tipo}/${Date.now()}_${nomeLimpo}`;
+
+    // 1. Upload no Storage
+    const { error: erroUpload } = await supabaseClient
+      .storage
+      .from("documentos")
+      .upload(caminho, arquivo, {
+        cacheControl: "3600",
+        upsert: false
+      });
+
+    if (erroUpload) throw erroUpload;
+
+    // 2. Salvar registro na tabela
+    const { error: erroBanco } = await supabaseClient
+      .from("documentos_projeto")
+      .insert({
+        projeto_id: projetoId,
+        organizacao_id: organizacaoAtual,
+        tipo: tipo,
+        nome_arquivo: arquivo.name,
+        caminho_storage: caminho,
+        tamanho: arquivo.size,
+        mime_type: arquivo.type,
+        status: "enviado",
+        usuario_id: usuarioAtual.id
+      });
+
+    if (erroBanco) throw erroBanco;
+
+    statusEl.textContent = "Documento enviado com sucesso!";
+    statusEl.style.color = "#16a34a";
+
+    // Limpar input
+    inputArquivo.value = "";
+
+    // Atualizar lista
+    await carregarDocumentosUpload();
+
+  } catch (erro) {
+    console.error(erro);
+    statusEl.textContent = "Erro ao enviar: " + (erro.message || "tente novamente");
+    statusEl.style.color = "#dc2626";
+  } finally {
+    botao.disabled = false;
+    botao.textContent = "📤 Enviar Documento";
+  }
+}
+
+async function carregarDocumentosUpload() {
+  const lista = document.getElementById("listaDocumentosUpload");
+
+  if (!projetoId) {
+    lista.innerHTML = "<div style='color:#64748b;'>Projeto não identificado.</div>";
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from("documentos_projeto")
+      .select("*")
+      .eq("projeto_id", projetoId)
+      .order("criado_em", { ascending: false });
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      lista.innerHTML = "<div style='color:#64748b; font-size:14px;'>Nenhum documento enviado ainda.</div>";
+      return;
+    }
+
+    lista.innerHTML = "";
+
+    data.forEach(doc => {
+      const item = document.createElement("div");
+      item.style.cssText = `
+        background: #f8fafc;
+        padding: 12px 14px;
+        border-radius: 9px;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+      `;
+
+      const tipoFormatado = {
+        art: "ART",
+        diagrama_unifilar: "Diagrama Unifilar",
+        memorial: "Memorial",
+        certificado_inversor: "Certificado Inversor",
+        formulario_acesso: "Formulário de Acesso",
+        outro: "Outro"
+      }[doc.tipo] || doc.tipo;
+
+      item.innerHTML = `
+        <div style="flex:1; min-width:0;">
+          <strong style="display:block; font-size:14px;">${tipoFormatado}</strong>
+          <span style="font-size:12px; color:#64748b; word-break:break-all;">${doc.nome_arquivo}</span>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button onclick="baixarDocumento('${doc.caminho_storage}', '${doc.nome_arquivo}')" 
+            style="padding:6px 10px; font-size:12px; border:none; border-radius:6px; background:#0f766e; color:white; cursor:pointer;">
+            Baixar
+          </button>
+          <button onclick="excluirDocumento('${doc.id}', '${doc.caminho_storage}')" 
+            style="padding:6px 10px; font-size:12px; border:none; border-radius:6px; background:#dc2626; color:white; cursor:pointer;">
+            Excluir
+          </button>
+        </div>
+      `;
+
+      lista.appendChild(item);
+    });
+
+  } catch (erro) {
+    console.error(erro);
+    lista.innerHTML = `<div style="color:#dc2626;">Erro ao carregar documentos.</div>`;
+  }
+}
+
+async function baixarDocumento(caminho, nomeArquivo) {
+  try {
+    const { data, error } = await supabaseClient
+      .storage
+      .from("documentos")
+      .createSignedUrl(caminho, 60); // válido por 60 segundos
+
+    if (error) throw error;
+
+    // Abre o link
+    const link = document.createElement("a");
+    link.href = data.signedUrl;
+    link.download = nomeArquivo;
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+  } catch (erro) {
+    console.error(erro);
+    alert("Erro ao baixar o documento.");
+  }
+}
+
+async function excluirDocumento(id, caminho) {
+  if (!confirm("Tem certeza que deseja excluir este documento?")) return;
+
+  try {
+    // 1. Apagar do Storage
+    await supabaseClient
+      .storage
+      .from("documentos")
+      .remove([caminho]);
+
+    // 2. Apagar do banco
+    const { error } = await supabaseClient
+      .from("documentos_projeto")
+      .delete()
+      .eq("id", id);
+
+    if (error) throw error;
+
+    // Atualizar lista
+    await carregarDocumentosUpload();
+
+  } catch (erro) {
+    console.error(erro);
+    alert("Erro ao excluir o documento.");
+  }
+  }
+
 iniciar();
 
 </script>
