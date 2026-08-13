@@ -2225,6 +2225,112 @@ document.getElementById(
       documento.status === "anexado"
     ) {
 
+      async function carregarDocumentos() {
+
+  const lista =
+    document.getElementById("listaDocumentos");
+
+  const resumo =
+    document.getElementById("resumoDocumentacao");
+
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("documentos_projeto")
+    .select(`
+      id,
+      nome_documento,
+      tipo_documento,
+      status,
+      observacoes,
+      nome_arquivo,
+      caminho_storage,
+      tamanho,
+      mime_type
+    `)
+    .eq(
+      "projeto_id",
+      projetoId
+    )
+    .eq(
+      "organizacao_id",
+      organizacaoAtual
+    )
+    .order(
+      "criado_em",
+      {
+        ascending: true
+      }
+    );
+
+
+  if (error)
+    throw error;
+
+
+  if (!data || data.length === 0) {
+
+    resumo.textContent =
+      "Documentação: nenhum documento cadastrado.";
+
+    lista.innerHTML =
+      `
+      <div class="vazio">
+        Nenhum documento cadastrado.
+      </div>
+      `;
+
+    return;
+  }
+
+
+  /* ================================
+     RESUMO
+  ================================= */
+
+  const totalDocumentos =
+    data.length;
+
+  const concluidos =
+    data.filter(
+      documento =>
+        documento.status === "validado"
+    ).length;
+
+
+  resumo.textContent =
+    "Documentação: " +
+    concluidos +
+    " de " +
+    totalDocumentos +
+    " documentos validados";
+
+
+  lista.innerHTML = "";
+
+
+  /* ================================
+     EXIBIR DOCUMENTOS
+  ================================= */
+
+  data.forEach(documento => {
+
+    const item =
+      document.createElement("div");
+
+
+    let corFundo = "#f8fafc";
+    let corBorda = "#e2e8f0";
+    let corStatus = "#92400e";
+
+
+    if (
+      documento.status === "anexado"
+    ) {
+
       corFundo = "#eff6ff";
       corBorda = "#bfdbfe";
       corStatus = "#1d4ed8";
@@ -2248,7 +2354,6 @@ document.getElementById(
       corFundo = "#fef2f2";
       corBorda = "#fecaca";
       corStatus = "#991b1b";
-
     }
 
 
@@ -2266,8 +2371,145 @@ document.getElementById(
       corFundo;
 
 
+    /* ================================
+       INFORMAÇÃO DO ARQUIVO
+    ================================= */
+
+    let areaArquivo = "";
+
+
+    if (documento.nome_arquivo) {
+
+      let tamanhoTexto = "";
+
+      if (documento.tamanho) {
+
+        const tamanhoMB =
+          documento.tamanho /
+          (1024 * 1024);
+
+        tamanhoTexto =
+          tamanhoMB < 1
+            ? "(" +
+              Math.round(
+                documento.tamanho /
+                1024
+              ) +
+              " KB)"
+            : "(" +
+              tamanhoMB.toFixed(2) +
+              " MB)";
+      }
+
+
+      areaArquivo =
+        `
+        <div style="
+          margin-top:12px;
+          padding:10px;
+          background:white;
+          border:1px solid #cbd5e1;
+          border-radius:8px;
+        ">
+
+          <div style="
+            font-size:13px;
+            font-weight:bold;
+            word-break:break-all;
+          ">
+            📎 ${escaparHtml(
+              documento.nome_arquivo
+            )}
+          </div>
+
+          ${
+            tamanhoTexto
+              ? `
+                <div style="
+                  font-size:11px;
+                  color:#64748b;
+                  margin-top:3px;
+                ">
+                  ${tamanhoTexto}
+                </div>
+              `
+              : ""
+          }
+
+          <div style="
+            display:flex;
+            gap:8px;
+            margin-top:8px;
+            flex-wrap:wrap;
+          ">
+
+            <button
+              type="button"
+              onclick="baixarDocumento(
+                '${documento.caminho_storage}',
+                '${escaparHtml(documento.nome_arquivo)}'
+              )"
+              style="
+                padding:8px 12px;
+                border:none;
+                border-radius:7px;
+                background:#0f766e;
+                color:white;
+                cursor:pointer;
+              "
+            >
+              ⬇️ Baixar
+            </button>
+
+            <button
+              type="button"
+              onclick="excluirDocumento(
+                '${documento.id}',
+                '${documento.caminho_storage || ""}'
+              )"
+              style="
+                padding:8px 12px;
+                border:none;
+                border-radius:7px;
+                background:#dc2626;
+                color:white;
+                cursor:pointer;
+              "
+            >
+              🗑️ Remover
+            </button>
+
+          </div>
+
+        </div>
+        `;
+
+    } else {
+
+      areaArquivo =
+        `
+        <div style="
+          margin-top:10px;
+          padding:9px;
+          background:#fff7ed;
+          border:1px solid #fed7aa;
+          border-radius:8px;
+          color:#9a3412;
+          font-size:13px;
+        ">
+          📎 Nenhum arquivo anexado.
+        </div>
+        `;
+    }
+
+
+    /* ================================
+       ITEM COMPLETO
+    ================================= */
+
     item.innerHTML =
       `
+
       <strong>
         ${escaparHtml(
           documento.nome_documento
@@ -2308,7 +2550,6 @@ document.getElementById(
             🟡 Pendente
           </option>
 
-
           <option
             value="anexado"
             ${
@@ -2320,7 +2561,6 @@ document.getElementById(
             🔵 Anexado
           </option>
 
-
           <option
             value="validado"
             ${
@@ -2331,7 +2571,6 @@ document.getElementById(
           >
             🟢 Validado
           </option>
-
 
           <option
             value="rejeitado"
@@ -2345,6 +2584,64 @@ document.getElementById(
           </option>
 
         </select>
+
+      </div>
+
+
+      <!-- ARQUIVO -->
+
+      ${areaArquivo}
+
+
+      <!-- UPLOAD -->
+
+      <div style="
+        margin-top:12px;
+        padding:10px;
+        background:white;
+        border:1px dashed #94a3b8;
+        border-radius:8px;
+      ">
+
+        <input
+          type="file"
+          id="arquivo_${documento.id}"
+          accept=".pdf,.jpg,.jpeg,.png,.webp"
+          style="
+            width:100%;
+            font-size:13px;
+          "
+        >
+
+        <button
+          type="button"
+          onclick="enviarDocumentoChecklist(
+            '${documento.id}',
+            '${documento.tipo_documento}'
+          )"
+          style="
+            width:100%;
+            margin-top:8px;
+            padding:10px;
+            border:none;
+            border-radius:7px;
+            background:#2563eb;
+            color:white;
+            font-weight:bold;
+            cursor:pointer;
+          "
+        >
+          📤 Anexar arquivo
+        </button>
+
+        <div
+          id="statusUpload_${documento.id}"
+          style="
+            margin-top:7px;
+            font-size:12px;
+            color:#64748b;
+          "
+        ></div>
 
       </div>
 
@@ -2369,7 +2666,7 @@ document.getElementById(
             background:white;
           "
         >${escaparHtml(
-          documento.observacoes
+          documento.observacoes || ""
         )}</textarea>
 
 
@@ -2383,6 +2680,10 @@ document.getElementById(
             margin-top:8px;
             background:#0f766e;
             color:white;
+            padding:10px;
+            border:none;
+            border-radius:7px;
+            cursor:pointer;
           "
         >
           💾 Salvar observação
@@ -2397,8 +2698,8 @@ document.getElementById(
 
   });
 
-  }
-
+                    }
+      
   async function alterarStatusDocumento(
   documentoId,
   novoStatus
