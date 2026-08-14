@@ -290,7 +290,35 @@ Carregando projeto...
 
 <div class="card">
 
-<h3>👥 Cliente</h3>
+<div style="
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+">
+
+  <h3 style="margin:0;">
+    👥 Cliente
+  </h3>
+
+  <button
+    type="button"
+    onclick="duplicarProjeto()"
+    style="
+      padding:8px 12px;
+      border:none;
+      border-radius:8px;
+      background:#7c3aed;
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+      white-space:nowrap;
+    "
+  >
+    📋 Duplicar
+  </button>
+
+</div>
 
 <div class="grid">
 
@@ -1198,6 +1226,459 @@ async function carregarProjeto() {
 
 }
 
+/* =========================================
+   DUPLICAR PROJETO
+========================================= */
+
+async function duplicarProjeto() {
+
+  try {
+
+    if (!projetoId) {
+      throw new Error(
+        "ID do projeto não encontrado."
+      );
+    }
+
+    if (!organizacaoAtual) {
+      throw new Error(
+        "Organização atual não encontrada."
+      );
+    }
+
+    if (!usuarioAtual || !usuarioAtual.id) {
+      throw new Error(
+        "Usuário atual não encontrado."
+      );
+    }
+
+
+    /* =====================================
+       CONFIRMAÇÃO
+    ===================================== */
+
+    const confirmar =
+      confirm(
+        "Deseja duplicar este projeto?\n\n" +
+        "O cliente, RT e sistema fotovoltaico " +
+        "serão copiados.\n\n" +
+        "Os arquivos anexados NÃO serão copiados."
+      );
+
+
+    if (!confirmar)
+      return;
+
+
+    /* =====================================
+       1. BUSCAR PROJETO ORIGINAL
+    ===================================== */
+
+    const {
+      data: projetoOriginal,
+      error: erroProjeto
+    } =
+    await supabaseClient
+      .from("projetos")
+      .select(`
+        id,
+        organizacao_id,
+        cliente_id,
+        nome,
+        status,
+        observacoes,
+        responsavel_tecnico_id
+      `)
+      .eq(
+        "id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      )
+      .single();
+
+
+    if (erroProjeto)
+      throw erroProjeto;
+
+
+    if (!projetoOriginal)
+      throw new Error(
+        "Projeto original não encontrado."
+      );
+
+
+    /* =====================================
+       2. CRIAR NOVO PROJETO
+    ===================================== */
+
+    const nomeNovoProjeto =
+      projetoOriginal.nome +
+      " (Cópia)";
+
+
+    const {
+      data: novoProjeto,
+      error: erroNovoProjeto
+    } =
+    await supabaseClient
+      .from("projetos")
+      .insert({
+
+        organizacao_id:
+          organizacaoAtual,
+
+        cliente_id:
+          projetoOriginal.cliente_id,
+
+        nome:
+          nomeNovoProjeto,
+
+        status:
+          "rascunho",
+
+        observacoes:
+          projetoOriginal.observacoes,
+
+        criado_por:
+          usuarioAtual.id,
+
+        responsavel_tecnico_id:
+          projetoOriginal.responsavel_tecnico_id
+
+      })
+      .select()
+      .single();
+
+
+    if (erroNovoProjeto)
+      throw erroNovoProjeto;
+
+
+    if (!novoProjeto)
+      throw new Error(
+        "Não foi possível criar o novo projeto."
+      );
+
+
+    const novoProjetoId =
+      novoProjeto.id;
+
+
+    /* =====================================
+       3. BUSCAR SISTEMA ORIGINAL
+    ===================================== */
+
+    const {
+      data: sistemaOriginal,
+      error: erroSistema
+    } =
+    await supabaseClient
+      .from("sistemas_fotovoltaicos")
+      .select(`
+        fabricante_modulo,
+        modelo_modulo,
+        potencia_modulo_w,
+        quantidade_modulos,
+
+        fabricante_inversor,
+        modelo_inversor,
+        potencia_inversor_kw,
+        quantidade_inversores,
+
+        distribuidora,
+        tipo_ligacao,
+        numero_fases,
+        tensao_nominal,
+
+        observacoes,
+
+        quantidade_strings,
+        modulos_por_string,
+   quantidade_mppt,
+        strings_por_mppt,
+
+        voc_modulo,
+        vmp_modulo,
+        isc_modulo,
+        imp_modulo,
+
+        tensao_max_entrada_v,
+        tensao_mppt_min_v,
+        tensao_mppt_max_v,
+        corrente_max_mppt_a
+      `)
+      .eq(
+        "projeto_id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      )
+      .maybeSingle();
+
+
+    if (erroSistema)
+      throw erroSistema;
+
+
+    /* =====================================
+       4. COPIAR SISTEMA FOTOVOLTAICO
+    ===================================== */
+
+    if (sistemaOriginal) {
+
+      const {
+        error: erroInsercaoSistema
+      } =
+      await supabaseClient
+        .from(
+          "sistemas_fotovoltaicos"
+        )
+        .insert({
+
+          organizacao_id:
+            organizacaoAtual,
+
+          projeto_id:
+            novoProjetoId,
+
+          fabricante_modulo:
+            sistemaOriginal.fabricante_modulo,
+
+          modelo_modulo:
+            sistemaOriginal.modelo_modulo,
+
+          potencia_modulo_w:
+            sistemaOriginal.potencia_modulo_w,
+
+          quantidade_modulos:
+            sistemaOriginal.quantidade_modulos,
+
+          fabricante_inversor:
+            sistemaOriginal.fabricante_inversor,
+
+          modelo_inversor:
+            sistemaOriginal.modelo_inversor,
+
+          potencia_inversor_kw:
+            sistemaOriginal.potencia_inversor_kw,
+
+          quantidade_inversores:
+            sistemaOriginal.quantidade_inversores,
+
+          distribuidora:
+            sistemaOriginal.distribuidora,
+
+          tipo_ligacao:
+            sistemaOriginal.tipo_ligacao,
+
+          numero_fases:
+            sistemaOriginal.numero_fases,
+
+          tensao_nominal:
+            sistemaOriginal.tensao_nominal,
+
+          observacoes:
+            sistemaOriginal.observacoes,
+
+          quantidade_strings:
+            sistemaOriginal.quantidade_strings,
+
+          modulos_por_string:
+            sistemaOriginal.modulos_por_string,
+
+          quantidade_mppt:
+            sistemaOriginal.quantidade_mppt,
+
+          strings_por_mppt:
+            sistemaOriginal.strings_por_mppt,
+
+          voc_modulo:
+            sistemaOriginal.voc_modulo,
+
+          vmp_modulo:
+            sistemaOriginal.vmp_modulo,
+
+          isc_modulo:
+            sistemaOriginal.isc_modulo,
+
+          imp_modulo:
+            sistemaOriginal.imp_modulo,
+
+          tensao_max_entrada_v:
+            sistemaOriginal.tensao_max_entrada_v,
+
+          tensao_mppt_min_v:
+            sistemaOriginal.tensao_mppt_min_v,
+
+          tensao_mppt_max_v:
+            sistemaOriginal.tensao_mppt_max_v,
+
+          corrente_max_mppt_a:
+            sistemaOriginal.corrente_max_mppt_a,
+
+          criado_por:
+            usuarioAtual.id
+
+        });
+
+
+      if (erroInsercaoSistema)
+        throw erroInsercaoSistema;
+
+    }
+
+
+    /* =====================================
+       5. CRIAR CHECKLIST DO NOVO PROJETO
+    ===================================== */
+
+    const documentosPadrao = [
+
+      {
+        nome_documento:
+          "Documento do cliente",
+        tipo_documento:
+          "cliente"
+      },
+
+      {
+        nome_documento:
+          "Documento da unidade consumidora",
+        tipo_documento:
+          "unidade_consumidora"
+      },
+
+      {
+        nome_documento:
+          "Projeto elétrico",
+        tipo_documento:
+          "projeto_eletrico"
+      },
+
+      {
+        nome_documento:
+          "Memorial descritivo",
+        tipo_documento:
+          "memorial_descritivo"
+      },
+
+      {
+        nome_documento:
+          "Diagrama unifilar",
+        tipo_documento:
+          "diagrama_unifilar"
+      },
+
+      {
+        nome_documento:
+          "ART/TRT",
+        tipo_documento:
+          "art_trt"
+      },
+
+      {
+        nome_documento:
+          "Datasheet dos módulos",
+        tipo_documento:
+          "datasheet_modulos"
+      },
+
+      {
+        nome_documento:
+          "Datasheet do inversor",
+        tipo_documento:
+          "datasheet_inversor"
+      }
+
+    ];
+
+
+    const documentosNovos =
+      documentosPadrao.map(
+        documento => ({
+
+          organizacao_id:
+            organizacaoAtual,
+
+          projeto_id:
+            novoProjetoId,
+
+          nome_documento:
+            documento.nome_documento,
+
+          tipo_documento:
+            documento.tipo_documento,
+
+          status:
+            "pendente",
+
+          criado_por:
+            usuarioAtual.id
+
+        })
+      );
+
+
+    const {
+      error: erroDocumentos
+    } =
+    await supabaseClient
+      .from(
+        "documentos_projeto"
+      )
+      .insert(
+        documentosNovos
+      );
+
+
+    if (erroDocumentos)
+      throw erroDocumentos;
+
+
+    /* =====================================
+       SUCESSO
+    ===================================== */
+
+    alert(
+      "Projeto duplicado com sucesso!\n\n" +
+      "O novo projeto foi criado como rascunho."
+    );
+
+
+    /* =====================================
+       ABRIR NOVO PROJETO
+    ===================================== */
+
+    window.location.href =
+      window.location.pathname +
+      "?id=" +
+      novoProjetoId;
+
+
+  }
+
+  catch (erro) {
+
+    console.error(
+      "Erro ao duplicar projeto:",
+      erro
+    );
+
+
+    alert(
+      "Não foi possível duplicar o projeto.\n\n" +
+      "Erro: " +
+      erro.message
+    );
+
+  }
+
+}
 
 /* =========================================
    ERRO
