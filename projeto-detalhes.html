@@ -1254,24 +1254,7 @@ async function duplicarProjeto() {
 
 
     /* =====================================
-       CONFIRMAÇÃO
-    ===================================== */
-
-    const confirmar =
-      confirm(
-        "Deseja duplicar este projeto?\n\n" +
-        "O cliente, RT e sistema fotovoltaico " +
-        "serão copiados.\n\n" +
-        "Os arquivos anexados NÃO serão copiados."
-      );
-
-
-    if (!confirmar)
-      return;
-
-
-    /* =====================================
-       1. BUSCAR PROJETO ORIGINAL
+       BUSCAR PROJETO ATUAL
     ===================================== */
 
     const {
@@ -1311,13 +1294,71 @@ async function duplicarProjeto() {
 
 
     /* =====================================
-       2. CRIAR NOVO PROJETO
+       JANELA PARA NOVO NOME
     ===================================== */
 
-    const nomeNovoProjeto =
+    const nomeSugerido =
       projetoOriginal.nome +
       " (Cópia)";
 
+
+    const novoNome =
+      prompt(
+        "📋 Duplicar projeto\n\n" +
+        "Digite o nome do novo projeto:",
+        nomeSugerido
+      );
+
+
+    /* Cancelou */
+
+    if (novoNome === null)
+      return;
+
+
+    const nomeFinal =
+      novoNome.trim();
+
+
+    if (!nomeFinal) {
+
+      alert(
+        "Informe um nome para o novo projeto."
+      );
+
+      return;
+    }
+
+
+    /* =====================================
+       CONFIRMAÇÃO FINAL
+    ===================================== */
+
+    const confirmar =
+      confirm(
+        "Duplicar projeto?\n\n" +
+
+        "Novo projeto:\n" +
+        nomeFinal +
+        "\n\n" +
+
+        "Serão copiados:\n" +
+        "• Cliente\n" +
+        "• Responsável técnico\n" +
+        "• Sistema fotovoltaico\n" +
+        "• Observações\n\n" +
+
+        "Os arquivos anexados NÃO serão copiados."
+      );
+
+
+    if (!confirmar)
+      return;
+
+
+    /* =====================================
+       CRIAR NOVO PROJETO
+    ===================================== */
 
     const {
       data: novoProjeto,
@@ -1334,7 +1375,7 @@ async function duplicarProjeto() {
           projetoOriginal.cliente_id,
 
         nome:
-          nomeNovoProjeto,
+          nomeFinal,
 
         status:
           "rascunho",
@@ -1368,7 +1409,7 @@ async function duplicarProjeto() {
 
 
     /* =====================================
-       3. BUSCAR SISTEMA ORIGINAL
+       BUSCAR SISTEMA ORIGINAL
     ===================================== */
 
     const {
@@ -1397,7 +1438,7 @@ async function duplicarProjeto() {
 
         quantidade_strings,
         modulos_por_string,
-   quantidade_mppt,
+        quantidade_mppt,
         strings_por_mppt,
 
         voc_modulo,
@@ -1426,7 +1467,7 @@ async function duplicarProjeto() {
 
 
     /* =====================================
-       4. COPIAR SISTEMA FOTOVOLTAICO
+       COPIAR SISTEMA FOTOVOLTAICO
     ===================================== */
 
     if (sistemaOriginal) {
@@ -1534,7 +1575,7 @@ async function duplicarProjeto() {
 
 
     /* =====================================
-       5. CRIAR CHECKLIST DO NOVO PROJETO
+       CRIAR CHECKLIST
     ===================================== */
 
     const documentosPadrao = [
@@ -1645,8 +1686,7 @@ async function duplicarProjeto() {
     ===================================== */
 
     alert(
-      "Projeto duplicado com sucesso!\n\n" +
-      "O novo projeto foi criado como rascunho."
+      "Projeto duplicado com sucesso!"
     );
 
 
@@ -1678,7 +1718,8 @@ async function duplicarProjeto() {
 
   }
 
-}
+		  }
+
 
 /* =========================================
    ERRO
