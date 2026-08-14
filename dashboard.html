@@ -1,753 +1,900 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-<head>
-
-  <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>Dashboard - HomologaSolar RT</title>
-
-  <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f8;
-      color: #1f2937;
-    }
-
-    header {
-      background: #0f766e;
-      color: white;
-      padding: 18px;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 21px;
-    }
-
-    header p {
-      margin: 5px 0 0;
-      font-size: 13px;
-      opacity: .9;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    .boas-vindas {
-      margin-bottom: 20px;
-    }
-
-    .boas-vindas h2 {
-      margin: 0 0 6px;
-    }
-
-    .boas-vindas p {
-      margin: 0;
-      color: #64748b;
-    }
-
-    .organizacao {
-      background: white;
-      padding: 18px;
-      border-radius: 14px;
-      margin-bottom: 18px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.05);
-    }
-
-    .organizacao small {
-      color: #64748b;
-    }
-
-    .organizacao h3 {
-      margin: 6px 0 0;
-    }
-
-    .estatisticas {
-      display: grid;
-      grid-template-columns: repeat(
-        auto-fit,
-        minmax(140px, 1fr)
-      );
-
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .estatistica {
-      background: white;
-      padding: 18px;
-      border-radius: 14px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.05);
-    }
-
-    .estatistica .numero {
-      font-size: 28px;
-      font-weight: bold;
-      color: #0f766e;
-    }
-
-    .estatistica .titulo {
-      margin-top: 5px;
-      color: #64748b;
-      font-size: 14px;
-    }
-
-    .acoes {
-      display: grid;
-      grid-template-columns: repeat(
-        auto-fit,
-        minmax(150px, 1fr)
-      );
-
-      gap: 12px;
-      margin-bottom: 25px;
-    }
-
-    button {
-      border: none;
-      border-radius: 9px;
-      padding: 14px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .principal {
-      background: #0f766e;
-      color: white;
-    }
-
-    .secundario {
-      background: white;
-      color: #334155;
-      border: 1px solid #e2e8f0;
-    }
-
-    .danger {
-      background: #dc2626;
-      color: white;
-    }
-
-    .secao {
-      background: white;
-      padding: 20px;
-      border-radius: 14px;
-      box-shadow: 0 4px 15px rgba(0,0,0,.05);
-    }
-
-    .secao h3 {
-      margin-top: 0;
-    }
-
-    .projeto {
-      border-top: 1px solid #e5e7eb;
-      padding: 14px 0;
-    }
+	<head>
+
+		<meta charset="UTF-8">
+
+			<meta
+				name="viewport"
+				content="width=device-width, initial-scale=1.0"
+			>
+
+				<title>Dashboard - HomologaSolar RT</title>
+
+				<style>
+
+					* {
+					box-sizing: border-box;
+					}
+
+					body {
+					margin: 0;
+					font-family: Arial, sans-serif;
+					background: #f4f6f8;
+					color: #1f2937;
+					}
+
+					header {
+					background: #0f766e;
+					color: white;
+					padding: 18px;
+					}
+
+					header h1 {
+					margin: 0;
+					font-size: 21px;
+					}
+
+					header p {
+					margin: 5px 0 0;
+					font-size: 13px;
+					opacity: .9;
+					}
+
+					.container {
+					max-width: 1000px;
+					margin: auto;
+					padding: 20px;
+					}
+
+					.boas-vindas {
+					margin-bottom: 20px;
+					}
+
+					.boas-vindas h2 {
+					margin: 0 0 6px;
+					}
+
+					.boas-vindas p {
+					margin: 0;
+					color: #64748b;
+					}
+
+					.organizacao {
+					background: white;
+					padding: 18px;
+					border-radius: 14px;
+					margin-bottom: 18px;
+					box-shadow: 0 4px 15px rgba(0,0,0,.05);
+					}
+
+					.organizacao small {
+					color: #64748b;
+					}
+
+					.organizacao h3 {
+					margin: 6px 0 0;
+					}
+
+					.estatisticas {
+					display: grid;
+					grid-template-columns: repeat(
+					auto-fit,
+					minmax(140px, 1fr)
+					);
+
+					gap: 14px;
+					margin-bottom: 20px;
+					}
+
+					.estatistica {
+					background: white;
+					padding: 18px;
+					border-radius: 14px;
+					box-shadow: 0 4px 15px rgba(0,0,0,.05);
+					}
+
+					.estatistica .numero {
+					font-size: 28px;
+					font-weight: bold;
+					color: #0f766e;
+					}
+
+					.estatistica .titulo {
+					margin-top: 5px;
+					color: #64748b;
+					font-size: 14px;
+					}
+					
+					.status-projetos {
+					display: grid;
+					grid-template-columns: repeat(
+					auto-fit,
+					minmax(140px, 1fr)
+					);
+					gap: 12px;
+					margin-bottom: 20px;
+					}
+
+					.status-card {
+					background: white;
+					padding: 15px;
+					border-radius: 14px;
+					box-shadow: 0 4px 15px rgba(0,0,0,.05);
+					}
+
+					.status-card .numero {
+					font-size: 25px;
+					font-weight: bold;
+					color: #0f766e;
+					}
+
+					.status-card .titulo {
+					margin-top: 5px;
+					color: #64748b;
+					font-size: 13px;
+					}
+
+					.acoes {
+					display: grid;
+					grid-template-columns: repeat(
+					auto-fit,
+					minmax(150px, 1fr)
+					);
+
+					gap: 12px;
+					margin-bottom: 25px;
+					}
+
+					button {
+					border: none;
+					border-radius: 9px;
+					padding: 14px;
+					font-size: 14px;
+					font-weight: bold;
+					cursor: pointer;
+					}
+
+					.principal {
+					background: #0f766e;
+					color: white;
+					}
+
+					.secundario {
+					background: white;
+					color: #334155;
+					border: 1px solid #e2e8f0;
+					}
+
+					.danger {
+					background: #dc2626;
+					color: white;
+					}
+
+					.secao {
+					background: white;
+					padding: 20px;
+					border-radius: 14px;
+					box-shadow: 0 4px 15px rgba(0,0,0,.05);
+					}
+
+					.secao h3 {
+					margin-top: 0;
+					}
+
+					.projeto {
+					border-top: 1px solid #e5e7eb;
+					padding: 14px 0;
+					}
+
+					.projeto:first-child {
+					border-top: none;
+					}
+
+					.projeto strong {
+					display: block;
+					margin-bottom: 5px;
+					}
+
+					.projeto span {
+					font-size: 13px;
+					color: #64748b;
+					}
+
+					.vazio {
+					color: #64748b;
+					font-size: 14px;
+					padding: 10px 0;
+					}
+
+					.erro {
+					background: #fee2e2;
+					color: #991b1b;
+					padding: 14px;
+					border-radius: 9px;
+					margin-bottom: 15px;
+					display: none;
+					}
+
+					.carregando {
+					text-align: center;
+					padding: 40px;
+					color: #64748b;
+					}
+
+				</style>
+
+	</head>
+
+	<body>
+
+		<header>
+
+			<h1>☀️ HomologaSolar RT</h1>
+
+			<p>
+				Gestão de homologação fotovoltaica
+			</p>
+
+		</header>
+
+
+		<div class="container">
+
+			<div
+				id="carregando"
+				class="carregando"
+			>
+				Carregando seu painel...
+			</div>
+
+
+			<div
+				id="conteudo"
+				style="display:none;"
+			>
+
+				<div class="boas-vindas">
+
+					<h2>
+						Olá, <span id="nomeUsuario"></span>!
+					</h2>
+
+					<p>
+						Bem-vindo ao seu painel de projetos.
+					</p>
+
+				</div>
+
+
+				<div
+					id="erro"
+					class="erro"
+				></div>
+
+
+				<div class="organizacao">
+
+					<small>
+						Sua organização
+					</small>
+
+					<h3 id="nomeOrganizacao">
+						—
+					</h3>
+
+				</div>
+
+
+				<div class="estatisticas">
+
+					<div class="estatistica">
+
+						<div
+							id="totalProjetos"
+							class="numero"
+						>
+							0
+						</div>
+
+						<div class="titulo">
+							Projetos
+						</div>
+
+					</div>
+
+
+					<div class="estatistica">
+
+						<div
+							id="totalClientes"
+							class="numero"
+						>
+							0
+						</div>
+
+						<div class="titulo">
+							Clientes
+						</div>
+
+					</div>
+
+
+					<div class="estatistica">
+
+						<div
+							id="totalRTs"
+							class="numero"
+						>
+							0
+						</div>
 
-    .projeto:first-child {
-      border-top: none;
-    }
+						<div class="titulo">
+							Responsáveis técnicos
+						</div>
 
-    .projeto strong {
-      display: block;
-      margin-bottom: 5px;
-    }
+					</div>
 
-    .projeto span {
-      font-size: 13px;
-      color: #64748b;
-    }
+				</div>
+				
+				<div class="status-projetos">
 
-    .vazio {
-      color: #64748b;
-      font-size: 14px;
-      padding: 10px 0;
-    }
+					<div class="status-card">
+						<div id="statusRascunho" class="numero">0</div>
+						<div class="titulo">📝 Rascunho</div>
+					</div>
 
-    .erro {
-      background: #fee2e2;
-      color: #991b1b;
-      padding: 14px;
-      border-radius: 9px;
-      margin-bottom: 15px;
-      display: none;
-    }
+					<div class="status-card">
+						<div id="statusDocumentacao" class="numero">0</div>
+						<div class="titulo">📄 Documentação</div>
+					</div>
 
-    .carregando {
-      text-align: center;
-      padding: 40px;
-      color: #64748b;
-    }
+					<div class="status-card">
+						<div id="statusEnviado" class="numero">0</div>
+						<div class="titulo">📤 Enviado</div>
+					</div>
 
-  </style>
+					<div class="status-card">
+						<div id="statusAnalise" class="numero">0</div>
+						<div class="titulo">🔎 Em análise</div>
+					</div>
 
-</head>
+					<div class="status-card">
+						<div id="statusAprovado" class="numero">0</div>
+						<div class="titulo">✅ Aprovado</div>
+					</div>
 
-<body>
+					<div class="status-card">
+						<div id="statusReprovado" class="numero">0</div>
+						<div class="titulo">❌ Reprovado</div>
+					</div>
 
-  <header>
+				</div>
+				
+				<div class="acoes">
 
-    <h1>☀️ HomologaSolar RT</h1>
+					<button
+						class="principal"
+						onclick="window.location.href='projeto.html'"
+					>
+						+ Novo projeto
+					</button>
 
-    <p>
-      Gestão de homologação fotovoltaica
-    </p>
+					<button
+						class="secundario"
+						onclick="window.location.href='clientes.html'"
+					>
+						👥 Clientes
+					</button>
 
-  </header>
+					<button
+						class="secundario"
+						onclick="window.location.href='responsaveis-tecnicos.html'"
+					>
+						👷 RTs
+					</button>
 
+					<button
+						class="danger"
+						onclick="sair()"
+					>
+						Sair
+					</button>
 
-  <div class="container">
+				</div>
 
-    <div
-      id="carregando"
-      class="carregando"
-    >
-      Carregando seu painel...
-    </div>
 
+				<div class="secao">
 
-    <div
-      id="conteudo"
-      style="display:none;"
-    >
+					<h3>
+						📁 Projetos recentes
+					</h3>
 
-      <div class="boas-vindas">
+					<div id="listaProjetos">
 
-        <h2>
-          Olá, <span id="nomeUsuario"></span>!
-        </h2>
+						<div class="vazio">
+							Nenhum projeto cadastrado.
+						</div>
 
-        <p>
-          Bem-vindo ao seu painel de projetos.
-        </p>
+					</div>
 
-      </div>
+				</div>
 
+			</div>
 
-      <div
-        id="erro"
-        class="erro"
-      ></div>
+		</div>
 
 
-      <div class="organizacao">
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        <small>
-          Sua organização
-        </small>
+		<script src="supabase-config.js"></script>
 
-        <h3 id="nomeOrganizacao">
-          —
-        </h3>
 
-      </div>
+		<script>
 
+			const supabaseClient =
+			window.supabase.createClient(
+			SUPABASE_URL,
+			SUPABASE_KEY
+			);
 
-      <div class="estatisticas">
 
-        <div class="estatistica">
+			let usuarioAtual = null;
+			let organizacaoAtual = null;
 
-          <div
-            id="totalProjetos"
-            class="numero"
-          >
-            0
-          </div>
 
-          <div class="titulo">
-            Projetos
-          </div>
+			async function iniciarDashboard() {
 
-        </div>
+			try {
 
+			const {
+			data: sessaoData
+			} =
+			await supabaseClient.auth.getSession();
 
-        <div class="estatistica">
 
-          <div
-            id="totalClientes"
-            class="numero"
-          >
-            0
-          </div>
+			if (
+			!sessaoData ||
+			!sessaoData.session
+			) {
 
-          <div class="titulo">
-            Clientes
-          </div>
-
-        </div>
-
-
-        <div class="estatistica">
-
-          <div
-            id="totalRTs"
-            class="numero"
-          >
-            0
-          </div>
-
-          <div class="titulo">
-            Responsáveis técnicos
-          </div>
-
-        </div>
-
-      </div>
-
-
-      <div class="acoes">
-
-        <button
-          class="principal"
-          onclick="window.location.href='projeto.html'"
-        >
-          + Novo projeto
-        </button>
-
-        <button
-          class="secundario"
-          onclick="window.location.href='clientes.html'"
-        >
-          👥 Clientes
-        </button>
-
-        <button
-  class="secundario"
-  onclick="window.location.href='responsaveis-tecnicos.html'"
->
-     👷 RTs
-  </button>
-
-        <button
-          class="danger"
-          onclick="sair()"
-        >
-          Sair
-        </button>
-
-      </div>
-
-
-      <div class="secao">
-
-        <h3>
-          📁 Projetos recentes
-        </h3>
-
-        <div id="listaProjetos">
-
-          <div class="vazio">
-            Nenhum projeto cadastrado.
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script src="supabase-config.js"></script>
-
-
-  <script>
-
-    const supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
-      );
-
-
-    let usuarioAtual = null;
-    let organizacaoAtual = null;
-
-
-    async function iniciarDashboard() {
-
-      try {
-
-        const {
-          data: sessaoData
-        } =
-        await supabaseClient.auth.getSession();
-
-
-        if (
-          !sessaoData ||
-          !sessaoData.session
-        ) {
-
-          window.location.href =
+			window.location.href =
             "index.html";
 
-          return;
-        }
+			return;
+			}
 
 
-        const {
-          data: usuarioData,
-          error: usuarioError
-        } =
-        await supabaseClient.auth.getUser();
+			const {
+			data: usuarioData,
+			error: usuarioError
+			} =
+			await supabaseClient.auth.getUser();
 
 
-        if (
-          usuarioError ||
-          !usuarioData.user
-        ) {
+			if (
+			usuarioError ||
+			!usuarioData.user
+			) {
 
-          window.location.href =
+			window.location.href =
             "index.html";
 
-          return;
-        }
+			return;
+			}
 
 
-        usuarioAtual =
-          usuarioData.user;
+			usuarioAtual =
+			usuarioData.user;
 
 
-        document.getElementById(
-          "nomeUsuario"
-        ).textContent =
-          usuarioAtual.email.split("@")[0];
+			document.getElementById(
+			"nomeUsuario"
+			).textContent =
+			usuarioAtual.email.split("@")[0];
 
 
-        // ====================================
-        // DESCOBRIR A ORGANIZAÇÃO DO USUÁRIO
-        // ====================================
+			// ====================================
+			// DESCOBRIR A ORGANIZAÇÃO DO USUÁRIO
+			// ====================================
 
-        const {
-          data: membro,
-          error: membroError
-        } =
-        await supabaseClient
-          .from("organizacao_membros")
-          .select(`
+			const {
+			data: membro,
+			error: membroError
+			} =
+			await supabaseClient
+			.from("organizacao_membros")
+			.select(`
             organizacao_id,
             funcao,
             organizacoes (
-              id,
-              nome,
-              email
+			id,
+			nome,
+			email
             )
-          `)
-          .eq(
+			`)
+			.eq(
             "usuario_id",
             usuarioAtual.id
-          )
-          .eq(
+			)
+			.eq(
             "ativo",
             true
-          )
-          .limit(1)
-          .maybeSingle();
+			)
+			.limit(1)
+			.maybeSingle();
 
 
-        if (membroError) {
+			if (membroError) {
 
-          throw membroError;
+			throw membroError;
 
-        }
+			}
 
 
-        if (!membro) {
+			if (!membro) {
 
-          throw new Error(
+			throw new Error(
             "Este usuário não possui uma organização."
-          );
+			);
 
-        }
-
-
-        organizacaoAtual =
-          membro.organizacao_id;
+			}
 
 
-        document.getElementById(
-          "nomeOrganizacao"
-        ).textContent =
-          membro.organizacoes.nome;
+			organizacaoAtual =
+			membro.organizacao_id;
 
 
-        // ====================================
-        // CARREGAR ESTATÍSTICAS
-        // ====================================
-
-        await carregarEstatisticas();
-
-
-        // ====================================
-        // CARREGAR PROJETOS
-        // ====================================
-
-        await carregarProjetos();
+			document.getElementById(
+			"nomeOrganizacao"
+			).textContent =
+			membro.organizacoes.nome;
 
 
-        document.getElementById(
-          "carregando"
-        ).style.display = "none";
+			// ====================================
+			// CARREGAR ESTATÍSTICAS
+			// ====================================
+
+			await carregarEstatisticas();
+
+			await carregarStatusProjetos();
 
 
-        document.getElementById(
-          "conteudo"
-        ).style.display = "block";
+			// ====================================
+			// CARREGAR PROJETOS
+			// ====================================
+
+			await carregarProjetos();
 
 
-      } catch (erro) {
-
-  console.error(erro);
-
-  document.getElementById(
-    "carregando"
-  ).style.display = "none";
-
-  document.getElementById(
-    "conteudo"
-  ).style.display = "block";
+			document.getElementById(
+			"carregando"
+			).style.display = "none";
 
 
-  const caixaErro =
-    document.getElementById("erro");
+			document.getElementById(
+			"conteudo"
+			).style.display = "block";
 
 
-  caixaErro.style.display = "block";
+			} catch (erro) {
 
-  caixaErro.textContent =
-    "ERRO: " +
-    erro.message;
+			console.error(erro);
 
-}
-    }
+			document.getElementById(
+			"carregando"
+			).style.display = "none";
+
+			document.getElementById(
+			"conteudo"
+			).style.display = "block";
 
 
-    async function carregarEstatisticas() {
+			const caixaErro =
+			document.getElementById("erro");
 
-      const [
-        projetos,
-        clientes,
-        rts
-      ] =
-      await Promise.all([
 
-        supabaseClient
-          .from("projetos")
-          .select(
+			caixaErro.style.display = "block";
+
+			caixaErro.textContent =
+			"ERRO: " +
+			erro.message;
+
+			}
+			}
+
+
+			async function carregarEstatisticas() {
+
+			const [
+			projetos,
+			clientes,
+			rts
+			] =
+			await Promise.all([
+
+			supabaseClient
+			.from("projetos")
+			.select(
             "id",
             {
-              count: "exact",
-              head: true
+			count: "exact",
+			head: true
             }
-          )
-          .eq(
+			)
+			.eq(
             "organizacao_id",
             organizacaoAtual
-          ),
+			),
 
-        supabaseClient
-          .from("clientes")
-          .select(
+			supabaseClient
+			.from("clientes")
+			.select(
             "id",
             {
-              count: "exact",
-              head: true
+			count: "exact",
+			head: true
             }
-          )
-          .eq(
+			)
+			.eq(
             "organizacao_id",
             organizacaoAtual
-          ),
+			),
 
-        supabaseClient
-          .from("responsaveis_tecnicos")
-          .select(
+			supabaseClient
+			.from("responsaveis_tecnicos")
+			.select(
             "id",
             {
-              count: "exact",
-              head: true
+			count: "exact",
+			head: true
             }
-          )
-          .eq(
+			)
+			.eq(
             "organizacao_id",
             organizacaoAtual
-          )
-          .eq(
+			)
+			.eq(
             "ativo",
             true
-          )
+			)
 
-      ]);
-
-
-      if (projetos.error)
-        throw projetos.error;
-
-      if (clientes.error)
-        throw clientes.error;
-
-      if (rts.error)
-        throw rts.error;
+			]);
 
 
-      document.getElementById(
-        "totalProjetos"
-      ).textContent =
-        projetos.count || 0;
+			if (projetos.error)
+			throw projetos.error;
+
+			if (clientes.error)
+			throw clientes.error;
+
+			if (rts.error)
+			throw rts.error;
 
 
-      document.getElementById(
-        "totalClientes"
-      ).textContent =
-        clientes.count || 0;
+			document.getElementById(
+			"totalProjetos"
+			).textContent =
+			projetos.count || 0;
 
 
-      document.getElementById(
-        "totalRTs"
-      ).textContent =
-        rts.count || 0;
-
-    }
+			document.getElementById(
+			"totalClientes"
+			).textContent =
+			clientes.count || 0;
 
 
-    async function carregarProjetos() {
+			document.getElementById(
+			"totalRTs"
+			).textContent =
+			rts.count || 0;
 
-      const {
-        data,
-        error
-      } =
-      await supabaseClient
-        .from("projetos")
-        .select(`
-          id,
-          nome,
-          status,
-          criado_em
-        `)
-        .eq(
-          "organizacao_id",
-          organizacaoAtual
-        )
-        .order(
-          "criado_em",
-          {
+			}
+			
+			async function carregarStatusProjetos() {
+
+			const {
+			data,
+			error
+			} =
+			await supabaseClient
+			.from("projetos")
+			.select("status")
+			.eq(
+			"organizacao_id",
+			organizacaoAtual
+			);
+
+
+			if (error)
+			throw error;
+
+
+			const contadores = {
+			rascunho: 0,
+			documentacao: 0,
+			enviado: 0,
+			"em análise": 0,
+			aprovado: 0,
+			reprovado: 0
+			};
+
+
+			(data || []).forEach(projeto => {
+
+			const status =
+			(projeto.status || "rascunho")
+			.toLowerCase();
+
+
+			if (
+			contadores.hasOwnProperty(status)
+			) {
+
+			contadores[status]++;
+
+			}
+
+			});
+
+
+			document.getElementById(
+			"statusRascunho"
+			).textContent =
+			contadores.rascunho;
+
+
+			document.getElementById(
+			"statusDocumentacao"
+			).textContent =
+			contadores.documentacao;
+
+
+			document.getElementById(
+			"statusEnviado"
+			).textContent =
+			contadores.enviado;
+
+
+			document.getElementById(
+			"statusAnalise"
+			).textContent =
+			contadores["em análise"];
+
+
+			document.getElementById(
+			"statusAprovado"
+			).textContent =
+			contadores.aprovado;
+
+
+			document.getElementById(
+			"statusReprovado"
+			).textContent =
+			contadores.reprovado;
+
+			}
+			
+			async function carregarProjetos() {
+
+			const {
+			data,
+			error
+			} =
+			await supabaseClient
+			.from("projetos")
+			.select(`
+			id,
+			nome,
+			status,
+			criado_em
+			`)
+			.eq(
+			"organizacao_id",
+			organizacaoAtual
+			)
+			.order(
+			"criado_em",
+			{
             ascending: false
-          }
-        )
-        .limit(5);
+			}
+			)
+			.limit(5);
 
 
-      if (error)
-        throw error;
+			if (error)
+			throw error;
 
 
-      const lista =
-        document.getElementById(
-          "listaProjetos"
-        );
+			const lista =
+			document.getElementById(
+			"listaProjetos"
+			);
 
 
-      if (!data || data.length === 0) {
+			if (!data || data.length === 0) {
 
-        lista.innerHTML =
-          '<div class="vazio">Nenhum projeto cadastrado.</div>';
+			lista.innerHTML =
+			'<div class="vazio">Nenhum projeto cadastrado.</div>';
 
-        return;
+			return;
 
-      }
-
-
-      lista.innerHTML = "";
+			}
 
 
-      data.forEach(projeto => {
-
-  const item =
-    document.createElement("div");
-
-  item.className = "projeto";
-
-  item.style.cursor = "pointer";
-
-  item.onclick = function() {
-
-    window.location.href =
-      "projeto-detalhes.html?id=" +
-      encodeURIComponent(projeto.id);
-
-  };
+			lista.innerHTML = "";
 
 
-  item.innerHTML = `
-    <strong>${escaparHtml(projeto.nome)}</strong>
-    <span>
-      Status: ${escaparHtml(projeto.status || "Sem status")}
-    </span>
-  `;
+			data.forEach(projeto => {
+
+			const item =
+			document.createElement("div");
+
+			item.className = "projeto";
+
+			item.style.cursor = "pointer";
+
+			item.onclick = function() {
+
+			window.location.href =
+			"projeto-detalhes.html?id=" +
+			encodeURIComponent(projeto.id);
+
+			};
 
 
-  lista.appendChild(item);
-
-});
-
-    }
-
-
-    function escaparHtml(texto) {
-
-      const div =
-        document.createElement("div");
-
-      div.textContent =
-        texto || "";
-
-      return div.innerHTML;
-
-    }
+			item.innerHTML = `
+			<strong>${escaparHtml(projeto.nome)}</strong>
+			<span>
+				Status: ${escaparHtml(projeto.status || "Sem status")}
+			</span>
+			`;
 
 
-    function novoProjeto() {
+			lista.appendChild(item);
 
-      alert(
-        "A tela de criação de projeto será construída na próxima etapa."
-      );
+			});
 
-    }
+			}
 
 
-    async function sair() {
+			function escaparHtml(texto) {
 
-      await supabaseClient.auth.signOut();
+			const div =
+			document.createElement("div");
 
-      window.location.href =
-        "index.html";
+			div.textContent =
+			texto || "";
 
-    }
+			return div.innerHTML;
+
+			}
 
 
-    iniciarDashboard();
+			function novoProjeto() {
 
-  </script>
+			alert(
+			"A tela de criação de projeto será construída na próxima etapa."
+			);
 
-</body>
+			}
+
+
+			async function sair() {
+
+			await supabaseClient.auth.signOut();
+
+			window.location.href =
+			"index.html";
+
+			}
+
+
+			iniciarDashboard();
+
+		</script>
+
+	</body>
 
 </html>
