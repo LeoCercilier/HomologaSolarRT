@@ -1,726 +1,1037 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-<head>
-
-<meta charset="UTF-8">
-
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1.0"
->
-
-<title>Novo Projeto - HomologaSolar RT</title>
-
-<style>
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f6f8;
-  color: #1f2937;
-}
-
-header {
-  background: #0f766e;
-  color: white;
-  padding: 18px;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 21px;
-}
-
-.container {
-  max-width: 700px;
-  margin: auto;
-  padding: 20px;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 14px;
-  box-shadow: 0 3px 12px rgba(0,0,0,.06);
-}
-
-h2 {
-  margin-top: 0;
-}
-
-.campo {
-  margin-bottom: 16px;
-}
-
-label {
-  display: block;
-  font-weight: bold;
-  font-size: 14px;
-  margin-bottom: 6px;
-}
-
-input,
-select,
-textarea {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid #cbd5e1;
-  border-radius: 9px;
-  font-size: 15px;
-  background: white;
-}
-
-textarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-.acoes {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-button {
-  border: none;
-  border-radius: 9px;
-  padding: 13px 16px;
-  font-weight: bold;
-  cursor: pointer;
-  flex: 1;
-}
-
-.btn-principal {
-  background: #0f766e;
-  color: white;
-}
-
-.btn-secundario {
-  background: #e2e8f0;
-  color: #334155;
-}
+	<head>
+
+		<meta charset="UTF-8">
+
+			<meta
+				name="viewport"
+				content="width=device-width, initial-scale=1.0"
+			>
+
+				<title>Novo Projeto - HomologaSolar RT</title>
+
+				<style>
+
+					* {
+					box-sizing: border-box;
+					}
+
+					body {
+					margin: 0;
+					font-family: Arial, sans-serif;
+					background: #f4f6f8;
+					color: #1f2937;
+					}
+
+					header {
+					background: #0f766e;
+					color: white;
+					padding: 18px;
+					}
+
+					header h1 {
+					margin: 0;
+					font-size: 21px;
+					}
+
+					.container {
+					max-width: 700px;
+					margin: auto;
+					padding: 20px;
+					}
+
+					.card {
+					background: white;
+					padding: 20px;
+					border-radius: 14px;
+					box-shadow: 0 3px 12px rgba(0,0,0,.06);
+					}
+
+					h2 {
+					margin-top: 0;
+					}
+
+					.campo {
+					margin-bottom: 16px;
+					}
+
+					label {
+					display: block;
+					font-weight: bold;
+					font-size: 14px;
+					margin-bottom: 6px;
+					}
+
+					input,
+					select,
+					textarea {
+					width: 100%;
+					padding: 13px;
+					border: 1px solid #cbd5e1;
+					border-radius: 9px;
+					font-size: 15px;
+					background: white;
+					}
+
+					textarea {
+					min-height: 100px;
+					resize: vertical;
+					}
+
+					.acoes {
+					display: flex;
+					gap: 10px;
+					margin-top: 20px;
+					}
+
+					button {
+					border: none;
+					border-radius: 9px;
+					padding: 13px 16px;
+					font-weight: bold;
+					cursor: pointer;
+					flex: 1;
+					}
+
+					.btn-principal {
+					background: #0f766e;
+					color: white;
+					}
+
+					.btn-secundario {
+					background: #e2e8f0;
+					color: #334155;
+					}
 
-button:disabled {
-  opacity: .6;
-}
+					button:disabled {
+					opacity: .6;
+					}
 
-.erro {
-  display: none;
-  background: #fee2e2;
-  color: #991b1b;
-  padding: 14px;
-  border-radius: 9px;
-  margin-bottom: 15px;
-}
+					.erro {
+					display: none;
+					background: #fee2e2;
+					color: #991b1b;
+					padding: 14px;
+					border-radius: 9px;
+					margin-bottom: 15px;
+					}
 
-.sucesso {
-  display: none;
-  background: #dcfce7;
-  color: #166534;
-  padding: 14px;
-  border-radius: 9px;
-  margin-bottom: 15px;
-}
+					.sucesso {
+					display: none;
+					background: #dcfce7;
+					color: #166534;
+					padding: 14px;
+					border-radius: 9px;
+					margin-bottom: 15px;
+					}
 
-.carregando {
-  text-align: center;
-  color: #64748b;
-  padding: 20px;
-}
+					.carregando {
+					text-align: center;
+					color: #64748b;
+					padding: 20px;
+					}
 
-</style>
+				</style>
 
-</head>
+	</head>
 
-<body>
+	<body>
 
-<header>
+		<header>
 
-<h1>☀️ HomologaSolar RT</h1>
+			<h1>☀️ HomologaSolar RT</h1>
 
-</header>
+		</header>
 
 
-<div class="container">
+		<div class="container">
 
-<div class="card">
+			<div class="card">
 
-<h2>📁 Novo projeto</h2>
+				<h2>📁 Novo projeto</h2>
 
-<div
-  id="erro"
-  class="erro"
-></div>
+				<div
+					id="erro"
+					class="erro"
+				></div>
 
-<div
-  id="sucesso"
-  class="sucesso"
-></div>
+				<div
+					id="sucesso"
+					class="sucesso"
+				></div>
 
 
-<form id="formProjeto">
+				<form id="formProjeto">
 
 
-<div class="campo">
+					<div class="campo">
 
-<label>
-Cliente *
-</label>
+						<label>
+							Cliente *
+						</label>
 
-<select
-  id="cliente_id"
-  required
->
+						<select
+							id="cliente_id"
+							required
+						>
 
-<option value="">
-Carregando clientes...
-</option>
+							<option value="">
+								Carregando clientes...
+							</option>
 
-</select>
+						</select>
 
-</div>
+						<button
+							type="button"
+							class="btn-secundario"
+							style="margin-top:8px; width:100%;"
+							onclick="mostrarCadastroCliente()"
+						>
+							+ Cadastrar novo cliente
+						</button>
 
+					</div>
 
-<div class="campo">
+					<div
+						id="cadastroCliente"
+						style="
+						display:none;
+						background:#f8fafc;
+						border:1px solid #e2e8f0;
+						border-radius:10px;
+						padding:15px;
+						margin-bottom:16px;
+						"
+					>
 
-<label>
-Nome do projeto *
-</label>
+						<h3 style="margin-top:0;">
+							👤 Cadastrar novo cliente
+						</h3>
 
-<input
-  id="nome"
-  placeholder="Ex.: Sistema Fotovoltaico - Cliente Teste"
-  required
->
+						<div class="campo">
 
-</div>
+							<label>
+								Nome *
+							</label>
 
+							<input
+								id="novo_cliente_nome"
+								placeholder="Nome completo ou razão social"
+							>
 
-<div class="campo">
+						</div>
 
-<label>
-Responsável Técnico
-</label>
+						<div class="campo">
 
-<select
-  id="responsavel_tecnico_id"
->
+							<label>
+								CPF/CNPJ
+							</label>
 
-<option value="">
-Nenhum RT selecionado
-</option>
+							<input
+								id="novo_cliente_cpf_cnpj"
+								placeholder="CPF ou CNPJ"
+							>
 
-</select>
+						</div>
 
-</div>
+						<div class="campo">
 
+							<label>
+								E-mail
+							</label>
 
-<div class="campo">
+							<input
+								id="novo_cliente_email"
+								type="email"
+								placeholder="E-mail"
+							>
 
-<label>
-Observações
-</label>
+						</div>
 
-<textarea
-  id="observacoes"
-  placeholder="Observações iniciais do projeto..."
-></textarea>
+						<div class="campo">
 
-</div>
+							<label>
+								Telefone
+							</label>
 
+							<input
+								id="novo_cliente_telefone"
+								placeholder="Telefone / WhatsApp"
+							>
 
-<div class="acoes">
+						</div>
 
-<button
-  type="button"
-  class="btn-secundario"
-  onclick="window.location.href='dashboard.html'"
->
-Cancelar
-</button>
+						<div class="acoes">
 
-<button
-  type="submit"
-  class="btn-principal"
-  id="btnSalvar"
->
-Salvar rascunho
-</button>
+							<button
+								type="button"
+								class="btn-secundario"
+								onclick="cancelarCadastroCliente()"
+							>
+								Cancelar
+							</button>
 
-</div>
+							<button
+								type="button"
+								class="btn-principal"
+								id="btnSalvarCliente"
+								onclick="salvarNovoCliente()"
+							>
+								Salvar cliente
+							</button>
 
-</form>
+						</div>
 
-</div>
+					</div>
 
-</div>
+					<div class="campo">
 
+						<label>
+							Nome do projeto *
+						</label>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+						<input
+							id="nome"
+							placeholder="Ex.: Sistema Fotovoltaico - Cliente Teste"
+							required
+						>
 
-<script src="supabase-config.js"></script>
+					</div>
 
 
-<script>
+					<div class="campo">
 
-const supabaseClient =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY
-  );
+						<label>
+							Responsável Técnico
+						</label>
 
+						<select
+							id="responsavel_tecnico_id"
+						>
 
-let usuarioAtual = null;
-let organizacaoAtual = null;
+							<option value="">
+								Nenhum RT selecionado
+							</option>
 
+						</select>
 
-/* =========================================
-   INICIAR
-========================================= */
+					</div>
 
-async function iniciar() {
 
-  try {
+					<div class="campo">
 
-    const {
-      data,
-      error
-    } =
-    await supabaseClient.auth.getUser();
+						<label>
+							Observações
+						</label>
 
+						<textarea
+							id="observacoes"
+							placeholder="Observações iniciais do projeto..."
+						></textarea>
 
-    if (
-      error ||
-      !data.user
-    ) {
+					</div>
 
-      window.location.href =
-        "index.html";
 
-      return;
+					<div class="acoes">
 
-    }
+						<button
+							type="button"
+							class="btn-secundario"
+							onclick="window.location.href='dashboard.html'"
+						>
+							Cancelar
+						</button>
 
+						<button
+							type="submit"
+							class="btn-principal"
+							id="btnSalvar"
+						>
+							Salvar rascunho
+						</button>
 
-    usuarioAtual =
-      data.user;
+					</div>
 
+				</form>
 
-    /* ================================
-       DESCOBRIR ORGANIZAÇÃO
-    ================================= */
+			</div>
 
-    const {
-      data: membro,
-      error: erroMembro
-    } =
-    await supabaseClient
-      .from("organizacao_membros")
-      .select("organizacao_id")
-      .eq(
-        "usuario_id",
-        usuarioAtual.id
-      )
-      .eq(
-        "ativo",
-        true
-      )
-      .limit(1)
-      .maybeSingle();
+		</div>
 
 
-    if (erroMembro)
-      throw erroMembro;
+		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+		<script src="supabase-config.js"></script>
 
-    if (!membro) {
 
-      throw new Error(
-        "Usuário sem organização."
-      );
+		<script>
 
-    }
+			const supabaseClient =
+			window.supabase.createClient(
+			SUPABASE_URL,
+			SUPABASE_KEY
+			);
 
 
-    organizacaoAtual =
-      membro.organizacao_id;
+			let usuarioAtual = null;
+			let organizacaoAtual = null;
 
 
-    await carregarClientes();
+			/* =========================================
+			INICIAR
+			========================================= */
 
-    await carregarRTs();
+			async function iniciar() {
 
-  }
+			try {
 
-  catch (erro) {
+			const {
+			data,
+			error
+			} =
+			await supabaseClient.auth.getUser();
 
-    mostrarErro(
-      erro.message
-    );
 
-  }
+			if (
+			error ||
+			!data.user
+			) {
 
-}
+			window.location.href =
+			"index.html";
 
+			return;
 
-/* =========================================
-   CLIENTES
-========================================= */
+			}
 
-async function carregarClientes() {
 
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("clientes")
-    .select(`
-      id,
-      nome
-    `)
-    .eq(
-      "organizacao_id",
-      organizacaoAtual
-    )
-    .order(
-      "nome",
-      {
-        ascending: true
-      }
-    );
+			usuarioAtual =
+			data.user;
 
 
-  if (error)
-    throw error;
+			/* ================================
+			DESCOBRIR ORGANIZAÇÃO
+			================================= */
 
+			const {
+			data: membro,
+			error: erroMembro
+			} =
+			await supabaseClient
+			.from("organizacao_membros")
+			.select("organizacao_id")
+			.eq(
+			"usuario_id",
+			usuarioAtual.id
+			)
+			.eq(
+			"ativo",
+			true
+			)
+			.limit(1)
+			.maybeSingle();
 
-  const select =
-    document.getElementById(
-      "cliente_id"
-    );
 
+			if (erroMembro)
+			throw erroMembro;
 
-  select.innerHTML =
-    `<option value="">
-      Selecione um cliente
-    </option>`;
 
+			if (!membro) {
 
-  if (
-    !data ||
-    data.length === 0
-  ) {
+			throw new Error(
+			"Usuário sem organização."
+			);
 
-    select.innerHTML =
-      `<option value="">
-        Nenhum cliente cadastrado
-      </option>`;
+			}
 
-    return;
 
-  }
+			organizacaoAtual =
+			membro.organizacao_id;
 
 
-  data.forEach(cliente => {
+			await carregarClientes();
 
-    const option =
-      document.createElement(
-        "option"
-      );
+			await carregarRTs();
 
-    option.value =
-      cliente.id;
+			}
 
-    option.textContent =
-      cliente.nome;
+			catch (erro) {
 
-    select.appendChild(
-      option
-    );
+			mostrarErro(
+			erro.message
+			);
 
-  });
+			}
 
-}
+			}
 
 
-/* =========================================
-   RESPONSÁVEIS TÉCNICOS
-========================================= */
+			/* =========================================
+			CLIENTES
+			========================================= */
 
-async function carregarRTs() {
+			async function carregarClientes() {
 
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("responsaveis_tecnicos")
-    .select(`
-      id,
-      nome,
-      crea,
-      uf_crea
-    `)
-    .eq(
-      "organizacao_id",
-      organizacaoAtual
-    )
-    .eq(
-      "ativo",
-      true
-    )
-    .order(
-      "nome",
-      {
-        ascending: true
-      }
-    );
+			const {
+			data,
+			error
+			} =
+			await supabaseClient
+			.from("clientes")
+			.select(`
+			id,
+			nome
+			`)
+			.eq(
+			"organizacao_id",
+			organizacaoAtual
+			)
+			.order(
+			"nome",
+			{
+			ascending: true
+			}
+			);
 
 
-  if (error)
-    throw error;
+			if (error)
+			throw error;
 
 
-  const select =
-    document.getElementById(
-      "responsavel_tecnico_id"
-    );
+			const select =
+			document.getElementById(
+			"cliente_id"
+			);
 
 
-  select.innerHTML =
-    `<option value="">
-      Nenhum RT selecionado
-    </option>`;
+			select.innerHTML =
+			`<option value="">
+				Selecione um cliente
+			</option>`;
 
 
-  if (!data)
-    return;
+			if (
+			!data ||
+			data.length === 0
+			) {
 
+			select.innerHTML =
+			`<option value="">
+				Nenhum cliente cadastrado
+			</option>`;
 
-  data.forEach(rt => {
+			return;
 
-    const option =
-      document.createElement(
-        "option"
-      );
+			}
 
-    option.value =
-      rt.id;
 
-    option.textContent =
-      rt.nome +
-      " - CREA " +
-      rt.crea +
-      (
-        rt.uf_crea
-          ? "/" + rt.uf_crea
-          : ""
-      );
+			data.forEach(cliente => {
 
-    select.appendChild(
-      option
-    );
+			const option =
+			document.createElement(
+			"option"
+			);
 
-  });
+			option.value =
+			cliente.id;
 
-}
+			option.textContent =
+			cliente.nome;
 
+			select.appendChild(
+			option
+			);
 
-/* =========================================
-   SALVAR PROJETO
-========================================= */
+			});
 
-document
-  .getElementById("formProjeto")
-  .addEventListener(
-    "submit",
-    async function(event) {
+			}
 
-      event.preventDefault();
+			/* =========================================
+			CADASTRO RÁPIDO DE CLIENTE
+			========================================= */
 
+			function mostrarCadastroCliente() {
 
-      const botao =
-        document.getElementById(
-          "btnSalvar"
-        );
+			document.getElementById(
+			"cadastroCliente"
+			).style.display = "block";
 
+			document.getElementById(
+			"novo_cliente_nome"
+			).focus();
 
-      botao.disabled = true;
+			}
 
-      botao.textContent =
-        "Salvando...";
 
+			function cancelarCadastroCliente() {
 
-      try {
+			document.getElementById(
+			"cadastroCliente"
+			).style.display = "none";
 
-        const clienteId =
-          document
+			document.getElementById(
+			"novo_cliente_nome"
+			).value = "";
+
+			document.getElementById(
+			"novo_cliente_cpf_cnpj"
+			).value = "";
+
+			document.getElementById(
+			"novo_cliente_email"
+			).value = "";
+
+			document.getElementById(
+			"novo_cliente_telefone"
+			).value = "";
+
+			}
+
+
+			async function salvarNovoCliente() {
+
+			const botao =
+			document.getElementById(
+			"btnSalvarCliente"
+			);
+
+			const nome =
+			document.getElementById(
+			"novo_cliente_nome"
+			).value.trim();
+
+			const cpfCnpj =
+			document.getElementById(
+			"novo_cliente_cpf_cnpj"
+			).value.trim();
+
+			const email =
+			document.getElementById(
+			"novo_cliente_email"
+			).value.trim();
+
+			const telefone =
+			document.getElementById(
+			"novo_cliente_telefone"
+			).value.trim();
+
+
+			if (!nome) {
+
+			mostrarErro(
+			"Informe o nome do cliente."
+			);
+
+			return;
+
+			}
+
+
+			botao.disabled = true;
+
+			botao.textContent =
+			"Salvando...";
+
+
+			try {
+
+			const {
+			data,
+			error
+			} =
+			await supabaseClient
+			.from("clientes")
+			.insert({
+
+			organizacao_id:
+			organizacaoAtual,
+
+			nome:
+			nome,
+
+			cpf_cnpj:
+			cpfCnpj || null,
+
+			email:
+			email || null,
+
+			telefone:
+			telefone || null,
+
+			criado_por:
+			usuarioAtual.id
+
+			})
+			.select()
+			.single();
+
+
+			if (error)
+			throw error;
+
+
+			/*
+			Adiciona o novo cliente
+			imediatamente na lista
+			*/
+
+			const select =
+			document.getElementById(
+			"cliente_id"
+			);
+
+
+			const option =
+			document.createElement(
+			"option"
+			);
+
+
+			option.value =
+			data.id;
+
+			option.textContent =
+			data.nome;
+
+
+			select.appendChild(
+			option
+			);
+
+
+			/*
+			Seleciona automaticamente
+			o cliente recém-criado
+			*/
+
+			select.value =
+			data.id;
+
+
+			/*
+			Fecha o formulário
+			*/
+
+			cancelarCadastroCliente();
+
+
+			mostrarSucesso(
+			"Cliente cadastrado com sucesso!"
+			);
+
+
+			}
+
+			catch (erro) {
+
+			mostrarErro(
+			erro.message
+			);
+
+			}
+
+			finally {
+
+			botao.disabled = false;
+
+			botao.textContent =
+			"Salvar cliente";
+
+			}
+
+			}
+
+			/* =========================================
+			RESPONSÁVEIS TÉCNICOS
+			========================================= */
+
+			async function carregarRTs() {
+
+			const {
+			data,
+			error
+			} =
+			await supabaseClient
+			.from("responsaveis_tecnicos")
+			.select(`
+			id,
+			nome,
+			crea,
+			uf_crea
+			`)
+			.eq(
+			"organizacao_id",
+			organizacaoAtual
+			)
+			.eq(
+			"ativo",
+			true
+			)
+			.order(
+			"nome",
+			{
+			ascending: true
+			}
+			);
+
+
+			if (error)
+			throw error;
+
+
+			const select =
+			document.getElementById(
+			"responsavel_tecnico_id"
+			);
+
+
+			select.innerHTML =
+			`<option value="">
+				Nenhum RT selecionado
+			</option>`;
+
+
+			if (!data)
+			return;
+
+
+			data.forEach(rt => {
+
+			const option =
+			document.createElement(
+			"option"
+			);
+
+			option.value =
+			rt.id;
+
+			option.textContent =
+			rt.nome +
+			" - CREA " +
+			rt.crea +
+			(
+			rt.uf_crea
+			? "/" + rt.uf_crea
+			: ""
+			);
+
+			select.appendChild(
+			option
+			);
+
+			});
+
+			}
+
+
+			/* =========================================
+			SALVAR PROJETO
+			========================================= */
+
+			document
+			.getElementById("formProjeto")
+			.addEventListener(
+			"submit",
+			async function(event) {
+
+			event.preventDefault();
+
+
+			const botao =
+			document.getElementById(
+			"btnSalvar"
+			);
+
+
+			botao.disabled = true;
+
+			botao.textContent =
+			"Salvando...";
+
+
+			try {
+
+			const clienteId =
+			document
             .getElementById("cliente_id")
             .value;
 
 
-        const nome =
-          document
+			const nome =
+			document
             .getElementById("nome")
             .value
             .trim();
 
 
-        const rtId =
-          document
+			const rtId =
+			document
             .getElementById(
-              "responsavel_tecnico_id"
+			"responsavel_tecnico_id"
             )
             .value;
 
 
-        const observacoes =
-          document
+			const observacoes =
+			document
             .getElementById(
-              "observacoes"
+			"observacoes"
             )
             .value
             .trim();
 
 
-        if (!clienteId) {
+			if (!clienteId) {
 
-          throw new Error(
+			throw new Error(
             "Selecione um cliente."
-          );
+			);
 
-        }
+			}
 
 
-        if (!nome) {
+			if (!nome) {
 
-          throw new Error(
+			throw new Error(
             "Informe o nome do projeto."
-          );
+			);
 
-        }
+			}
 
 
-        const {
-          data,
-          error
-        } =
-        await supabaseClient
-          .from("projetos")
-          .insert({
+			const {
+			data,
+			error
+			} =
+			await supabaseClient
+			.from("projetos")
+			.insert({
 
             organizacao_id:
-              organizacaoAtual,
+			organizacaoAtual,
 
             cliente_id:
-              clienteId,
+			clienteId,
 
             nome:
-              nome,
+			nome,
 
             status:
-              "rascunho",
+			"rascunho",
 
             observacoes:
-              observacoes || null,
+			observacoes || null,
 
             criado_por:
-              usuarioAtual.id,
+			usuarioAtual.id,
 
             responsavel_tecnico_id:
-              rtId || null
+			rtId || null
 
-          })
-          .select()
-          .single();
-
-
-        if (error)
-          throw error;
+			})
+			.select()
+			.single();
 
 
-        mostrarSucesso(
-          "Projeto criado com sucesso!"
-        );
+			if (error)
+			throw error;
 
 
-        setTimeout(() => {
-
-  window.location.href =
-    "projeto-detalhes.html?id=" + data.id;
-
-}, 1200);
-
-      }
-
-      catch (erro) {
-
-        mostrarErro(
-          erro.message
-        );
-
-      }
-
-      finally {
-
-        botao.disabled = false;
-
-        botao.textContent =
-          "Salvar rascunho";
-
-      }
-
-    }
-  );
+			mostrarSucesso(
+			"Projeto criado com sucesso!"
+			);
 
 
-/* =========================================
-   MENSAGENS
-========================================= */
+			setTimeout(() => {
 
-function mostrarErro(mensagem) {
+			window.location.href =
+			"projeto-detalhes.html?id=" + data.id;
 
-  const elemento =
-    document.getElementById(
-      "erro"
-    );
+			}, 1200);
 
-  elemento.textContent =
-    "ERRO: " + mensagem;
+			}
 
-  elemento.style.display =
-    "block";
+			catch (erro) {
 
-}
+			mostrarErro(
+			erro.message
+			);
 
+			}
 
-function mostrarSucesso(mensagem) {
+			finally {
 
-  const elemento =
-    document.getElementById(
-      "sucesso"
-    );
+			botao.disabled = false;
 
-  elemento.textContent =
-    mensagem;
+			botao.textContent =
+			"Salvar rascunho";
 
-  elemento.style.display =
-    "block";
+			}
 
-}
+			}
+			);
 
 
-iniciar();
+			/* =========================================
+			MENSAGENS
+			========================================= */
 
-</script>
+			function mostrarErro(mensagem) {
 
-</body>
+			const sucesso =
+			document.getElementById(
+			"sucesso"
+			);
 
-  </html>
+			sucesso.style.display =
+			"none";
+
+
+			const elemento =
+			document.getElementById(
+			"erro"
+			);
+
+			elemento.textContent =
+			"ERRO: " + mensagem;
+
+			elemento.style.display =
+			"block";
+
+			}
+
+
+			function mostrarSucesso(mensagem) {
+
+			const erro =
+			document.getElementById(
+			"erro"
+			);
+
+			erro.style.display =
+			"none";
+
+
+			const elemento =
+			document.getElementById(
+			"sucesso"
+			);
+
+			elemento.textContent =
+			mensagem;
+
+			elemento.style.display =
+			"block";
+
+			}
+
+
+			iniciar();
+
+		</script>
+
+	</body>
+
+</html>
