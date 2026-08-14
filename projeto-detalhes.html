@@ -1719,7 +1719,157 @@ async function duplicarProjeto() {
   }
 
 		  }
+/* =========================================
+   EXCLUIR PROJETO
+========================================= */
 
+async function excluirProjeto() {
+
+  try {
+
+    if (!projetoId) {
+      throw new Error(
+        "ID do projeto não encontrado."
+      );
+    }
+
+    if (!organizacaoAtual) {
+      throw new Error(
+        "Organização atual não encontrada."
+      );
+    }
+
+
+    /* =====================================
+       CONFIRMAÇÃO
+    ===================================== */
+
+    const confirmar = confirm(
+      "⚠️ ATENÇÃO!\n\n" +
+      "Você está prestes a excluir este projeto.\n\n" +
+      "Serão excluídos:\n" +
+      "• Projeto\n" +
+      "• Sistema fotovoltaico\n" +
+      "• Checklist de documentos\n\n" +
+      "Esta ação não poderá ser desfeita.\n\n" +
+      "Deseja realmente continuar?"
+    );
+
+
+    if (!confirmar) {
+      return;
+    }
+
+
+    /* =====================================
+       1. EXCLUIR DOCUMENTOS DO BANCO
+    ===================================== */
+
+    const {
+      error: erroDocumentos
+    } =
+    await supabaseClient
+      .from("documentos_projeto")
+      .delete()
+      .eq(
+        "projeto_id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      );
+
+
+    if (erroDocumentos) {
+      throw erroDocumentos;
+    }
+
+
+    /* =====================================
+       2. EXCLUIR SISTEMA FOTOVOLTAICO
+    ===================================== */
+
+    const {
+      error: erroSistema
+    } =
+    await supabaseClient
+      .from("sistemas_fotovoltaicos")
+      .delete()
+      .eq(
+        "projeto_id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      );
+
+
+    if (erroSistema) {
+      throw erroSistema;
+    }
+
+
+    /* =====================================
+       3. EXCLUIR PROJETO
+    ===================================== */
+
+    const {
+      error: erroProjeto
+    } =
+    await supabaseClient
+      .from("projetos")
+      .delete()
+      .eq(
+        "id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      );
+
+
+    if (erroProjeto) {
+      throw erroProjeto;
+    }
+
+
+    /* =====================================
+       SUCESSO
+    ===================================== */
+
+    alert(
+      "✅ Projeto excluído com sucesso!"
+    );
+
+
+    /* =====================================
+       VOLTAR PARA A LISTA
+    ===================================== */
+
+    window.location.href =
+      "index.html";
+
+  }
+
+  catch (erro) {
+
+    console.error(
+      "Erro ao excluir projeto:",
+      erro
+    );
+
+    alert(
+      "❌ Não foi possível excluir o projeto.\n\n" +
+      "Erro: " +
+      erro.message
+    );
+
+  }
+
+}
 
 /* =========================================
    ERRO
