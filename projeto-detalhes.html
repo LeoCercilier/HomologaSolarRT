@@ -4787,15 +4787,13 @@ async function avancarEtapaHomologacao() {
     ================================= */
 
     document.getElementById(
-      "statusProjeto"
-    ).textContent =
-      proximoStatus;
+			"statusProjeto"
+			).textContent =
+			proximoStatus;
 
-
-    atuali
-	fuxoHomologacao(
-      proximoStatus
-    );
+			atualizarFluxoHomologacao(
+			proximoStatus
+			);
 
 
     alert(
