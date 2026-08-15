@@ -2918,7 +2918,7 @@ document.getElementById(
 
 			}
 
-			else if (documento.status === "rejeitado") {
+			else if (documento.status === "reprovado") {
 
 			corFundo = "#fef2f2";
 			corBorda = "#fecaca";
@@ -3150,14 +3150,14 @@ document.getElementById(
 
 
 					<option
-						value="rejeitado"
+						value="reprovado"
 						${
-						documento.status === "rejeitado"
+						documento.status === "reprovado"
 					? "selected"
 					: ""
 					}
 					>
-					🔴 Rejeitado
+					🔴 Reprovado
 					</option>
 
 				</select>
@@ -4549,8 +4549,8 @@ function atualizarFluxoHomologacao(status) {
       texto: "✅ Aprovado"
     },
     {
-      status: "rejeitado",
-      texto: "❌ Rejeitado"
+      status: "reprovado",
+      texto: "❌ Reprovado"
     }
   ];
 
@@ -4585,8 +4585,8 @@ function atualizarFluxoHomologacao(status) {
 			etapaAtual = "aprovado";
 			}
 
-			else if (etapaAtual === "rejeitado") {
-			etapaAtual = "rejeitado";
+			else if (etapaAtual === "reprovado") {
+			etapaAtual = "reprovado";
 			}
 
 			else {
