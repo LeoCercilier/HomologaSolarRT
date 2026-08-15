@@ -857,7 +857,7 @@
 			item.className = "projeto";
 
 			item.style.cursor = "pointer";
-			
+
 			item.dataset.status = projeto.status || "";
 
 			item.onclick = function() {
@@ -880,19 +880,6 @@
 			lista.appendChild(item);
 
 			});
-
-			}
-
-
-			function escaparHtml(texto) {
-
-			const div =
-			document.createElement("div");
-
-			div.textContent =
-			texto || "";
-
-			return div.innerHTML;
 
 			}
 
@@ -924,6 +911,18 @@
 
 			}
 
+			function escaparHtml(texto) {
+
+			const div =
+			document.createElement("div");
+
+			div.textContent =
+			texto || "";
+
+			return div.innerHTML;
+
+			}
+
 			function novoProjeto() {
 
 			alert(
@@ -949,4 +948,4 @@
 
 	</body>
 
-							</html>
+</html>
