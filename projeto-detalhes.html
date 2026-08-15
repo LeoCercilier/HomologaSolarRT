@@ -4727,31 +4727,31 @@ async function avancarEtapaHomologacao() {
 			}
 
 			else if (
-			statusAtual === "enviado"
-			) {
+  statusAtual === "enviado"
+) {
 
-			proximoStatus =
-			"em_analise";
+  proximoStatus =
+    "em_analise";
 
-			}
-			
-			else if (
-			statusAtual === "em_analise"
-			) {
+}
 
-			proximoStatus =
-			"aprovado";
+else if (
+  statusAtual === "em_analise"
+) {
 
-			}
-			
-			else if (
-			statusAtual === "aprovado"
-			) {
+  proximoStatus =
+    "aprovado";
 
-			proximoStatus =
-			"rejeitado";
+}
 
-			}
+else if (
+  statusAtual === "aprovado"
+) {
+
+  proximoStatus =
+    "reprovado";
+
+}
 
 		
     if (!proximoStatus) {
