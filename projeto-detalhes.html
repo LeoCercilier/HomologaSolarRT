@@ -4562,36 +4562,36 @@ function atualizarFluxoHomologacao(status) {
      DEFINIR ETAPA VISUAL ATUAL
   ================================= */
 
-  let etapaAtual =
-  "rascunho";
+  
+
+			
+			let etapaAtual =
+			status || "rascunho";
 
 
-if (
-  status === "em_analise"
-) {
+			if (etapaAtual === "documentacao") {
+			etapaAtual = "documentacao";
+			}
 
-  etapaAtual =
-    "em_analise";
+			else if (etapaAtual === "enviado") {
+			etapaAtual = "enviado";
+			}
 
-}
+			else if (etapaAtual === "em_analise") {
+			etapaAtual = "em_analise";
+			}
 
-else if (
-  status === "aprovado"
-) {
+			else if (etapaAtual === "aprovado") {
+			etapaAtual = "aprovado";
+			}
 
-  etapaAtual =
-    "aprovado";
+			else if (etapaAtual === "rejeitado") {
+			etapaAtual = "rejeitado";
+			}
 
-}
-
-else if (
-  status === "rejeitado"
-) {
-
-  etapaAtual =
-    "rejeitado";
-
-}
+			else {
+			etapaAtual = "rascunho";
+			}
 
   
 
@@ -4792,7 +4792,8 @@ async function avancarEtapaHomologacao() {
       proximoStatus;
 
 
-    atualizarFluxoHomologacao(
+    atuali
+	fuxoHomologacao(
       proximoStatus
     );
 
@@ -4990,7 +4991,7 @@ async function avancarEtapaHomologacao() {
   }
 }
 
-
+	
 /*
  * Mantida apenas para compatibilidade
  * com chamadas antigas.
@@ -5181,5 +5182,6 @@ iniciar();
 </body>
 
   </html>
- 
 
+
+	  
