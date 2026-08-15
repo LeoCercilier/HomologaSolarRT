@@ -106,7 +106,7 @@
 					color: #64748b;
 					font-size: 14px;
 					}
-					
+
 					.status-projetos {
 					display: grid;
 					grid-template-columns: repeat(
@@ -337,41 +337,64 @@
 					</div>
 
 				</div>
-				
+
 				<div class="status-projetos">
 
-					<div class="status-card">
+					<div
+						class="status-card"
+						onclick="filtrarProjetosPorStatus('rascunho')"
+					>
 						<div id="statusRascunho" class="numero">0</div>
 						<div class="titulo">📝 Rascunho</div>
 					</div>
 
-					<div class="status-card">
+
+					<div
+						class="status-card"
+						onclick="filtrarProjetosPorStatus('documentacao')"
+					>
 						<div id="statusDocumentacao" class="numero">0</div>
 						<div class="titulo">📄 Documentação</div>
 					</div>
 
-					<div class="status-card">
+
+					<div
+						class="status-card"
+						onclick="filtrarProjetosPorStatus('enviado')"
+					>
 						<div id="statusEnviado" class="numero">0</div>
 						<div class="titulo">📤 Enviado</div>
 					</div>
 
-					<div class="status-card">
+
+					<div
+						class="status-card"
+						onclick="filtrarProjetosPorStatus('analise')"
+					>
 						<div id="statusAnalise" class="numero">0</div>
 						<div class="titulo">🔎 Em análise</div>
 					</div>
 
-					<div class="status-card">
+
+					<div
+						class="status-card"
+						onclick="filtrarProjetosPorStatus('aprovado')"
+					>
 						<div id="statusAprovado" class="numero">0</div>
 						<div class="titulo">✅ Aprovado</div>
 					</div>
 
-					<div class="status-card">
+
+					<div
+						class="status-card"
+						onclick="filtrarProjetosPorStatus('reprovado')"
+					>
 						<div id="statusReprovado" class="numero">0</div>
 						<div class="titulo">❌ Reprovado</div>
 					</div>
 
 				</div>
-				
+
 				<div class="acoes">
 
 					<button
@@ -691,7 +714,7 @@
 			rts.count || 0;
 
 			}
-			
+
 			async function carregarStatusProjetos() {
 
 			const {
@@ -775,7 +798,7 @@
 			contadores.reprovado;
 
 			}
-			
+
 			async function carregarProjetos() {
 
 			const {
@@ -834,6 +857,8 @@
 			item.className = "projeto";
 
 			item.style.cursor = "pointer";
+			
+			item.dataset.status = projeto.status || "";
 
 			item.onclick = function() {
 
@@ -871,6 +896,33 @@
 
 			}
 
+			function filtrarProjetos(status) {
+
+			const projetos =
+			document.querySelectorAll(".projeto");
+
+			projetos.forEach(projeto => {
+
+			if (status === "todos") {
+
+			projeto.style.display = "block";
+			return;
+
+			}
+
+			if (projeto.dataset.status === status) {
+
+			projeto.style.display = "block";
+
+			} else {
+
+			projeto.style.display = "none";
+
+			}
+
+			});
+
+			}
 
 			function novoProjeto() {
 
@@ -897,4 +949,4 @@
 
 	</body>
 
-</html>
+							</html>
