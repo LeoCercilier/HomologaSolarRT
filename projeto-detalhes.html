@@ -1405,7 +1405,7 @@ async function duplicarProjeto() {
 
       })
       .select()
-      .single();
+	  .single();
 
 
     if (erroNovoProjeto)
@@ -2503,7 +2503,7 @@ function calcularSistema() {
     resultadoTecnico.innerHTML =
       "⚠️ ATENÇÃO: FORAM ENCONTRADAS INCONSISTÊNCIAS<br><br>" +
       problemasTecnicos
-        .map(item => "• " + item)
+	  .map(item => "• " + item)
         .join("<br>");
 
     resultadoTecnico.style.background =
@@ -4707,65 +4707,41 @@ async function avancarEtapaHomologacao() {
       null;
 
 
-    if (
-      statusAtual === "rascunho"
-    ) {
+			if (
+			statusAtual === "rascunho"
+			) {
 
-      proximoStatus =
-        "em_analise";
+			proximoStatus =
+			"documentacao";
 
-    }
+			}
 
-    else if (
-      statusAtual === "em_analise"
-    ) {
+			else if (
+			statusAtual === "documentacao"
+			) {
 
-      proximoStatus =
-        "aprovado";
+			proximoStatus =
+			"enviado";
 
-    }
+			}
 
-    else if (
-      statusAtual === "aprovado"
-    ) {
+			else if (
+			statusAtual === "enviado"
+			) {
 
-      proximoStatus =
-        "finalizado";
+			proximoStatus =
+			"em_analise";
 
-    }
+			}
 
-    else if (
-      statusAtual === "rejeitado"
-    ) {
+			else if (
+			statusAtual === "em_analise"
+			) {
 
-      proximoStatus =
-        "em_analise";
+			proximoStatus =
+			"aprovado";
 
-    }
-
-    else if (
-      statusAtual === "finalizado"
-    ) {
-
-      alert(
-        "Este projeto já está finalizado."
-      );
-
-      return;
-
-    }
-
-    else if (
-      statusAtual === "arquivado"
-    ) {
-
-      alert(
-        "Este projeto está arquivado."
-      );
-
-      return;
-
-    }
+			}
 
 
     if (!proximoStatus) {
@@ -5205,3 +5181,5 @@ iniciar();
 </body>
 
   </html>
+ 
+
