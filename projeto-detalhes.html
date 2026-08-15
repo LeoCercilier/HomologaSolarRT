@@ -4700,7 +4700,7 @@ async function avancarEtapaHomologacao() {
 
 
 
-     /* ================================
+  /* ================================
        DEFINIR PRÓXIMO STATUS
     ================================= */
 
@@ -4734,10 +4734,26 @@ async function avancarEtapaHomologacao() {
 			"em_analise";
 
 			}
+			
+			else if (
+			statusAtual === "em_analise"
+			) {
+
+			proximoStatus =
+			"aprovado";
+
+			}
+			
+			else if (
+			statusAtual === "aprovado"
+			) {
+
+			proximoStatus =
+			"rejeitado";
+
+			}
 
 		
-
-
     if (!proximoStatus) {
 
       alert(
