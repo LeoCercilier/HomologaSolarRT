@@ -1102,14 +1102,25 @@ async function carregarPendencias() {
 
 
         (documentos || []).forEach(
-            documento => {
+    documento => {
 
-                const projeto =
-                    documento.projetos;
+        console.log(
+            "PENDÊNCIA ENCONTRADA:",
+            documento
+        );
 
+        const projeto =
+            documento.projetos;
 
-                if (!projeto)
-					return;
+        if (!projeto) {
+
+            console.warn(
+                "Documento sem projeto relacionado:",
+                documento
+            );
+
+            return;
+		}
 
 
 			if (
