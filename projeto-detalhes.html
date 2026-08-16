@@ -3273,7 +3273,53 @@ document.getElementById(
 			`;
 
 
-			lista.appendChild(item);
+			item.id =
+    "documento_" +
+    documento.id;
+
+lista.appendChild(item);
+
+				const parametros =
+    new URLSearchParams(
+        window.location.search
+    );
+
+const documentoAlvo =
+    parametros.get(
+        "documento_id"
+    );
+
+if (
+    documentoAlvo &&
+    documentoAlvo === documento.id
+) {
+
+    setTimeout(() => {
+
+        item.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+
+        item.style.transition =
+            "0.3s";
+
+        item.style.boxShadow =
+            "0 0 0 4px rgba(37,99,235,.25)";
+
+        item.style.border =
+            "2px solid #2563eb";
+
+        setTimeout(() => {
+
+            item.style.boxShadow = "";
+            item.style.border = "";
+
+        }, 5000);
+
+    }, 300);
+
+}
 
 			});
 
