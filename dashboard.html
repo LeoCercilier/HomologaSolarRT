@@ -485,7 +485,89 @@ gap: 10px;
 			</div>
 
 		</div>
+<!-- =========================================
+     JANELA DE PENDÊNCIAS
+========================================= --><div
+    id="modalPendencias"
+    style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.5);
+        z-index:9999;
+        padding:20px;
+        align-items:center;
+        justify-content:center;
+    "
+><div
+    style="
+        background:white;
+        width:100%;
+        max-width:500px;
+        max-height:80vh;
+        overflow-y:auto;
+        border-radius:14px;
+        padding:20px;
+        box-shadow:0 10px 30px rgba(0,0,0,.2);
+    "
+>
 
+    <div
+        style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:15px;
+        "
+    >
+
+        <h3
+            id="tituloModalPendencias"
+            style="margin:0;"
+        >
+            ⚠️ Pendências
+        </h3>
+
+        <button
+            type="button"
+            onclick="fecharModalPendencias()"
+            style="
+                background:#f1f5f9;
+                color:#334155;
+                padding:8px 12px;
+                font-size:18px;
+            "
+        >
+            ✕
+        </button>
+
+    </div>
+
+
+    <div id="listaDocumentosPendentes">
+
+        <div class="vazio">
+            Nenhuma pendência encontrada.
+        </div>
+
+    </div>
+
+
+    <button
+        type="button"
+        class="principal"
+        onclick="fecharModalPendencias()"
+        style="
+            width:100%;
+            margin-top:15px;
+        "
+    >
+        Fechar
+    </button>
+
+</div>
+
+</div>
 
 		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -1104,15 +1186,14 @@ try {
 
 
             item.onclick =
-                function() {
+    function() {
 
-                    window.location.href =
-                        "projeto-detalhes.html?id=" +
-                        encodeURIComponent(
-                            projeto.id
-                        );
+        abrirModalPendencias(
+            projeto.id,
+            projeto.nome
+        );
 
-                };
+    };
 
 
             lista.appendChild(item);
@@ -1132,6 +1213,309 @@ try {
     `;
 
 }
+
+				async function abrirModalPendencias(
+    projetoId,
+    nomeProjeto
+) {
+
+    const modal =
+        document.getElementById(
+            "modalPendencias"
+        );
+
+    const titulo =
+        document.getElementById(
+            "tituloModalPendencias"
+        );
+
+    const lista =
+        document.getElementById(
+            "listaDocumentosPendentes"
+        );
+
+
+    titulo.textContent =
+        "⚠️ " + nomeProjeto;
+
+
+    lista.innerHTML = `
+        <div class="vazio">
+            Carregando documentos...
+        </div>
+    `;
+
+
+    modal.style.display =
+        "flex";
+
+
+    try {
+
+        const {
+            data: documentos,
+            error
+        } =
+        await supabaseClient
+            .from("documentos_projeto")
+            .select(`
+                id,
+                tipo_documento,
+                status
+            `)
+            .eq(
+                "projeto_id",
+                projetoId
+            )
+            .eq(
+                "organizacao_id",
+                organizacaoAtual
+            )
+            .in(
+                "status",
+                [
+                    "pendente",
+                    "rejeitado"
+                ]
+            )
+            .order(
+                "tipo_documento",
+                {
+                    ascending: true
+                }
+            );
+
+
+        if (error)
+            throw error;
+
+
+        if (
+            !documentos ||
+            documentos.length === 0
+        ) {
+
+            lista.innerHTML = `
+                <div class="vazio">
+                    ✅ Nenhuma pendência encontrada.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        lista.innerHTML = "";
+
+
+        documentos.forEach(
+            documento => {
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.style.padding =
+                    "12px 0";
+
+                item.style.borderBottom =
+                    "1px solid #e5e7eb";
+
+
+                const icone =
+                    documento.status ===
+                    "rejeitado"
+                    ? "🔴"
+                    : "🟡";
+
+
+                const textoStatus =
+                    documento.status ===
+                    "rejeitado"
+                    ? "Rejeitado"
+                    : "Pendente";
+
+
+                item.innerHTML = `
+
+                    <strong>
+                        ${icone}
+                        ${escaparHtml(
+                            documento.tipo_documento
+                        )}
+                    </strong>
+
+                    <span
+                        style="
+                            display:block;
+                            margin-top:4px;
+                            font-size:13px;
+                            color:#64748b;
+                        "
+                    >
+                        ${textoStatus}
+                    </span>
+
+                `;
+
+
+                lista.appendChild(item);
+
+            }
+        );
+
+
+    } catch (erro) {
+
+        console.error(erro);
+
+
+        lista.innerHTML = `
+            <div class="vazio">
+                ❌ Erro ao carregar documentos.
+            </div>
+        `;
+
+    }
+
+				}
+
+				function fecharModalPendencias() {
+
+    const modal =
+        document.getElementById(
+            "modalPendencias"
+        );
+
+    modal.style.display =
+        "none";
+
+				}
+
+			function abrirModalPendencias(projetoId, nomeProjeto, documentos) {
+
+const modal =
+    document.getElementById(
+        "modalPendencias"
+    );
+
+const titulo =
+    document.getElementById(
+        "tituloModalPendencias"
+    );
+
+const lista =
+    document.getElementById(
+        "listaDocumentosPendentes"
+    );
+
+
+titulo.textContent =
+    "⚠️ Pendências — " +
+    nomeProjeto;
+
+
+lista.innerHTML = "";
+
+
+if (
+    !documentos ||
+    documentos.length === 0
+) {
+
+    lista.innerHTML = `
+        <div class="vazio">
+            Nenhuma pendência encontrada.
+        </div>
+    `;
+
+} else {
+
+    documentos.forEach(documento => {
+
+        const item =
+            document.createElement("div");
+
+        item.style.padding =
+            "12px";
+
+        item.style.marginBottom =
+            "8px";
+
+        item.style.border =
+            "1px solid #e2e8f0";
+
+        item.style.borderRadius =
+            "9px";
+
+        item.style.background =
+            "#f8fafc";
+
+
+        const status =
+            documento.status ||
+            "pendente";
+
+
+        let icone = "🟡";
+
+        if (
+            status === "rejeitado" ||
+            status === "reprovado"
+        ) {
+
+            icone = "🔴";
+
+        }
+
+
+        item.innerHTML = `
+            <strong>
+                ${icone}
+                ${escaparHtml(
+                    documento.tipo_documento
+                )}
+            </strong>
+
+            <span
+                style="
+                    display:block;
+                    margin-top:4px;
+                    font-size:13px;
+                    color:#64748b;
+                "
+            >
+                Status: ${escaparHtml(status)}
+            </span>
+        `;
+
+
+        lista.appendChild(item);
+
+    });
+
+}
+
+
+modal.style.display =
+    "flex";
+
+}
+
+function fecharModalPendencias() {
+
+const modal =
+    document.getElementById(
+        "modalPendencias"
+    );
+
+modal.style.display =
+    "none";
+
+}	
 
 			}
 			
