@@ -1430,25 +1430,43 @@ async function carregarPendencias() {
 
                 item.innerHTML = `
 
-				<strong>
-					${icone}
-					${escaparHtml(
-					documento.tipo_documento
-					)}
-				</strong>
+    <strong>
+        ${icone}
+        ${escaparHtml(
+            documento.tipo_documento
+        )}
+    </strong>
 
-				<span
-					style="
-					display:block;
-					margin-top:4px;
-					font-size:13px;
-					color:#64748b;
-					"
-				>
-					Status: ${textoStatus}
-				</span>
+    <span
+        style="
+            display:block;
+            margin-top:4px;
+            font-size:13px;
+            color:#64748b;
+        "
+    >
+        Status: ${textoStatus}
+    </span>
 
-                `;
+    <button
+        type="button"
+        class="principal"
+        style="
+            margin-top:10px;
+            padding:9px 12px;
+            font-size:13px;
+        "
+        onclick="
+            event.stopPropagation();
+            window.location.href =
+                'projeto-detalhes.html?id=' +
+                encodeURIComponent('${projetoId}');
+        "
+    >
+        ✏️ Editar documento
+    </button>
+
+`;
 
 
                 lista.appendChild(item);
