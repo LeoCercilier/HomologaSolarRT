@@ -183,9 +183,29 @@
 					margin-top: 0;
 					}
 
+					
 					.projeto {
 					border-top: 1px solid #e5e7eb;
 					padding: 14px 0;
+					}
+					
+					.pendencia-card {
+					background: #f8fafc;
+					border: 1px solid #e2e8f0;
+					border-radius: 10px;
+					padding: 12px;
+					margin-bottom: 10px;
+					cursor: pointer;
+					}
+
+					.pendencia-card strong {
+					display: block;
+					margin-bottom: 5px;
+					}
+
+					.pendencia-card span {
+					font-size: 13px;
+					color: #64748b;
 					}
 
 					.projeto:first-child {
@@ -910,9 +930,7 @@ try {
     await supabaseClient
         .from("documentos_projeto")
         .select(`
-            id,
             projeto_id,
-            tipo_documento,
             status,
             projetos (
                 id,
@@ -929,21 +947,85 @@ try {
                 "pendente",
                 "rejeitado"
             ]
-        )
-        .order(
-            "status",
-            {
-                ascending: true
-            }
         );
 
     if (error)
         throw error;
 
 
+    const projetos = {};
+
+
+    (documentos || []).forEach(
+        documento => {
+
+            const projeto =
+                documento.projetos;
+
+            if (!projeto)
+                return;
+
+
+            if (
+                !projetos[
+                    documento.projeto_id
+                ]
+            ) {
+
+                projetos[
+                    documento.projeto_id
+                ] = {
+
+                    id:
+                        documento.projeto_id,
+
+                    nome:
+                        projeto.nome,
+
+                    pendentes:
+                        0,
+
+                    rejeitados:
+                        0
+
+                };
+
+            }
+
+
+            if (
+                documento.status ===
+                "pendente"
+            ) {
+
+                projetos[
+                    documento.projeto_id
+                ].pendentes++;
+
+            }
+
+
+            if (
+                documento.status ===
+                "rejeitado"
+            ) {
+
+                projetos[
+                    documento.projeto_id
+                ].rejeitados++;
+
+            }
+
+        }
+    );
+
+
+    const listaProjetos =
+        Object.values(projetos);
+
+
     if (
-        !documentos ||
-        documentos.length === 0
+        listaProjetos.length === 0
     ) {
 
         lista.innerHTML = `
@@ -960,90 +1042,75 @@ try {
     lista.innerHTML = "";
 
 
-    documentos.forEach(documento => {
+    listaProjetos.forEach(
+        projeto => {
 
-        const item =
-            document.createElement("div");
+            const item =
+                document.createElement(
+                    "div"
+                );
 
-        item.className =
-            "projeto";
-
-        item.style.cursor =
-            "pointer";
-
-
-        const projeto =
-            documento.projetos;
+            item.className =
+                "pendencia-card";
 
 
-        const nomeProjeto =
-            projeto
-            ? projeto.nome
-            : "Projeto não encontrado";
+            let detalhes = "";
 
 
-        let mensagem = "";
-        let icone = "";
+            if (
+                projeto.pendentes > 0
+            ) {
+
+                detalhes +=
+                    `🟡 ${projeto.pendentes} documento(s) pendente(s)`;
+
+            }
 
 
-        if (
-            documento.status ===
-            "rejeitado"
-        ) {
+            if (
+                projeto.rejeitados > 0
+            ) {
 
-            icone = "🔴";
+                if (detalhes)
+                    detalhes += "<br>";
 
-            mensagem =
-                "Documento rejeitado";
+                detalhes +=
+                    `🔴 ${projeto.rejeitados} documento(s) rejeitado(s)`;
+
+            }
+
+
+            item.innerHTML = `
+
+                <strong>
+                    ${escaparHtml(
+                        projeto.nome
+                    )}
+                </strong>
+
+                <span>
+                    ${detalhes}
+                </span>
+
+            `;
+
+
+            item.onclick =
+                function() {
+
+                    window.location.href =
+                        "projeto-detalhes.html?id=" +
+                        encodeURIComponent(
+                            projeto.id
+                        );
+
+                };
+
+
+            lista.appendChild(item);
 
         }
-
-        else {
-
-            icone = "🟡";
-
-            mensagem =
-                "Documento pendente";
-
-        }
-
-
-        item.innerHTML = `
-
-            <strong>
-                ${icone}
-                ${escaparHtml(mensagem)}
-            </strong>
-
-            <span>
-                Projeto:
-                ${escaparHtml(nomeProjeto)}
-                <br>
-
-                Documento:
-                ${escaparHtml(
-                    documento.tipo_documento
-                )}
-            </span>
-
-        `;
-
-
-        item.onclick =
-            function() {
-
-                window.location.href =
-                    "projeto-detalhes.html?id=" +
-                    encodeURIComponent(
-                        documento.projeto_id
-                    );
-
-            };
-
-
-        lista.appendChild(item);
-
-    });
+    );
 
 
 } catch (erro) {
@@ -1058,8 +1125,8 @@ try {
 
 }
 
-				}
-
+			}
+			
 			function filtrarProjetosPorStatus(status) {
 
 			const projetos =
