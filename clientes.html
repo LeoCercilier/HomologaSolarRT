@@ -474,6 +474,44 @@ Salvar cliente
 
 </div>
 
+	<!-- MODAL DETALHES DO CLIENTE -->
+
+<div
+  id="modalDetalhesCliente"
+  class="modal-detalhes"
+>
+
+  <div class="modal-detalhes-conteudo">
+
+    <h2 id="tituloDetalhesCliente">
+      👤 Cliente
+    </h2>
+
+    <div id="dadosDetalhesCliente"></div>
+
+    <div class="acoes-detalhes">
+
+      <button
+        type="button"
+        class="btn-secundario"
+        onclick="fecharDetalhesCliente()"
+      >
+        Fechar
+      </button>
+
+      <button
+        type="button"
+        class="btn-principal"
+        id="btnExcluirDetalhes"
+      >
+        🗑️ Excluir
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
