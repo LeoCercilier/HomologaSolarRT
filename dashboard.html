@@ -892,6 +892,172 @@ contadores.em_analise;
 
 			}
 
+			async function carregarPendencias() {
+
+const lista =
+    document.getElementById(
+        "listaPendencias"
+    );
+
+try {
+
+    const {
+        data: documentos,
+        error
+    } =
+    await supabaseClient
+        .from("documentos_projeto")
+        .select(`
+            id,
+            projeto_id,
+            tipo_documento,
+            status,
+            projetos (
+                id,
+                nome
+            )
+        `)
+        .eq(
+            "organizacao_id",
+            organizacaoAtual
+        )
+        .in(
+            "status",
+            [
+                "pendente",
+                "rejeitado"
+            ]
+        )
+        .order(
+            "status",
+            {
+                ascending: true
+            }
+        );
+
+    if (error)
+        throw error;
+
+
+    if (
+        !documentos ||
+        documentos.length === 0
+    ) {
+
+        lista.innerHTML = `
+            <div class="vazio">
+                ✅ Nenhuma pendência encontrada.
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    lista.innerHTML = "";
+
+
+    documentos.forEach(documento => {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "projeto";
+
+        item.style.cursor =
+            "pointer";
+
+
+        const projeto =
+            documento.projetos;
+
+
+        const nomeProjeto =
+            projeto
+            ? projeto.nome
+            : "Projeto não encontrado";
+
+
+        let mensagem = "";
+        let icone = "";
+
+
+        if (
+            documento.status ===
+            "rejeitado"
+        ) {
+
+            icone = "🔴";
+
+            mensagem =
+                "Documento rejeitado";
+
+        }
+
+        else {
+
+            icone = "🟡";
+
+            mensagem =
+                "Documento pendente";
+
+        }
+
+
+        item.innerHTML = `
+
+            <strong>
+                ${icone}
+                ${escaparHtml(mensagem)}
+            </strong>
+
+            <span>
+                Projeto:
+                ${escaparHtml(nomeProjeto)}
+                <br>
+
+                Documento:
+                ${escaparHtml(
+                    documento.tipo_documento
+                )}
+            </span>
+
+        `;
+
+
+        item.onclick =
+            function() {
+
+                window.location.href =
+                    "projeto-detalhes.html?id=" +
+                    encodeURIComponent(
+                        documento.projeto_id
+                    );
+
+            };
+
+
+        lista.appendChild(item);
+
+    });
+
+
+} catch (erro) {
+
+    console.error(erro);
+
+    lista.innerHTML = `
+        <div class="vazio">
+            ❌ Erro ao carregar pendências.
+        </div>
+    `;
+
+}
+
+				}
+
 			function filtrarProjetosPorStatus(status) {
 
 			const projetos =
