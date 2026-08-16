@@ -1457,11 +1457,13 @@ async function carregarPendencias() {
             font-size:13px;
         "
         onclick="
-            event.stopPropagation();
-            window.location.href =
-                'projeto-detalhes.html?id=' +
-                encodeURIComponent('${projetoId}');
-        "
+    event.stopPropagation();
+    window.location.href =
+        'projeto-detalhes.html?id=' +
+        encodeURIComponent('${projetoId}') +
+        '&documento_id=' +
+        encodeURIComponent('${documento.id}');
+"
     >
         ✏️ Editar documento
     </button>
