@@ -190,13 +190,21 @@
 					}
 					
 					.pendencia-card {
-					background: #f8fafc;
-					border: 1px solid #e2e8f0;
-					border-radius: 10px;
-					padding: 12px;
-					margin-bottom: 10px;
-					cursor: pointer;
-					}
+background: #f8fafc;
+border: 1px solid #e2e8f0;
+border-radius: 10px;
+padding: 12px;
+cursor: pointer;
+}
+
+#listaPendencias {
+display: grid;
+grid-template-columns: repeat(
+auto-fit,
+minmax(220px, 1fr)
+);
+gap: 10px;
+}
 
 					.pendencia-card strong {
 					display: block;
