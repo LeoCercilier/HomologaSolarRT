@@ -3170,59 +3170,66 @@ document.getElementById(
 			${areaArquivo}
 
 
-			<!-- UPLOAD -->
+		<!-- UPLOAD COMPACTO -->
 
-			<div style="
-				margin-top:12px;
-				padding:10px;
-				background:white;
-				border:1px dashed #94a3b8;
-				border-radius:8px;
-				">
+<div style="
+    margin-top:12px;
+    padding:10px;
+    background:#f8fafc;
+    border:1px dashed #94a3b8;
+    border-radius:8px;
+">
 
-				<input
-					type="file"
-					id="arquivo_${documento.id}"
-					accept=".pdf,.jpg,.jpeg,.png,.webp"
-					style="
-					width:70%;
-					font-size:13px;
-					"
-				>
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+    ">
 
+        <input
+            type="file"
+            id="arquivo_${documento.id}"
+            accept=".pdf,.jpg,.jpeg,.png,.webp"
+            style="
+            flex:1;
+            min-width:0;
+            font-size:12px;
+            "
+        >
 
-					<button
-						type="button"
-						onclick="enviarDocumentoChecklist(
-						'${documento.id}',
-						'${documento.tipo_documento}'
-						)"
-						style="
-						width:70%;
-						margin-top:8px;
-						padding:10px;
-						border:none;
-						border-radius:7px;
-						background:#2563eb;
-						color:white;
-						font-weight:bold;
-						cursor:pointer;
-						"
-					>
-						📤 Anexar arquivo
-					</button>
+        <button
+            type="button"
+            onclick="enviarDocumentoChecklist(
+            '${documento.id}',
+            '${documento.tipo_documento}'
+            )"
+            style="
+            flex:0 0 auto;
+            padding:9px 12px;
+            border:none;
+            border-radius:7px;
+            background:#2563eb;
+            color:white;
+            font-size:12px;
+            font-weight:bold;
+            cursor:pointer;
+            "
+        >
+            📤 Anexar
+        </button>
 
+    </div>
 
-					<div
-						id="statusUpload_${documento.id}"
-						style="
-						margin-top:7px;
-						font-size:12px;
-						color:#64748b;
-						"
-					></div>
+    <div
+        id="statusUpload_${documento.id}"
+        style="
+        margin-top:6px;
+        font-size:11px;
+        color:#64748b;
+        "
+    ></div>
 
-			</div>
+</div>
 
 
 			<!-- OBSERVAÇÃO -->
@@ -3236,7 +3243,7 @@ document.getElementById(
 					placeholder="Observação sobre este documento..."
 					style="
 					width:100%;
-					min-height:70px;
+					min-height:55px;
 					padding:10px;
 					border:1px solid #cbd5e1;
 					border-radius:8px;
