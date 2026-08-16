@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0"
+>
+
+<title>Templates - HomologaSolar RT</title>
+
+<style>
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  color: #1f2937;
+}
+
+header {
+  background: #0f766e;
+  color: white;
+  padding: 18px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
+
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.topo h2 {
+  margin: 0;
+}
+
+button {
+  border: none;
+  border-radius: 9px;
+  padding: 11px 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-principal {
+  background: #0f766e;
+  color: white;
+}
+
+.btn-secundario {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.btn-editar {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-duplicar {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.secao {
+  margin-bottom: 28px;
+}
+
+.secao h3 {
+  margin-bottom: 12px;
+}
+
+.lista-templates {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(250px, 1fr)
+  );
+  gap: 14px;
+}
+
+.template {
+  background: white;
+  padding: 17px;
+  border-radius: 14px;
+  box-shadow: 0 4px 15px rgba(0,0,0,.05);
+}
+
+.template h4 {
+  margin: 0 0 7px;
+  font-size: 17px;
+}
+
+.template p {
+  margin: 0 0 12px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.badge {
+  display: inline-block;
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: #ecfdf5;
+  color: #047857;
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.acoes-template {
+  display: flex;
+  gap: 8px;
+}
+
+.acoes-template button {
+  flex: 1;
+}
+
+.vazio {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  color: #64748b;
+  text-align: center;
+}
+
+.carregando {
+  text-align: center;
+  padding: 40px;
+  color: #64748b;
+}
+
+.erro {
+  display: none;
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 14px;
+  border-radius: 9px;
+  margin-bottom: 15px;
+}
+
+.sucesso {
+  display: none;
+  background: #dcfce7;
+  color: #166534;
+  padding: 14px;
+  border-radius: 9px;
+  margin-bottom: 15px;
+}
+
+/* MODAL */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  padding: 15px;
+  overflow-y: auto;
+  z-index: 9999;
+}
+
+.modal-conteudo {
+  background: white;
+  max-width: 600px;
+  margin: 30px auto;
+  border-radius: 15px;
+  padding: 20px;
+}
+
+.modal-conteudo h2 {
+  margin-top: 0;
+}
+
+.campo {
+  margin-bottom: 13px;
+}
+
+.campo label {
+  display: block;
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.campo textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.acoes {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.acoes button {
+  flex: 1;
+}
+
+@media (max-width: 600px) {
+
+  .topo {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .linha {
+    grid-template-columns: 1fr;
+  }
+
+  .acoes-template {
+    flex-direction: column;
+  }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>☀️ HomologaSolar RT</h1>
+
+</header>
+
+
+<div class="container">
+
+<div class="topo">
+
+<h2>📋 Templates</h2>
+
+<button
+  class="btn-principal"
+  onclick="abrirNovoTemplate()"
+>
+  ➕ Criar template
+</button>
+
+</div>
+
+
+<div
+  id="erro"
+  class="erro"
+></div>
+
+
+<div
+  id="sucesso"
+  class="sucesso"
+></div>
+
+
+<div class="secao">
+
+<h3>🏠 Residenciais</h3>
+
+<div
+  id="listaResidenciais"
+  class="lista-templates"
+>
+
+<div class="carregando">
+Carregando templates...
+</div>
+
+</div>
+
+</div>
+
+
+<div class="secao">
+
+<h3>🏢 Comerciais</h3>
+
+<div
+  id="listaComerciais"
+  class="lista-templates"
+>
+
+<div class="carregando">
+Carregando templates...
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- MODAL -->
+
+<div
+  id="modal"
+  class="modal"
+>
+
+<div class="modal-conteudo">
+
+<h2 id="tituloModal">
+Criar template
+</h2>
+
+
+<form id="formTemplate">
+
+
+<div class="campo">
+
+<label>
+Nome do template *
+</label>
+
+<input
+  id="nomeTemplate"
+  required
+>
+
+</div>
+
+
+<div class="linha">
+
+<div class="campo">
+
+<label>
+Categoria *
+</label>
+
+<select id="categoriaTemplate">
+
+<option value="residencial">
+🏠 Residencial
+</option>
+
+<option value="comercial">
+🏢 Comercial
+</option>
+
+</select>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Concessionária *
+</label>
+
+<input
+  id="concessionariaTemplate"
+  value="Light"
+  required
+>
+
+</div>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Descrição
+</label>
+
+<textarea
+  id="descricaoTemplate"
+  placeholder="Descrição do modelo..."
+></textarea>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Tipo de ligação padrão
+</label>
+
+<input
+  id="tipoLigacao"
+  placeholder="Ex.: monofásica, bifásica, trifásica"
+>
+
+</div>
+
+
+<div class="linha">
+
+<div class="campo">
+
+<label>
+Número de fases
+</label>
+
+<input
+  id="numeroFases"
+  placeholder="Ex.: 1, 2 ou 3"
+>
+
+</div>
+
+
+<div class="campo">
+
+<label>
+Tensão nominal
+</label>
+
+<input
+  id="tensaoNominal"
+  placeholder="Ex.: 127/220 V"
+>
+
+</div>
+
+</div>
+
+
+<div class="acoes">
+
+<button
+  type="button"
+  class="btn-secundario"
+  onclick="fecharModal()"
+>
+Cancelar
+</button>
+
+<button
+  type="submit"
+  class="btn-principal"
+  id="btnSalvar"
+>
+Salvar template
+</button>
+
+</div>
+
+</form>
+
+</div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase-config.js"></script>
+
+
+<script>
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+let usuarioAtual = null;
+let organizacaoAtual = null;
+let templates = [];
+
+let templateEditando = null;
+
+
+/* =========================================
+   INICIALIZAÇÃO
+========================================= */
+
+async function iniciar() {
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+    await supabaseClient.auth.getUser();
+
+
+    if (
+      error ||
+      !data.user
+    ) {
+
+      window.location.href =
+        "index.html";
+
+      return;
+
+    }
+
+
+    usuarioAtual =
+      data.user;
+
+
+    const {
+      data: membro,
+      error: erroMembro
+    } =
+    await supabaseClient
+      .from("organizacao_membros")
+      .select("organizacao_id")
+      .eq(
+        "usuario_id",
+        usuarioAtual.id
+      )
+      .eq(
+        "ativo",
+        true
+      )
+      .limit(1)
+      .maybeSingle();
+
+
+    if (erroMembro)
+      throw erroMembro;
+
+
+    if (!membro)
+      throw new Error(
+        "Usuário sem organização."
+      );
+
+
+    organizacaoAtual =
+      membro.organizacao_id;
+
+
+    await carregarTemplates();
+
+  }
+
+  catch (erro) {
+
+    mostrarErro(
+      erro.message
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   CARREGAR TEMPLATES
+========================================= */
+
+async function carregarTemplates() {
+
+  const {
+    data,
+    error
+  } =
+  await supabaseClient
+    .from("templates_projeto")
+    .select(`
+      id,
+      organizacao_id,
+      nome,
+      categoria,
+      concessionaria,
+      descricao,
+      configuracao,
+      ativo
+    `)
+    .eq(
+      "ativo",
+      true
+    )
+    .or(
+      `organizacao_id.is.null,organizacao_id.eq.${organizacaoAtual}`
+    )
+    .order(
+      "nome",
+      {
+        ascending: true
+      }
+    );
+
+
+  if (error)
+    throw error;
+
+
+  templates =
+    data || [];
+
+
+  renderizarTemplates();
+
+}
+
+
+/* =========================================
+   RENDERIZAR
+========================================= */
+
+function renderizarTemplates() {
+
+  const residenciais =
+    templates.filter(
+      template =>
+        template.categoria ===
+        "residencial"
+    );
+
+
+  const comerciais =
+    templates.filter(
+      template =>
+        template.categoria ===
+        "comercial"
+    );
+
+
+  renderizarLista(
+    residenciais,
+    "listaResidenciais"
+  );
+
+
+  renderizarLista(
+    comerciais,
+    "listaComerciais"
+  );
+
+}
+
+
+/* =========================================
+   LISTA
+========================================= */
+
+function renderizarLista(
+  lista,
+  idElemento
+) {
+
+  const elemento =
+    document.getElementById(
+      idElemento
+    );
+
+
+  if (
+    !lista ||
+    lista.length === 0
+  ) {
+
+    elemento.innerHTML = `
+      <div class="vazio">
+        Nenhum template cadastrado.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  elemento.innerHTML = "";
+
+
+  lista.forEach(template => {
+
+    const div =
+      document.createElement("div");
+
+    div.className =
+      "template";
+
+
+    const oficial =
+      template.organizacao_id === null;
+
+
+    div.innerHTML = `
+
+      <span class="badge">
+        ${oficial
+          ? "MODELO PADRÃO"
+          : "MEU TEMPLATE"}
+      </span>
+
+      <h4>
+        ${escaparHtml(
+          template.nome
+        )}
+      </h4>
+
+      <p>
+        ${escaparHtml(
+          template.descricao ||
+          "Sem descrição."
+        )}
+      </p>
+
+      <p>
+        <strong>
+          Concessionária:
+        </strong>
+        ${escaparHtml(
+          template.concessionaria
+        )}
+      </p>
+
+      <div class="acoes-template">
+
+        <button
+          class="btn-editar"
+          onclick="editarTemplate(
+            '${template.id}'
+          )"
+        >
+          ✏️ Editar
+        </button>
+
+        <button
+          class="btn-duplicar"
+          onclick="duplicarTemplate(
+            '${template.id}'
+          )"
+        >
+          📋 Duplicar
+        </button>
+
+      </div>
+
+    `;
+
+
+    elemento.appendChild(div);
+
+  });
+
+}
+
+
+/* =========================================
+   NOVO TEMPLATE
+========================================= */
+
+function abrirNovoTemplate() {
+
+  templateEditando = null;
+
+  document.getElementById(
+    "tituloModal"
+  ).textContent =
+    "➕ Criar template";
+
+
+  document.getElementById(
+    "formTemplate"
+  ).reset();
+
+
+  document.getElementById(
+    "concessionariaTemplate"
+  ).value =
+    "Light";
+
+
+  document.getElementById(
+    "modal"
+  ).style.display =
+    "block";
+
+}
+
+
+/* =========================================
+   EDITAR TEMPLATE
+========================================= */
+
+function editarTemplate(id) {
+
+  const template =
+    templates.find(
+      item => item.id === id
+    );
+
+
+  if (!template)
+    return;
+
+
+  /*
+   * Template padrão:
+   * não alteramos diretamente.
+   * O usuário deverá duplicá-lo.
+   */
+
+  if (
+    template.organizacao_id === null
+  ) {
+
+    alert(
+      "Este é um template padrão. Para personalizá-lo, use o botão Duplicar."
+    );
+
+    return;
+
+  }
+
+
+  templateEditando =
+    template;
+
+
+  const config =
+    template.configuracao ||
+    {};
+
+
+  document.getElementById(
+    "tituloModal"
+  ).textContent =
+    "✏️ Editar template";
+
+
+  document.getElementById(
+    "nomeTemplate"
+  ).value =
+    template.nome || "";
+
+
+  document.getElementById(
+    "categoriaTemplate"
+  ).value =
+    template.categoria || "residencial";
+
+
+  document.getElementById(
+    "concessionariaTemplate"
+  ).value =
+    template.concessionaria || "";
+
+
+  document.getElementById(
+    "descricaoTemplate"
+  ).value =
+    template.descricao || "";
+
+
+  document.getElementById(
+    "tipoLigacao"
+  ).value =
+    config.tipo_ligacao || "";
+
+
+  document.getElementById(
+    "numeroFases"
+  ).value =
+    config.numero_fases || "";
+
+
+  document.getElementById(
+    "tensaoNominal"
+  ).value =
+    config.tensao_nominal || "";
+
+
+  document.getElementById(
+    "modal"
+  ).style.display =
+    "block";
+
+}
+
+
+/* =========================================
+   DUPLICAR
+========================================= */
+
+async function duplicarTemplate(id) {
+
+  const template =
+    templates.find(
+      item => item.id === id
+    );
+
+
+  if (!template)
+    return;
+
+
+  try {
+
+    const config =
+      template.configuracao ||
+      {};
+
+
+    const {
+      error
+    } =
+    await supabaseClient
+      .from("templates_projeto")
+      .insert({
+
+        organizacao_id:
+          organizacaoAtual,
+
+        nome:
+          template.nome +
+          " - personalizado",
+
+        categoria:
+          template.categoria,
+
+        concessionaria:
+          template.concessionaria,
+
+        descricao:
+          template.descricao,
+
+        configuracao:
+          config,
+
+        ativo:
+          true,
+
+        criado_por:
+          usuarioAtual.id
+
+      });
+
+
+    if (error)
+      throw error;
+
+
+    mostrarSucesso(
+      "Template duplicado com sucesso!"
+    );
+
+
+    await carregarTemplates();
+
+  }
+
+  catch (erro) {
+
+    mostrarErro(
+      erro.message
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   SALVAR TEMPLATE
+========================================= */
+
+document
+  .getElementById("formTemplate")
+  .addEventListener(
+    "submit",
+    async function(event) {
+
+      event.preventDefault();
+
+
+      const botao =
+        document.getElementById(
+          "btnSalvar"
+        );
+
+
+      botao.disabled =
+        true;
+
+
+      botao.textContent =
+        "Salvando...";
+
+
+      try {
+
+        const configuracao = {
+
+          tipo_ligacao:
+            document
+              .getElementById(
+                "tipoLigacao"
+              )
+              .value
+              .trim(),
+
+          numero_fases:
+            document
+              .getElementById(
+                "numeroFases"
+              )
+              .value
+              .trim(),
+
+          tensao_nominal:
+            document
+              .getElementById(
+                "tensaoNominal"
+              )
+              .value
+              .trim(),
+
+          documentos: []
+
+        };
+
+
+        const dados = {
+
+          nome:
+            document
+              .getElementById(
+                "nomeTemplate"
+              )
+              .value
+              .trim(),
+
+          categoria:
+            document
+              .getElementById(
+                "categoriaTemplate"
+              )
+              .value,
+
+          concessionaria:
+            document
+              .getElementById(
+                "concessionariaTemplate"
+              )
+              .value
+              .trim(),
+
+          descricao:
+            document
+              .getElementById(
+                "descricaoTemplate"
+              )
+              .value
+              .trim(),
+
+          configuracao:
+            configuracao
+
+        };
+
+
+        if (!dados.nome)
+          throw new Error(
+            "Informe o nome do template."
+          );
+
+
+        if (
+          templateEditando
+        ) {
+
+          const {
+            error
+          } =
+          await supabaseClient
+            .from(
+              "templates_projeto"
+            )
+            .update({
+
+              nome:
+                dados.nome,
+
+              categoria:
+                dados.categoria,
+
+              concessionaria:
+                dados.concessionaria,
+
+              descricao:
+                dados.descricao,
+
+              configuracao:
+                dados.configuracao,
+
+              atualizado_em:
+                new Date().toISOString()
+
+            })
+            .eq(
+              "id",
+              templateEditando.id
+            )
+            .eq(
+              "organizacao_id",
+              organizacaoAtual
+            );
+
+
+          if (error)
+            throw error;
+
+
+          mostrarSucesso(
+            "Template atualizado!"
+          );
+
+        }
+
+        else {
+
+          const {
+            error
+          } =
+          await supabaseClient
+            .from(
+              "templates_projeto"
+            )
+            .insert({
+
+              organizacao_id:
+                organizacaoAtual,
+
+              nome:
+                dados.nome,
+
+              categoria:
+                dados.categoria,
+
+              concessionaria:
+                dados.concessionaria,
+
+              descricao:
+                dados.descricao,
+
+              configuracao:
+                dados.configuracao,
+
+              ativo:
+                true,
+
+              criado_por:
+                usuarioAtual.id
+
+            });
+
+
+          if (error)
+            throw error;
+
+
+          mostrarSucesso(
+            "Template criado com sucesso!"
+          );
+
+        }
+
+
+        fecharModal();
+
+        await carregarTemplates();
+
+      }
+
+      catch (erro) {
+
+        mostrarErro(
+          erro.message
+        );
+
+      }
+
+      finally {
+
+        botao.disabled =
+          false;
+
+        botao.textContent =
+          "Salvar template";
+
+      }
+
+    }
+  );
+
+
+/* =========================================
+   MODAL
+========================================= */
+
+function fecharModal() {
+
+  document.getElementById(
+    "modal"
+  ).style.display =
+    "none";
+
+  templateEditando =
+    null;
+
+}
+
+
+/* =========================================
+   MENSAGENS
+========================================= */
+
+function mostrarErro(
+  mensagem
+) {
+
+  const elemento =
+    document.getElementById(
+      "erro"
+    );
+
+
+  elemento.textContent =
+    "ERRO: " + mensagem;
+
+
+  elemento.style.display =
+    "block";
+
+
+  setTimeout(() => {
+
+    elemento.style.display =
+      "none";
+
+  }, 6000);
+
+}
+
+
+function mostrarSucesso(
+  mensagem
+) {
+
+  const elemento =
+    document.getElementById(
+      "sucesso"
+    );
+
+
+  elemento.textContent =
+    mensagem;
+
+
+  elemento.style.display =
+    "block";
+
+
+  setTimeout(() => {
+
+    elemento.style.display =
+      "none";
+
+  }, 4000);
+
+}
+
+
+/* =========================================
+   SEGURANÇA HTML
+========================================= */
+
+function escaparHtml(
+  texto
+) {
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+
+  div.textContent =
+    texto || "";
+
+
+  return div.innerHTML;
+
+}
+
+
+iniciar();
+
+</script>
+
+</body>
+
+</html>
