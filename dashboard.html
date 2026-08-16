@@ -1,491 +1,481 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-
-	<head>
-
-		<meta charset="UTF-8">
-
-			<meta
-				name="viewport"
-				content="width=device-width, initial-scale=1.0"
-			>
-
-				<title>Dashboard - HomologaSolar RT</title>
-
-				<style>
-
-					* {
-					box-sizing: border-box;
-					}
-
-					body {
-					margin: 0;
-					font-family: Arial, sans-serif;
-					background: #f4f6f8;
-					color: #1f2937;
-					}
-
-					header {
-					background: #0f766e;
-					color: white;
-					padding: 18px;
-					}
-
-					header h1 {
-					margin: 0;
-					font-size: 21px;
-					}
-
-					header p {
-					margin: 5px 0 0;
-					font-size: 13px;
-					opacity: .9;
-					}
-
-					.container {
-					max-width: 1000px;
-					margin: auto;
-					padding: 20px;
-					}
-
-					.boas-vindas {
-					margin-bottom: 20px;
-					}
-
-					.boas-vindas h2 {
-					margin: 0 0 6px;
-					}
-
-					.boas-vindas p {
-					margin: 0;
-					color: #64748b;
-					}
-
-					.organizacao {
-					background: white;
-					padding: 18px;
-					border-radius: 14px;
-					margin-bottom: 18px;
-					box-shadow: 0 4px 15px rgba(0,0,0,.05);
-					}
-
-					.organizacao small {
-					color: #64748b;
-					}
-
-					.organizacao h3 {
-					margin: 6px 0 0;
-					}
-
-					.estatisticas {
-					display: grid;
-					grid-template-columns: repeat(
-					auto-fit,
-					minmax(140px, 1fr)
-					);
-
-					gap: 14px;
-					margin-bottom: 20px;
-					}
-
-					.estatistica {
-					background: white;
-					padding: 18px;
-					border-radius: 14px;
-					box-shadow: 0 4px 15px rgba(0,0,0,.05);
-					}
-
-					.estatistica .numero {
-					font-size: 28px;
-					font-weight: bold;
-					color: #0f766e;
-					}
-
-					.estatistica .titulo {
-					margin-top: 5px;
-					color: #64748b;
-					font-size: 14px;
-					}
-
-					.status-projetos {
-					display: grid;
-					grid-template-columns: repeat(
-					auto-fit,
-					minmax(140px, 1fr)
-					);
-					gap: 12px;
-					margin-bottom: 20px;
-					}
-
-					.status-card {
-					background: white;
-					padding: 15px;
-					border-radius: 14px;
-					box-shadow: 0 4px 15px rgba(0,0,0,.05);
-					}
-
-					.status-card .numero {
-					font-size: 25px;
-					font-weight: bold;
-					color: #0f766e;
-					}
-
-					.status-card .titulo {
-					margin-top: 5px;
-					color: #64748b;
-					font-size: 13px;
-					}
-
-					.acoes {
-					display: grid;
-					grid-template-columns: repeat(
-					auto-fit,
-					minmax(150px, 1fr)
-					);
-
-					gap: 12px;
-					margin-bottom: 25px;
-					}
-
-					button {
-					border: none;
-					border-radius: 9px;
-					padding: 14px;
-					font-size: 14px;
-					font-weight: bold;
-					cursor: pointer;
-					}
-
-					.principal {
-					background: #0f766e;
-					color: white;
-					}
-
-					.secundario {
-					background: white;
-					color: #334155;
-					border: 1px solid #e2e8f0;
-					}
-
-					.danger {
-					background: #dc2626;
-					color: white;
-					}
-
-					.secao {
-					background: white;
-					padding: 20px;
-					border-radius: 14px;
-					box-shadow: 0 4px 15px rgba(0,0,0,.05);
-					}
-
-					.secao h3 {
-					margin-top: 0;
-					}
-
-					
-					.projeto {
-					border-top: 1px solid #e5e7eb;
-					padding: 14px 0;
-					}
-					
-					.pendencia-card {
-background: #f8fafc;
-border: 1px solid #e2e8f0;
-border-radius: 10px;
-padding: 12px;
-cursor: pointer;
-}
-
-#listaPendencias {
-display: grid;
-grid-template-columns: repeat(
-auto-fit,
-minmax(220px, 1fr)
-);
-gap: 10px;
-}
-
-					.pendencia-card strong {
-					display: block;
-					margin-bottom: 5px;
-					}
-
-					.pendencia-card span {
-					font-size: 13px;
-					color: #64748b;
-					}
-
-					.projeto:first-child {
-					border-top: none;
-					}
-
-					.projeto strong {
-					display: block;
-					margin-bottom: 5px;
-					}
-
-					.projeto span {
-					font-size: 13px;
-					color: #64748b;
-					}
-
-					.vazio {
-					color: #64748b;
-					font-size: 14px;
-					padding: 10px 0;
-					}
-
-					.erro {
-					background: #fee2e2;
-					color: #991b1b;
-					padding: 14px;
-					border-radius: 9px;
-					margin-bottom: 15px;
-					display: none;
-					}
-
-					.carregando {
-					text-align: center;
-					padding: 40px;
-					color: #64748b;
-					}
-
-				</style>
-
-	</head>
-
-	<body>
-
-		<header>
-
-			<h1>☀️ HomologaSolar RT</h1>
-
-			<p>
-				Gestão de homologação fotovoltaica
-			</p>
-
-		</header>
-
-
-		<div class="container">
-
-			<div
-				id="carregando"
-				class="carregando"
-			>
-				Carregando seu painel...
-			</div>
-
-
-			<div
-				id="conteudo"
-				style="display:none;"
-			>
-
-				<div class="boas-vindas">
-
-					<h2>
-						Olá, <span id="nomeUsuario"></span>!
-					</h2>
-
-					<p>
-						Bem-vindo ao seu painel de projetos.
-					</p>
-
-				</div>
-
-
-				<div
-					id="erro"
-					class="erro"
-				></div>
-
-
-				<div class="organizacao">
-
-					<small>
-						Sua organização
-					</small>
-
-					<h3 id="nomeOrganizacao">
-						—
-					</h3>
-
-				</div>
-
-
-				<div class="estatisticas">
-
-					<div class="estatistica">
-
-						<div
-							id="totalProjetos"
-							class="numero"
-						>
-							0
-						</div>
-
-						<div class="titulo">
-							Projetos
-						</div>
-
-					</div>
-
-
-					<div class="estatistica">
-
-						<div
-							id="totalClientes"
-							class="numero"
-						>
-							0
-						</div>
-
-						<div class="titulo">
-							Clientes
-						</div>
-
-					</div>
-
-
-					<div class="estatistica">
-
-						<div
-							id="totalRTs"
-							class="numero"
-						>
-							0
-						</div>
-
-						<div class="titulo">
-							Responsáveis técnicos
-						</div>
-
-					</div>
-
-				</div>
-
-				<div class="status-projetos">
-
-					<div
-						class="status-card"
-						onclick="filtrarProjetosPorStatus('rascunho')"
-					>
-						<div id="statusRascunho" class="numero">0</div>
-						<div class="titulo">📝 Rascunho</div>
-					</div>
-
-
-					<div
-						class="status-card"
-						onclick="filtrarProjetosPorStatus('documentacao')"
-					>
-						<div id="statusDocumentacao" class="numero">0</div>
-						<div class="titulo">📄 Documentação</div>
-					</div>
-
-
-					<div
-						class="status-card"
-						onclick="filtrarProjetosPorStatus('enviado')"
-					>
-						<div id="statusEnviado" class="numero">0</div>
-						<div class="titulo">📤 Enviado</div>
-					</div>
-
-
-					<div
-						class="status-card"
-						onclick="filtrarProjetosPorStatus('em_analise')"
-					>
-						<div id="statusAnalise" class="numero">0</div>
-						<div class="titulo">🔎 Em análise</div>
-					</div>
-
-
-					<div
-						class="status-card"
-						onclick="filtrarProjetosPorStatus('aprovado')"
-					>
-						<div id="statusAprovado" class="numero">0</div>
-						<div class="titulo">✅ Aprovado</div>
-					</div>
-
-
-					<div
-						class="status-card"
-						onclick="filtrarProjetosPorStatus('reprovado')"
-					>
-						<div id="statusReprovado" class="numero">0</div>
-						<div class="titulo">❌ Reprovado</div>
-					</div>
-
-				</div>
-
-				<div class="acoes">
-
-					<button
-						class="principal"
-						onclick="window.location.href='projeto.html'"
-					>
-						+ Novo projeto
-					</button>
-
-					<button
-						class="secundario"
-						onclick="window.location.href='clientes.html'"
-					>
-						👥 Clientes
-					</button>
-
-					<button
-						class="secundario"
-						onclick="window.location.href='responsaveis-tecnicos.html'"
-					>
-						👷 RTs
-					</button>
-
-					<button
-						class="danger"
-						onclick="sair()"
-					>
-						Sair
-					</button>
-
-				</div>
-
-
-				<div class="secao"><h3>
-    ⚠️ Pendências que exigem atenção
-</h3>
-
-<div id="listaPendencias">
-
-    <div class="vazio">
-        Nenhuma pendência encontrada.
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Dashboard - HomologaSolar RT</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        color: #1f2937;
+    }
+
+    header {
+        background: #0f766e;
+        color: white;
+        padding: 18px;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 21px;
+    }
+
+    header p {
+        margin: 5px 0 0;
+        font-size: 13px;
+        opacity: .9;
+    }
+
+    .container {
+        max-width: 1000px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    .boas-vindas {
+        margin-bottom: 20px;
+    }
+
+    .boas-vindas h2 {
+        margin: 0 0 6px;
+    }
+
+    .boas-vindas p {
+        margin: 0;
+        color: #64748b;
+    }
+
+    .organizacao {
+        background: white;
+        padding: 18px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+        box-shadow: 0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .organizacao small {
+        color: #64748b;
+    }
+
+    .organizacao h3 {
+        margin: 6px 0 0;
+    }
+
+    .estatisticas {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(140px, 1fr)
+        );
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .estatistica {
+        background: white;
+        padding: 18px;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .estatistica .numero {
+        font-size: 28px;
+        font-weight: bold;
+        color: #0f766e;
+    }
+
+    .estatistica .titulo {
+        margin-top: 5px;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .status-projetos {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(140px, 1fr)
+        );
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .status-card {
+        background: white;
+        padding: 15px;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0,0,0,.05);
+    }
+
+    .status-card .numero {
+        font-size: 25px;
+        font-weight: bold;
+        color: #0f766e;
+    }
+
+    .status-card .titulo {
+        margin-top: 5px;
+        color: #64748b;
+        font-size: 13px;
+    }
+
+    .acoes {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(150px, 1fr)
+        );
+        gap: 12px;
+        margin-bottom: 25px;
+    }
+
+    button {
+        border: none;
+        border-radius: 9px;
+        padding: 14px;
+        font-size: 14px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .principal {
+        background: #0f766e;
+        color: white;
+    }
+
+    .secundario {
+        background: white;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+    }
+
+    .danger {
+        background: #dc2626;
+        color: white;
+    }
+
+    .secao {
+        background: white;
+        padding: 20px;
+        border-radius: 14px;
+        box-shadow: 0 4px 15px rgba(0,0,0,.05);
+        margin-bottom: 20px;
+    }
+
+    .secao h3 {
+        margin-top: 0;
+    }
+
+    .projeto {
+        border-top: 1px solid #e5e7eb;
+        padding: 14px 0;
+    }
+
+    .pendencia-card {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 12px;
+        cursor: pointer;
+    }
+
+    #listaPendencias {
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(220px, 1fr)
+        );
+        gap: 10px;
+    }
+
+    .pendencia-card strong {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .pendencia-card span {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .projeto:first-child {
+        border-top: none;
+    }
+
+    .projeto strong {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .projeto span {
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .vazio {
+        color: #64748b;
+        font-size: 14px;
+        padding: 10px 0;
+    }
+
+    .erro {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 14px;
+        border-radius: 9px;
+        margin-bottom: 15px;
+        display: none;
+    }
+
+    .carregando {
+        text-align: center;
+        padding: 40px;
+        color: #64748b;
+    }
+
+</style>
+
+</head><body><header><h1>☀️ HomologaSolar RT</h1>
+
+<p>
+    Gestão de homologação fotovoltaica
+</p>
+
+</header><div class="container"><div
+    id="carregando"
+    class="carregando"
+>
+    Carregando seu painel...
+</div>
+
+
+<div
+    id="conteudo"
+    style="display:none;"
+>
+
+    <div class="boas-vindas">
+
+        <h2>
+            Olá, <span id="nomeUsuario"></span>!
+        </h2>
+
+        <p>
+            Bem-vindo ao seu painel de projetos.
+        </p>
+
+    </div>
+
+
+    <div
+        id="erro"
+        class="erro"
+    ></div>
+
+
+    <div class="organizacao">
+
+        <small>
+            Sua organização
+        </small>
+
+        <h3 id="nomeOrganizacao">
+            —
+        </h3>
+
+    </div>
+
+
+    <div class="estatisticas">
+
+        <div class="estatistica">
+
+            <div
+                id="totalProjetos"
+                class="numero"
+            >
+                0
+            </div>
+
+            <div class="titulo">
+                Projetos
+            </div>
+
+        </div>
+
+
+        <div class="estatistica">
+
+            <div
+                id="totalClientes"
+                class="numero"
+            >
+                0
+            </div>
+
+            <div class="titulo">
+                Clientes
+            </div>
+
+        </div>
+
+
+        <div class="estatistica">
+
+            <div
+                id="totalRTs"
+                class="numero"
+            >
+                0
+            </div>
+
+            <div class="titulo">
+                Responsáveis técnicos
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="status-projetos">
+
+        <div
+            class="status-card"
+            onclick="filtrarProjetosPorStatus('rascunho')"
+        >
+            <div id="statusRascunho" class="numero">0</div>
+            <div class="titulo">📝 Rascunho</div>
+        </div>
+
+
+        <div
+            class="status-card"
+            onclick="filtrarProjetosPorStatus('documentacao')"
+        >
+            <div id="statusDocumentacao" class="numero">0</div>
+            <div class="titulo">📄 Documentação</div>
+        </div>
+
+
+        <div
+            class="status-card"
+            onclick="filtrarProjetosPorStatus('enviado')"
+        >
+            <div id="statusEnviado" class="numero">0</div>
+            <div class="titulo">📤 Enviado</div>
+        </div>
+
+
+        <div
+            class="status-card"
+            onclick="filtrarProjetosPorStatus('em_analise')"
+        >
+            <div id="statusAnalise" class="numero">0</div>
+            <div class="titulo">🔎 Em análise</div>
+        </div>
+
+
+        <div
+            class="status-card"
+            onclick="filtrarProjetosPorStatus('aprovado')"
+        >
+            <div id="statusAprovado" class="numero">0</div>
+            <div class="titulo">✅ Aprovado</div>
+        </div>
+
+
+        <div
+            class="status-card"
+            onclick="filtrarProjetosPorStatus('reprovado')"
+        >
+            <div id="statusReprovado" class="numero">0</div>
+            <div class="titulo">❌ Reprovado</div>
+        </div>
+
+    </div>
+
+
+    <div class="acoes">
+
+        <button
+            class="principal"
+            onclick="window.location.href='projeto.html'"
+        >
+            + Novo projeto
+        </button>
+
+        <button
+            class="secundario"
+            onclick="window.location.href='clientes.html'"
+        >
+            👥 Clientes
+        </button>
+
+        <button
+            class="secundario"
+            onclick="window.location.href='responsaveis-tecnicos.html'"
+        >
+            👷 RTs
+        </button>
+
+        <button
+            class="danger"
+            onclick="sair()"
+        >
+            Sair
+        </button>
+
+    </div>
+
+
+    <div class="secao">
+
+        <h3>
+            ⚠️ Pendências que exigem atenção
+        </h3>
+
+        <div id="listaPendencias">
+
+            <div class="vazio">
+                Nenhuma pendência encontrada.
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="secao">
+
+        <h3>
+            📁 Projetos recentes
+        </h3>
+
+        <div id="listaProjetos">
+
+            <div class="vazio">
+                Nenhum projeto cadastrado.
+            </div>
+
+        </div>
+
     </div>
 
 </div>
 
-</div><div class="secao"><h3>
-    📁 Projetos recentes
-</h3>
-
-<div id="listaProjetos">
-
-    <div class="vazio">
-        Nenhum projeto cadastrado.
-    </div>
-
-</div>
-
-</div>
-
-			</div>
-
-		</div>
-<!-- =========================================
+</div><!-- =========================================
      JANELA DE PENDÊNCIAS
 ========================================= --><div
     id="modalPendencias"
@@ -567,542 +557,341 @@ gap: 10px;
 
 </div>
 
-</div>
-
-		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-		<script src="supabase-config.js"></script>
-
-
-		<script>
-
-			const supabaseClient =
-			window.supabase.createClient(
-			SUPABASE_URL,
-			SUPABASE_KEY
-			);
-
-
-			let usuarioAtual = null;
-			let organizacaoAtual = null;
-
-
-			async function iniciarDashboard() {
-
-			try {
-
-			const {
-			data: sessaoData
-			} =
-			await supabaseClient.auth.getSession();
-
-
-			if (
-			!sessaoData ||
-			!sessaoData.session
-			) {
-
-			window.location.href =
-            "index.html";
-
-			return;
-			}
-
-
-			const {
-			data: usuarioData,
-			error: usuarioError
-			} =
-			await supabaseClient.auth.getUser();
-
-
-			if (
-			usuarioError ||
-			!usuarioData.user
-			) {
-
-			window.location.href =
-            "index.html";
-
-			return;
-			}
-
-
-			usuarioAtual =
-			usuarioData.user;
-
-
-			document.getElementById(
-			"nomeUsuario"
-			).textContent =
-			usuarioAtual.email.split("@")[0];
-
-
-			// ====================================
-			// DESCOBRIR A ORGANIZAÇÃO DO USUÁRIO
-			// ====================================
-
-			const {
-			data: membro,
-			error: membroError
-			} =
-			await supabaseClient
-			.from("organizacao_membros")
-			.select(`
-            organizacao_id,
-            funcao,
-            organizacoes (
-			id,
-			nome,
-			email
-            )
-			`)
-			.eq(
-            "usuario_id",
-            usuarioAtual.id
-			)
-			.eq(
-            "ativo",
-            true
-			)
-			.limit(1)
-			.maybeSingle();
-
-
-			if (membroError) {
-
-			throw membroError;
-
-			}
-
-
-			if (!membro) {
-
-			throw new Error(
-            "Este usuário não possui uma organização."
-			);
-
-			}
-
-
-			organizacaoAtual =
-			membro.organizacao_id;
-
-
-			document.getElementById(
-			"nomeOrganizacao"
-			).textContent =
-			membro.organizacoes.nome;
-
-
-			// ====================================
-			// CARREGAR ESTATÍSTICAS
-			// ====================================
-
-			await carregarEstatisticas();
-
-			await carregarStatusProjetos();
-
-				await carregarPendencias();
-
-
-			// ====================================
-			// CARREGAR PROJETOS
-			// ====================================
-
-			await carregarProjetos();
-
-
-			document.getElementById(
-			"carregando"
-			).style.display = "none";
-
-
-			document.getElementById(
-			"conteudo"
-			).style.display = "block";
-
-
-			} catch (erro) {
-
-			console.error(erro);
-
-			document.getElementById(
-			"carregando"
-			).style.display = "none";
-
-			document.getElementById(
-			"conteudo"
-			).style.display = "block";
-
-
-			const caixaErro =
-			document.getElementById("erro");
-
-
-			caixaErro.style.display = "block";
-
-			caixaErro.textContent =
-			"ERRO: " +
-			erro.message;
-
-			}
-			}
-
-
-			async function carregarEstatisticas() {
-
-			const [
-			projetos,
-			clientes,
-			rts
-			] =
-			await Promise.all([
-
-			supabaseClient
-			.from("projetos")
-			.select(
-            "id",
-            {
-			count: "exact",
-			head: true
-            }
-			)
-			.eq(
-            "organizacao_id",
-            organizacaoAtual
-			),
-
-			supabaseClient
-			.from("clientes")
-			.select(
-            "id",
-            {
-			count: "exact",
-			head: true
-            }
-			)
-			.eq(
-            "organizacao_id",
-            organizacaoAtual
-			),
-
-			supabaseClient
-			.from("responsaveis_tecnicos")
-			.select(
-            "id",
-            {
-			count: "exact",
-			head: true
-            }
-			)
-			.eq(
-            "organizacao_id",
-            organizacaoAtual
-			)
-			.eq(
-            "ativo",
-            true
-			)
-
-			]);
-
-
-			if (projetos.error)
-			throw projetos.error;
-
-			if (clientes.error)
-			throw clientes.error;
-
-			if (rts.error)
-			throw rts.error;
-
-
-			document.getElementById(
-			"totalProjetos"
-			).textContent =
-			projetos.count || 0;
-
-
-			document.getElementById(
-			"totalClientes"
-			).textContent =
-			clientes.count || 0;
-
-
-			document.getElementById(
-			"totalRTs"
-			).textContent =
-			rts.count || 0;
-
-			}
-
-			async function carregarStatusProjetos() {
-
-			const {
-			data,
-			error
-			} =
-			await supabaseClient
-			.from("projetos")
-			.select("status")
-			.eq(
-			"organizacao_id",
-			organizacaoAtual
-			);
-
-
-			if (error)
-			throw error;
-
-
-			const contadores = {
-			rascunho: 0,
-			documentacao: 0,
-			enviado: 0,
-			em_analise: 0,
-			aprovado: 0,
-			reprovado: 0
-			};
-
-
-			(data || []).forEach(projeto => {
-
-			const status =
-			(projeto.status || "rascunho")
-			.toLowerCase();
-
-
-			if (
-			contadores.hasOwnProperty(status)
-			) {
-
-			contadores[status]++;
-
-			}
-
-			});
-
-
-			document.getElementById(
-			"statusRascunho"
-			).textContent =
-			contadores.rascunho;
-
-
-			document.getElementById(
-			"statusDocumentacao"
-			).textContent =
-			contadores.documentacao;
-
-
-			document.getElementById(
-			"statusEnviado"
-			).textContent =
-			contadores.enviado;
-
-
-			document.getElementById(
-"statusAnalise"
-).textContent =
-contadores.em_analise;
-
-
-			document.getElementById(
-			"statusAprovado"
-			).textContent =
-			contadores.aprovado;
-
-
-			document.getElementById(
-			"statusReprovado"
-			).textContent =
-			contadores.reprovado;
-
-			}
-
-			async function carregarProjetos() {
-
-			const {
-			data,
-			error
-			} =
-			await supabaseClient
-			.from("projetos")
-			.select(`
-			id,
-			nome,
-			status,
-			criado_em
-			`)
-			.eq(
-			"organizacao_id",
-			organizacaoAtual
-			)
-			.order(
-			"criado_em",
-			{
-            ascending: false
-			}
-			);
-
-
-			if (error)
-			throw error;
-
-
-			const lista =
-			document.getElementById(
-			"listaProjetos"
-			);
-
-
-			if (!data || data.length === 0) {
-
-			lista.innerHTML =
-			'<div class="vazio">Nenhum projeto cadastrado.</div>';
-
-			return;
-
-			}
-
-
-			lista.innerHTML = "";
-
-
-			data.forEach(projeto => {
-
-			const item =
-			document.createElement("div");
-
-			item.className = "projeto";
-
-			item.style.cursor = "pointer";
-
-			item.dataset.status = projeto.status || "";
-
-			item.onclick = function() {
-
-			window.location.href =
-			"projeto-detalhes.html?id=" +
-			encodeURIComponent(projeto.id);
-
-			};
-
-
-			item.innerHTML = `
-			<strong>${escaparHtml(projeto.nome)}</strong>
-			<span>
-				Status: ${escaparHtml(projeto.status || "Sem status")}
-			</span>
-			`;
-
-
-			lista.appendChild(item);
-
-			});
-
-			}
-
-			async function carregarPendencias() {
-
-const lista =
-    document.getElementById(
-        "listaPendencias"
+</div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script>
+
+const supabaseClient =
+    window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
     );
 
-try {
+
+let usuarioAtual = null;
+let organizacaoAtual = null;
+
+
+/* =========================================
+   INICIAR DASHBOARD
+========================================= */
+
+async function iniciarDashboard() {
+
+    try {
+
+        const {
+            data: sessaoData
+        } =
+        await supabaseClient.auth.getSession();
+
+
+        if (
+            !sessaoData ||
+            !sessaoData.session
+        ) {
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        const {
+            data: usuarioData,
+            error: usuarioError
+        } =
+        await supabaseClient.auth.getUser();
+
+
+        if (
+            usuarioError ||
+            !usuarioData.user
+        ) {
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        usuarioAtual =
+            usuarioData.user;
+
+
+        document.getElementById(
+            "nomeUsuario"
+        ).textContent =
+            usuarioAtual.email.split("@")[0];
+
+
+        /* ====================================
+           DESCOBRIR ORGANIZAÇÃO
+        ==================================== */
+
+        const {
+            data: membro,
+            error: membroError
+        } =
+        await supabaseClient
+            .from("organizacao_membros")
+            .select(`
+                organizacao_id,
+                funcao,
+                organizacoes (
+                    id,
+                    nome,
+                    email
+                )
+            `)
+            .eq(
+                "usuario_id",
+                usuarioAtual.id
+            )
+            .eq(
+                "ativo",
+                true
+            )
+            .limit(1)
+            .maybeSingle();
+
+
+        if (membroError) {
+
+            throw membroError;
+
+        }
+
+
+        if (!membro) {
+
+            throw new Error(
+                "Este usuário não possui uma organização."
+            );
+
+        }
+
+
+        organizacaoAtual =
+            membro.organizacao_id;
+
+
+        document.getElementById(
+            "nomeOrganizacao"
+        ).textContent =
+            membro.organizacoes.nome;
+
+
+        /* ====================================
+           CARREGAR DADOS
+        ==================================== */
+
+        await carregarEstatisticas();
+
+        await carregarStatusProjetos();
+
+        await carregarPendencias();
+
+        await carregarProjetos();
+
+
+        document.getElementById(
+            "carregando"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "conteudo"
+        ).style.display =
+            "block";
+
+
+    } catch (erro) {
+
+        console.error(erro);
+
+
+        document.getElementById(
+            "carregando"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "conteudo"
+        ).style.display =
+            "block";
+
+
+        const caixaErro =
+            document.getElementById("erro");
+
+
+        caixaErro.style.display =
+            "block";
+
+
+        caixaErro.textContent =
+            "ERRO: " +
+            erro.message;
+
+    }
+
+}
+
+
+/* =========================================
+   ESTATÍSTICAS
+========================================= */
+
+async function carregarEstatisticas() {
+
+    const [
+        projetos,
+        clientes,
+        rts
+    ] =
+    await Promise.all([
+
+        supabaseClient
+            .from("projetos")
+            .select(
+                "id",
+                {
+                    count: "exact",
+                    head: true
+                }
+            )
+            .eq(
+                "organizacao_id",
+                organizacaoAtual
+            ),
+
+        supabaseClient
+            .from("clientes")
+            .select(
+                "id",
+                {
+                    count: "exact",
+                    head: true
+                }
+            )
+            .eq(
+                "organizacao_id",
+                organizacaoAtual
+            ),
+
+        supabaseClient
+            .from("responsaveis_tecnicos")
+            .select(
+                "id",
+                {
+                    count: "exact",
+                    head: true
+                }
+            )
+            .eq(
+                "organizacao_id",
+                organizacaoAtual
+            )
+            .eq(
+                "ativo",
+                true
+            )
+
+    ]);
+
+
+    if (projetos.error)
+        throw projetos.error;
+
+    if (clientes.error)
+        throw clientes.error;
+
+    if (rts.error)
+        throw rts.error;
+
+
+    document.getElementById(
+        "totalProjetos"
+    ).textContent =
+        projetos.count || 0;
+
+
+    document.getElementById(
+        "totalClientes"
+    ).textContent =
+        clientes.count || 0;
+
+
+    document.getElementById(
+        "totalRTs"
+    ).textContent =
+        rts.count || 0;
+
+}
+
+
+/* =========================================
+   STATUS DOS PROJETOS
+========================================= */
+
+async function carregarStatusProjetos() {
 
     const {
-        data: documentos,
+        data,
         error
     } =
     await supabaseClient
-        .from("documentos_projeto")
-        .select(`
-            projeto_id,
-            status,
-            projetos (
-                id,
-                nome
-            )
-        `)
+        .from("projetos")
+        .select("status")
         .eq(
             "organizacao_id",
             organizacaoAtual
-        )
-        .in(
-            "status",
-            [
-                "pendente",
-                "rejeitado"
-            ]
         );
+
 
     if (error)
         throw error;
 
 
-    const projetos = {};
+    const contadores = {
+
+        rascunho: 0,
+
+        documentacao: 0,
+
+        enviado: 0,
+
+        em_analise: 0,
+
+        aprovado: 0,
+
+        reprovado: 0
+
+    };
 
 
-    (documentos || []).forEach(
-        documento => {
+    (data || []).forEach(
+        projeto => {
 
-            const projeto =
-                documento.projetos;
-
-            if (!projeto)
-                return;
-
-
-            if (
-                !projetos[
-                    documento.projeto_id
-                ]
-            ) {
-
-                projetos[
-                    documento.projeto_id
-                ] = {
-
-                    id:
-                        documento.projeto_id,
-
-                    nome:
-                        projeto.nome,
-
-                    pendentes:
-                        0,
-
-                    rejeitados:
-                        0
-
-                };
-
-            }
+            const status =
+                (
+                    projeto.status ||
+                    "rascunho"
+                ).toLowerCase();
 
 
             if (
-                documento.status ===
-                "pendente"
+                contadores.hasOwnProperty(
+                    status
+                )
             ) {
 
-                projetos[
-                    documento.projeto_id
-                ].pendentes++;
-
-            }
-
-
-            if (
-                documento.status ===
-                "rejeitado"
-            ) {
-
-                projetos[
-                    documento.projeto_id
-                ].rejeitados++;
+                contadores[status]++;
 
             }
 
@@ -1110,19 +899,91 @@ try {
     );
 
 
-    const listaProjetos =
-        Object.values(projetos);
+    document.getElementById(
+        "statusRascunho"
+    ).textContent =
+        contadores.rascunho;
+
+
+    document.getElementById(
+        "statusDocumentacao"
+    ).textContent =
+        contadores.documentacao;
+
+
+    document.getElementById(
+        "statusEnviado"
+    ).textContent =
+        contadores.enviado;
+
+
+    document.getElementById(
+        "statusAnalise"
+    ).textContent =
+        contadores.em_analise;
+
+
+    document.getElementById(
+        "statusAprovado"
+    ).textContent =
+        contadores.aprovado;
+
+
+    document.getElementById(
+        "statusReprovado"
+    ).textContent =
+        contadores.reprovado;
+
+}
+
+
+/* =========================================
+   PROJETOS RECENTES
+========================================= */
+
+async function carregarProjetos() {
+
+    const {
+        data,
+        error
+    } =
+    await supabaseClient
+        .from("projetos")
+        .select(`
+            id,
+            nome,
+            status,
+            criado_em
+        `)
+        .eq(
+            "organizacao_id",
+            organizacaoAtual
+        )
+        .order(
+            "criado_em",
+            {
+                ascending: false
+            }
+        );
+
+
+    if (error)
+        throw error;
+
+
+    const lista =
+        document.getElementById(
+            "listaProjetos"
+        );
 
 
     if (
-        listaProjetos.length === 0
+        !data ||
+        data.length === 0
     ) {
 
-        lista.innerHTML = `
-            <div class="vazio">
-                ✅ Nenhuma pendência encontrada.
-            </div>
-        `;
+        lista.innerHTML =
+            '<div class="vazio">Nenhum projeto cadastrado.</div>';
 
         return;
 
@@ -1132,7 +993,7 @@ try {
     lista.innerHTML = "";
 
 
-    listaProjetos.forEach(
+    data.forEach(
         projeto => {
 
             const item =
@@ -1140,34 +1001,29 @@ try {
                     "div"
                 );
 
+
             item.className =
-                "pendencia-card";
+                "projeto";
 
 
-            let detalhes = "";
+            item.style.cursor =
+                "pointer";
 
 
-            if (
-                projeto.pendentes > 0
-            ) {
-
-                detalhes +=
-                    `🟡 ${projeto.pendentes} documento(s) pendente(s)`;
-
-            }
+            item.dataset.status =
+                projeto.status || "";
 
 
-            if (
-                projeto.rejeitados > 0
-            ) {
+            item.onclick =
+                function() {
 
-                if (detalhes)
-                    detalhes += "<br>";
+                    window.location.href =
+                        "projeto-detalhes.html?id=" +
+                        encodeURIComponent(
+                            projeto.id
+                        );
 
-                detalhes +=
-                    `🔴 ${projeto.rejeitados} documento(s) rejeitado(s)`;
-
-            }
+                };
 
 
             item.innerHTML = `
@@ -1179,21 +1035,14 @@ try {
                 </strong>
 
                 <span>
-                    ${detalhes}
+                    Status:
+                    ${escaparHtml(
+                        projeto.status ||
+                        "Sem status"
+                    )}
                 </span>
 
             `;
-
-
-            item.onclick =
-    function() {
-
-        abrirModalPendencias(
-            projeto.id,
-            projeto.nome
-        );
-
-    };
 
 
             lista.appendChild(item);
@@ -1201,53 +1050,19 @@ try {
         }
     );
 
-
-} catch (erro) {
-
-    console.error(erro);
-
-    lista.innerHTML = `
-        <div class="vazio">
-            ❌ Erro ao carregar pendências.
-        </div>
-    `;
-
 }
 
-				async function abrirModalPendencias(
-    projetoId,
-    nomeProjeto
-) {
 
-    const modal =
-        document.getElementById(
-            "modalPendencias"
-        );
+/* =========================================
+   CARREGAR PENDÊNCIAS
+========================================= */
 
-    const titulo =
-        document.getElementById(
-            "tituloModalPendencias"
-        );
+async function carregarPendencias() {
 
     const lista =
         document.getElementById(
-            "listaDocumentosPendentes"
+            "listaPendencias"
         );
-
-
-    titulo.textContent =
-        "⚠️ " + nomeProjeto;
-
-
-    lista.innerHTML = `
-        <div class="vazio">
-            Carregando documentos...
-        </div>
-    `;
-
-
-    modal.style.display =
-        "flex";
 
 
     try {
@@ -1259,14 +1074,13 @@ try {
         await supabaseClient
             .from("documentos_projeto")
             .select(`
-                id,
-                tipo_documento,
-                status
+                projeto_id,
+                status,
+                projetos (
+                    id,
+                    nome
+                )
             `)
-            .eq(
-                "projeto_id",
-                projetoId
-            )
             .eq(
                 "organizacao_id",
                 organizacaoAtual
@@ -1277,12 +1091,6 @@ try {
                     "pendente",
                     "rejeitado"
                 ]
-            )
-            .order(
-                "tipo_documento",
-                {
-                    ascending: true
-                }
             );
 
 
@@ -1290,298 +1098,507 @@ try {
             throw error;
 
 
-        if (
-            !documentos ||
-            documentos.length === 0
-        ) {
+        const projetos = {};
+
+
+        (documentos || []).forEach(
+            documento => {
+
+                const projeto =
+                    documento.projetos;
+
+
+                if (!projeto)
+					return;
+
+
+			if (
+			!projetos[
+			documento.projeto_id
+			]
+			) {
+
+			projetos[
+			documento.projeto_id
+			] = {
+
+			id:
+			documento.projeto_id,
+
+			nome:
+			projeto.nome,
+
+			pendentes:
+			0,
+
+			rejeitados:
+			0
+
+			};
+
+			}
+
+
+			if (
+			documento.status ===
+			"pendente"
+			) {
+
+			projetos[
+			documento.projeto_id
+			].pendentes++;
+
+			}
+
+
+			if (
+			documento.status ===
+			"rejeitado"
+			) {
+
+			projetos[
+			documento.projeto_id
+			].rejeitados++;
+
+			}
+
+            }
+			);
+
+
+			const listaProjetos =
+            Object.values(
+			projetos
+            );
+
+
+			if (
+            listaProjetos.length === 0
+			) {
 
             lista.innerHTML = `
-                <div class="vazio">
-                    ✅ Nenhuma pendência encontrada.
-                </div>
+			<div class="vazio">
+				✅ Nenhuma pendência encontrada.
+			</div>
             `;
 
             return;
 
-        }
+			}
 
 
-        lista.innerHTML = "";
+			lista.innerHTML = "";
 
 
-        documentos.forEach(
-            documento => {
+			listaProjetos.forEach(
+            projeto => {
 
-                const item =
-                    document.createElement(
-                        "div"
-                    );
-
-
-                item.style.padding =
-                    "12px 0";
-
-                item.style.borderBottom =
-                    "1px solid #e5e7eb";
+			const item =
+			document.createElement(
+			"div"
+			);
 
 
-                const icone =
-                    documento.status ===
-                    "rejeitado"
-                    ? "🔴"
-                    : "🟡";
+			item.className =
+			"pendencia-card";
 
 
-                const textoStatus =
-                    documento.status ===
-                    "rejeitado"
-                    ? "Rejeitado"
-                    : "Pendente";
+			let detalhes = "";
+
+
+			if (
+			projeto.pendentes > 0
+			) {
+
+			detalhes +=
+			`🟡 ${projeto.pendentes} documento(s) pendente(s)`;
+
+			}
+
+
+			if (
+			projeto.rejeitados > 0
+			) {
+
+			if (detalhes)
+			detalhes += "<br>";
+
+
+				detalhes +=
+				`🔴 ${projeto.rejeitados} documento(s) rejeitado(s)`;
+
+                }
 
 
                 item.innerHTML = `
 
-                    <strong>
-                        ${icone}
-                        ${escaparHtml(
-                            documento.tipo_documento
-                        )}
-                    </strong>
+				<strong>
+					${escaparHtml(
+					projeto.nome
+					)}
+				</strong>
 
-                    <span
-                        style="
-                            display:block;
-                            margin-top:4px;
-                            font-size:13px;
-                            color:#64748b;
-                        "
-                    >
-                        ${textoStatus}
-                    </span>
+				<span>
+					${detalhes}
+				</span>
+
+                `;
+
+
+                /*
+				* Clique na pendência
+				* abre o modal.
+				*/
+
+                item.onclick =
+				function() {
+
+				abrirModalPendencias(
+				projeto.id,
+				projeto.nome
+				);
+
+				};
+
+
+                lista.appendChild(item);
+
+				}
+				);
+
+
+				} catch (erro) {
+
+				console.error(erro);
+
+
+				lista.innerHTML = `
+				<div class="vazio">
+					❌ Erro ao carregar pendências.
+				</div>
+				`;
+
+				}
+
+				}
+
+
+				/* =========================================
+				ABRIR MODAL DE PENDÊNCIAS
+				========================================= */
+
+				async function abrirModalPendencias(
+				projetoId,
+				nomeProjeto
+				) {
+
+				const modal =
+				document.getElementById(
+				"modalPendencias"
+				);
+
+
+				const titulo =
+				document.getElementById(
+				"tituloModalPendencias"
+				);
+
+
+				const lista =
+				document.getElementById(
+				"listaDocumentosPendentes"
+				);
+
+
+				titulo.textContent =
+				"⚠️ Pendências — " +
+				nomeProjeto;
+
+
+				lista.innerHTML = `
+				<div class="vazio">
+					Carregando documentos...
+				</div>
+				`;
+
+
+				modal.style.display =
+				"flex";
+
+
+				try {
+
+				const {
+				data: documentos,
+				error
+				} =
+				await supabaseClient
+				.from("documentos_projeto")
+				.select(`
+                id,
+                tipo_documento,
+                status
+				`)
+				.eq(
+                "projeto_id",
+                projetoId
+				)
+				.eq(
+                "organizacao_id",
+                organizacaoAtual
+				)
+				.in(
+                "status",
+                [
+				"pendente",
+				"rejeitado"
+                ]
+				)
+				.order(
+                "tipo_documento",
+                {
+				ascending: true
+                }
+				);
+
+
+				if (error)
+				throw error;
+
+
+				if (
+				!documentos ||
+				documentos.length === 0
+				) {
+
+				lista.innerHTML = `
+                <div class="vazio">
+                    ✅ Nenhuma pendência encontrada.
+                </div>
+				`;
+
+				return;
+
+				}
+
+
+				lista.innerHTML = "";
+
+
+				documentos.forEach(
+				documento => {
+
+                const item =
+				document.createElement(
+				"div"
+				);
+
+
+                item.style.padding =
+				"12px";
+
+
+                item.style.marginBottom =
+				"8px";
+
+
+                item.style.border =
+				"1px solid #e2e8f0";
+
+
+                item.style.borderRadius =
+				"9px";
+
+
+                item.style.background =
+				"#f8fafc";
+
+
+                const icone =
+				documento.status ===
+				"rejeitado"
+				? "🔴"
+				: "🟡";
+
+
+                const textoStatus =
+				documento.status ===
+				"rejeitado"
+				? "Rejeitado"
+				: "Pendente";
+
+
+                item.innerHTML = `
+
+				<strong>
+					${icone}
+					${escaparHtml(
+					documento.tipo_documento
+					)}
+				</strong>
+
+				<span
+					style="
+					display:block;
+					margin-top:4px;
+					font-size:13px;
+					color:#64748b;
+					"
+				>
+					Status: ${textoStatus}
+				</span>
 
                 `;
 
 
                 lista.appendChild(item);
 
-            }
-        );
+				}
+				);
 
 
-    } catch (erro) {
+				} catch (erro) {
 
-        console.error(erro);
+				console.error(erro);
 
 
-        lista.innerHTML = `
-            <div class="vazio">
-                ❌ Erro ao carregar documentos.
-            </div>
-        `;
-
-    }
+				lista.innerHTML = `
+				<div class="vazio">
+					❌ Erro ao carregar documentos.
+				</div>
+				`;
 
 				}
+
+				}
+
+
+				/* =========================================
+				FECHAR MODAL DE PENDÊNCIAS
+				========================================= */
 
 				function fecharModalPendencias() {
 
-    const modal =
-        document.getElementById(
-            "modalPendencias"
-        );
+				const modal =
+				document.getElementById(
+				"modalPendencias"
+				);
 
-    modal.style.display =
-        "none";
+
+				if (!modal)
+				return;
+
+
+				modal.style.display =
+				"none";
 
 				}
 
-			function abrirModalPendencias(projetoId, nomeProjeto, documentos) {
 
-const modal =
-    document.getElementById(
-        "modalPendencias"
-    );
+				/* =========================================
+				FILTRAR PROJETOS POR STATUS
+				========================================= */
 
-const titulo =
-    document.getElementById(
-        "tituloModalPendencias"
-    );
+				function filtrarProjetosPorStatus(
+				status
+				) {
 
-const lista =
-    document.getElementById(
-        "listaDocumentosPendentes"
-    );
+				const projetos =
+				document.querySelectorAll(
+				".projeto"
+				);
 
 
-titulo.textContent =
-    "⚠️ Pendências — " +
-    nomeProjeto;
+				projetos.forEach(
+				projeto => {
 
+				if (
+                status ===
+                "todos"
+				) {
 
-lista.innerHTML = "";
+                projeto.style.display =
+				"block";
 
+                return;
 
-if (
-    !documentos ||
-    documentos.length === 0
-) {
+				}
 
-    lista.innerHTML = `
-        <div class="vazio">
-            Nenhuma pendência encontrada.
-        </div>
-    `;
 
-} else {
+				if (
+                projeto.dataset.status ===
+                status
+				) {
 
-    documentos.forEach(documento => {
+                projeto.style.display =
+				"block";
 
-        const item =
-            document.createElement("div");
+				} else {
 
-        item.style.padding =
-            "12px";
+                projeto.style.display =
+				"none";
 
-        item.style.marginBottom =
-            "8px";
+				}
 
-        item.style.border =
-            "1px solid #e2e8f0";
+				}
+				);
 
-        item.style.borderRadius =
-            "9px";
+				}
 
-        item.style.background =
-            "#f8fafc";
 
+				/* =========================================
+				ESCAPAR HTML
+				========================================= */
 
-        const status =
-            documento.status ||
-            "pendente";
+				function escaparHtml(texto) {
 
+				const div =
+				document.createElement(
+				"div"
+				);
 
-        let icone = "🟡";
 
-        if (
-            status === "rejeitado" ||
-            status === "reprovado"
-        ) {
+				div.textContent =
+				texto || "";
 
-            icone = "🔴";
 
-        }
+				return div.innerHTML;
 
+				}
 
-        item.innerHTML = `
-            <strong>
-                ${icone}
-                ${escaparHtml(
-                    documento.tipo_documento
-                )}
-            </strong>
 
-            <span
-                style="
-                    display:block;
-                    margin-top:4px;
-                    font-size:13px;
-                    color:#64748b;
-                "
-            >
-                Status: ${escaparHtml(status)}
-            </span>
-        `;
+				/* =========================================
+				NOVO PROJETO
+				========================================= */
 
+				function novoProjeto() {
 
-        lista.appendChild(item);
+				alert(
+				"A tela de criação de projeto será construída na próxima etapa."
+				);
 
-    });
+				}
 
-}
 
+				/* =========================================
+				SAIR
+				========================================= */
 
-modal.style.display =
-    "flex";
+				async function sair() {
 
-}
+				await supabaseClient.auth.signOut();
 
-function fecharModalPendencias() {
+				window.location.href =
+				"index.html";
 
-const modal =
-    document.getElementById(
-        "modalPendencias"
-    );
+				}
 
-modal.style.display =
-    "none";
 
-}	
+				/* =========================================
+				INICIAR
+				========================================= */
 
-			}
-			
-			function filtrarProjetosPorStatus(status) {
+				iniciarDashboard();
 
-			const projetos =
-			document.querySelectorAll(".projeto");
-
-			projetos.forEach(projeto => {
-
-			if (status === "todos") {
-
-			projeto.style.display = "block";
-			return;
-
-			}
-
-			if (projeto.dataset.status === status) {
-
-			projeto.style.display = "block";
-
-			} else {
-
-			projeto.style.display = "none";
-
-			}
-
-			});
-
-			}
-
-			function escaparHtml(texto) {
-
-			const div =
-			document.createElement("div");
-
-			div.textContent =
-			texto || "";
-
-			return div.innerHTML;
-
-			}
-
-			function novoProjeto() {
-
-			alert(
-			"A tela de criação de projeto será construída na próxima etapa."
-			);
-
-			}
-
-
-			async function sair() {
-
-			await supabaseClient.auth.signOut();
-
-			window.location.href =
-			"index.html";
-
-			}
-
-
-			iniciarDashboard();
-
-		</script>
-
-	</body>
-
-</html>
+		</script></body></html>
+                  
