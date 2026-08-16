@@ -96,6 +96,13 @@ button:disabled {
   padding: 16px;
   border-radius: 13px;
   box-shadow: 0 3px 12px rgba(0,0,0,.05);
+  cursor: pointer;
+  transition: .2s;
+}
+
+.cliente:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(0,0,0,.09);
 }
 
 .cliente strong {
@@ -144,6 +151,7 @@ button:disabled {
   background: rgba(0,0,0,.55);
   padding: 15px;
   overflow-y: auto;
+  z-index: 1000;
 }
 
 .modal-conteudo {
@@ -199,6 +207,75 @@ button:disabled {
   color: #64748b;
 }
 
+
+/* =========================================
+   MODAL DETALHES DO CLIENTE
+========================================= */
+
+.modal-detalhes {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  padding: 15px;
+  overflow-y: auto;
+  z-index: 2000;
+}
+
+.modal-detalhes-conteudo {
+  background: white;
+  max-width: 600px;
+  margin: 30px auto;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.2);
+}
+
+.modal-detalhes-conteudo h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #0f766e;
+}
+
+.detalhe-item {
+  padding: 11px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detalhe-item:last-child {
+  border-bottom: none;
+}
+
+.detalhe-label {
+  display: block;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.detalhe-valor {
+  display: block;
+  font-size: 15px;
+  color: #1f2937;
+}
+
+.acoes-detalhes {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.acoes-detalhes button {
+  flex: 1;
+}
+
+.btn-excluir {
+  background: #dc2626;
+  color: white;
+}
+
+
 @media (max-width: 600px) {
 
   .topo {
@@ -210,11 +287,16 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 
+  .acoes-detalhes {
+    flex-direction: column;
+  }
+
 }
 
 </style>
 
 </head>
+
 
 <body>
 
@@ -276,7 +358,9 @@ Carregando clientes...
 </div>
 
 
-<!-- MODAL -->
+<!-- =========================================
+     MODAL NOVO CLIENTE
+========================================= -->
 
 <div
   id="modal"
@@ -458,6 +542,7 @@ CEP
 Cancelar
 </button>
 
+
 <button
   type="submit"
   class="btn-principal"
@@ -474,44 +559,51 @@ Salvar cliente
 
 </div>
 
-	<!-- MODAL DETALHES DO CLIENTE -->
+
+<!-- =========================================
+     MODAL DETALHES DO CLIENTE
+========================================= -->
 
 <div
   id="modalDetalhesCliente"
   class="modal-detalhes"
 >
 
-  <div class="modal-detalhes-conteudo">
+<div class="modal-detalhes-conteudo">
 
-    <h2 id="tituloDetalhesCliente">
-      👤 Cliente
-    </h2>
+<h2 id="tituloDetalhesCliente">
+👤 Cliente
+</h2>
 
-    <div id="dadosDetalhesCliente"></div>
 
-    <div class="acoes-detalhes">
+<div id="dadosDetalhesCliente"></div>
 
-      <button
-        type="button"
-        class="btn-secundario"
-        onclick="fecharDetalhesCliente()"
-      >
-        Fechar
-      </button>
 
-      <button
-        type="button"
-        class="btn-principal"
-        id="btnExcluirDetalhes"
-      >
-        🗑️ Excluir
-      </button>
+<div class="acoes-detalhes">
 
-    </div>
+<button
+  type="button"
+  class="btn-secundario"
+  onclick="fecharDetalhesCliente()"
+>
+Fechar
+</button>
 
-  </div>
+
+<button
+  type="button"
+  class="btn-excluir"
+  id="btnExcluirDetalhes"
+>
+🗑️ Excluir
+</button>
 
 </div>
+
+</div>
+
+</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -564,9 +656,9 @@ async function iniciar() {
       data.user;
 
 
-    /* ================================
+    /* =====================================
        DESCOBRIR ORGANIZAÇÃO
-    ================================= */
+    ===================================== */
 
     const {
       data: membro,
@@ -639,8 +731,13 @@ async function carregarClientes() {
       cpf_cnpj,
       email,
       telefone,
+      endereco,
+      numero,
+      complemento,
+      bairro,
       cidade,
-      estado
+      estado,
+      cep
     `)
     .eq(
       "organizacao_id",
@@ -705,6 +802,7 @@ function renderizarClientes(lista) {
     const div =
       document.createElement("div");
 
+
     div.className =
       "cliente";
 
@@ -730,37 +828,95 @@ function renderizarClientes(lista) {
         cliente.cidade
         ? `<span>
             ${escaparHtml(cliente.cidade)}
-            ${cliente.estado ? " - " + escaparHtml(cliente.estado) : ""}
+            ${
+              cliente.estado
+              ? " - " + escaparHtml(cliente.estado)
+              : ""
+            }
           </span>`
         : ""
       }
+
+      <span style="
+        margin-top:10px;
+        color:#0f766e;
+        font-weight:bold;
+      ">
+        👁️ Ver detalhes
+      </span>
     `;
 
 
+    /*
+     * Clicar no cartão abre os detalhes
+     */
+
+    div.onclick =
+      function() {
+
+        abrirDetalhesCliente(
+          cliente
+        );
+
+      };
+
+
+    /*
+     * Botão excluir continua separado
+     */
+
     const botaoExcluir =
-document.createElement("button");
-
-botaoExcluir.textContent =
-"🗑️ Excluir";
-
-botaoExcluir.className =
-"botao-excluir";
-
-botaoExcluir.onclick = function() {
-
-excluirCliente(cliente.id);
-
-};
-
-div.appendChild(botaoExcluir);
+      document.createElement("button");
 
 
-elemento.appendChild(div);
+    botaoExcluir.textContent =
+      "🗑️ Excluir";
 
-});
-  
-  }
-  
+
+    botaoExcluir.style.marginTop =
+      "10px";
+
+
+    botaoExcluir.style.background =
+      "#dc2626";
+
+
+    botaoExcluir.style.color =
+      "white";
+
+
+    botaoExcluir.onclick =
+      function(event) {
+
+        /*
+         * Impede que o clique no botão
+         * também abra o modal
+         */
+
+        event.stopPropagation();
+
+
+        excluirCliente(
+          cliente.id
+        );
+
+      };
+
+
+    div.appendChild(
+      botaoExcluir
+    );
+
+
+    elemento.appendChild(
+      div
+    );
+
+  });
+
+}
+
+
 /* =========================================
    BUSCA
 ========================================= */
@@ -779,6 +935,7 @@ function filtrarClientes() {
     clientes.filter(cliente => {
 
       return (
+
         (cliente.nome || "")
           .toLowerCase()
           .includes(termo)
@@ -808,14 +965,15 @@ function filtrarClientes() {
 
 
 /* =========================================
-   MODAL
+   MODAL NOVO CLIENTE
 ========================================= */
 
 function abrirModal() {
 
   document.getElementById(
     "modal"
-  ).style.display = "block";
+  ).style.display =
+    "block";
 
 }
 
@@ -824,11 +982,221 @@ function fecharModal() {
 
   document.getElementById(
     "modal"
-  ).style.display = "none";
+  ).style.display =
+    "none";
+
 
   document.getElementById(
     "formCliente"
   ).reset();
+
+}
+
+
+/* =========================================
+   MODAL DETALHES DO CLIENTE
+========================================= */
+
+function abrirDetalhesCliente(
+  cliente
+) {
+
+  document.getElementById(
+    "tituloDetalhesCliente"
+  ).textContent =
+    "👤 " + cliente.nome;
+
+
+  const dados =
+    document.getElementById(
+      "dadosDetalhesCliente"
+    );
+
+
+  dados.innerHTML = `
+
+    <div class="detalhe-item">
+
+      <span class="detalhe-label">
+        Nome
+      </span>
+
+      <span class="detalhe-valor">
+        ${escaparHtml(cliente.nome)}
+      </span>
+
+    </div>
+
+
+    <div class="detalhe-item">
+
+      <span class="detalhe-label">
+        CPF/CNPJ
+      </span>
+
+      <span class="detalhe-valor">
+        ${escaparHtml(cliente.cpf_cnpj || "Não informado")}
+      </span>
+
+    </div>
+
+
+    <div class="detalhe-item">
+
+      <span class="detalhe-label">
+        Telefone
+      </span>
+
+      <span class="detalhe-valor">
+        ${escaparHtml(cliente.telefone || "Não informado")}
+      </span>
+
+    </div>
+
+
+    <div class="detalhe-item">
+
+      <span class="detalhe-label">
+        E-mail
+      </span>
+
+      <span class="detalhe-valor">
+        ${escaparHtml(cliente.email || "Não informado")}
+      </span>
+
+    </div>
+
+
+    <div class="detalhe-item">
+
+      <span class="detalhe-label">
+        Endereço
+      </span>
+
+      <span class="detalhe-valor">
+        ${escaparHtml(cliente.endereco || "Não informado")}
+      </span>
+
+    </div>
+
+
+    <div class="detalhe-item">
+
+      <span class="detalhe-label">
+        Número
+      </span>
+
+      <span class="detalhe-valor">
+        ${escaparHtml(cliente.numero || "Não informado")}
+      </span>
+
+    </div>
+
+
+    <div class="detalhe-item">
+
+      <span class="detalhe-label">
+        Complemento
+      </span>
+
+      <span class="detalhe-valor">
+        ${escaparHtml(cliente.complemento || "Não informado")}
+      </span>
+
+    </div>
+
+
+    <div class="detalhe-item">
+
+      <span class="detalhe-label">
+        Bairro
+      </span>
+
+      <span class="detalhe-valor">
+        ${escaparHtml(cliente.bairro || "Não informado")}
+      </span>
+
+    </div>
+
+
+    <div class="detalhe-item">
+
+      <span class="detalhe-label">
+        Cidade
+      </span>
+
+      <span class="detalhe-valor">
+        ${escaparHtml(cliente.cidade || "Não informado")}
+      </span>
+
+    </div>
+
+
+    <div class="detalhe-item">
+
+      <span class="detalhe-label">
+        Estado
+      </span>
+
+      <span class="detalhe-valor">
+        ${escaparHtml(cliente.estado || "Não informado")}
+      </span>
+
+    </div>
+
+
+    <div class="detalhe-item">
+
+      <span class="detalhe-label">
+        CEP
+      </span>
+
+      <span class="detalhe-valor">
+        ${escaparHtml(cliente.cep || "Não informado")}
+      </span>
+
+    </div>
+
+  `;
+
+
+  /*
+   * Configura o botão excluir
+   * para o cliente atualmente aberto
+   */
+
+  const botaoExcluir =
+    document.getElementById(
+      "btnExcluirDetalhes"
+    );
+
+
+  botaoExcluir.onclick =
+    function() {
+
+      fecharDetalhesCliente();
+
+      excluirCliente(
+        cliente.id
+      );
+
+    };
+
+
+  document.getElementById(
+    "modalDetalhesCliente"
+  ).style.display =
+    "block";
+
+}
+
+
+function fecharDetalhesCliente() {
+
+  document.getElementById(
+    "modalDetalhesCliente"
+  ).style.display =
+    "none";
 
 }
 
@@ -853,6 +1221,7 @@ document
 
 
       botao.disabled = true;
+
 
       botao.textContent =
         "Salvando...";
@@ -969,7 +1338,9 @@ document
 
       finally {
 
-        botao.disabled = false;
+        botao.disabled =
+          false;
+
 
         botao.textContent =
           "Salvar cliente";
@@ -984,15 +1355,19 @@ document
    MENSAGENS
 ========================================= */
 
-function mostrarErro(mensagem) {
+function mostrarErro(
+  mensagem
+) {
 
   const elemento =
     document.getElementById(
       "erro"
     );
 
+
   elemento.textContent =
     "ERRO: " + mensagem;
+
 
   elemento.style.display =
     "block";
@@ -1008,15 +1383,19 @@ function mostrarErro(mensagem) {
 }
 
 
-function mostrarSucesso(mensagem) {
+function mostrarSucesso(
+  mensagem
+) {
 
   const elemento =
     document.getElementById(
       "sucesso"
     );
 
+
   elemento.textContent =
     mensagem;
+
 
   elemento.style.display =
     "block";
@@ -1032,68 +1411,101 @@ function mostrarSucesso(mensagem) {
 }
 
 
-function escaparHtml(texto) {
+/* =========================================
+   ESCAPAR HTML
+========================================= */
+
+function escaparHtml(
+  texto
+) {
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
+
 
   div.textContent =
     texto || "";
+
 
   return div.innerHTML;
 
 }
 
-			async function excluirCliente(id) {
 
-			const confirmar =
-			confirm(
-			"Tem certeza que deseja excluir este cliente?"
-			);
+/* =========================================
+   EXCLUIR CLIENTE
+========================================= */
 
-			if (!confirmar) {
-			return;
-			}
+async function excluirCliente(
+  id
+) {
 
-			try {
+  const confirmar =
+    confirm(
+      "Tem certeza que deseja excluir este cliente?"
+    );
 
-			const {
-			error
-			} =
-			await supabaseClient
-			.from("clientes")
-			.delete()
-			.eq(
-			"id",
-			id
-			)
-			.eq(
-			"organizacao_id",
-			organizacaoAtual
-			);
 
-			if (error)
-			throw error;
+  if (!confirmar) {
 
-			alert(
-			"Cliente excluído com sucesso!"
-			);
+    return;
 
-			await carregarClientes();
+  }
 
-			} catch (erro) {
 
-			console.error(erro);
+  try {
 
-			alert(
-			"Erro ao excluir cliente: " +
-			erro.message
-			);
+    const {
+      error
+    } =
+    await supabaseClient
+      .from("clientes")
+      .delete()
+      .eq(
+        "id",
+        id
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      );
 
-			}
 
-			}
+    if (error)
+      throw error;
 
+
+    alert(
+      "Cliente excluído com sucesso!"
+    );
+
+
+    await carregarClientes();
+
+  }
+
+  catch (erro) {
+
+    console.error(
+      erro
+    );
+
+
+    alert(
+      "Erro ao excluir cliente: " +
+      erro.message
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   INICIAR
+========================================= */
 
 iniciar();
 
@@ -1101,4 +1513,4 @@ iniciar();
 
 </body>
 
-  </html>
+	</html>
