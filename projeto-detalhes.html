@@ -965,6 +965,7 @@ let projetoId = null;
    OBTER ID DO PROJETO
 ========================================= */
 
+
 function obterProjetoId() {
 
   const parametros =
@@ -975,8 +976,19 @@ function obterProjetoId() {
   return parametros.get("id");
 
 }
+	const parametrosURL =
+  new URLSearchParams(
+    window.location.search
+  );
+
+const modoTemplate =
+  parametrosURL.get("modo") === "template";
+
+const templateId =
+  parametrosURL.get("template_id");
 
 
+	
 /* =========================================
    INICIAR
 ========================================= */
