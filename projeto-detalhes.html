@@ -1031,6 +1031,59 @@ const templateId =
   window.templateAtual =
     template;
 
+		/* =========================================
+   PREENCHER CAMPOS DO TEMPLATE
+========================================= */
+
+const config =
+  template.configuracao || {};
+
+
+/* Conexão */
+
+document.getElementById(
+  "distribuidora"
+).value =
+  template.concessionaria || "";
+
+
+document.getElementById(
+  "tipo_ligacao"
+).value =
+  config.tipo_ligacao || "";
+
+
+document.getElementById(
+  "numero_fases"
+).value =
+  config.numero_fases || "";
+
+
+document.getElementById(
+  "tensao_nominal"
+).value =
+  config.tensao_nominal || "";
+
+
+/* Observações */
+
+document.getElementById(
+  "observacoes_sistema"
+).value =
+  config.observacoes_sistema || "";
+
+
+/* Recalcular */
+
+if (
+  typeof calcularSistema ===
+  "function"
+) {
+
+  calcularSistema();
+
+}
+
 	}
 
 
@@ -1119,15 +1172,6 @@ async function iniciar() {
     organizacaoAtual =
   membro.organizacao_id;
 
-
-/* MODO TEMPLATE */
-if (modoTemplate) {
-
-  await carregarTemplateParaEdicao();
-
-}
-
-
 await carregarProjeto();
 
 await carregarSistema();
@@ -1137,6 +1181,13 @@ await criarChecklistDocumentos();
 await carregarDocumentos();
 
 await carregarDocumentosUpload();
+
+/* MODO TEMPLATE */
+if (modoTemplate) {
+
+  await carregarTemplateParaEdicao();
+
+}
 
   catch (erro) {
 
