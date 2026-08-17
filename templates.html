@@ -629,8 +629,20 @@ async function carregarTemplates() {
     );
 
 
-  if (error)
-    throw error;
+if (error) {
+
+  console.error(
+    "ERRO AO CARREGAR TEMPLATES:",
+    error
+  );
+
+  mostrarErro(
+    "Erro ao carregar templates: " +
+    error.message
+  );
+
+  return;
+}
 
 
   templates =
