@@ -1001,13 +1001,13 @@ async function iniciar() {
       obterProjetoId();
 
 
-    if (!projetoId) {
+    if (!projetoId && !modoTemplate) {
 
-      throw new Error(
-        "ID do projeto não informado."
-      );
+  throw new Error(
+    "ID do projeto não informado."
+  );
 
-    }
+}
 
 
     const {
