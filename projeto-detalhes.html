@@ -1078,6 +1078,80 @@ document.getElementById(
   config.observacoes_sistema || "";
 
 
+/* =========================================
+   DADOS DO SISTEMA FOTOVOLTAICO
+========================================= */
+
+document.getElementById("fabricante_modulo").value =
+  config.fabricante_modulo || "";
+
+document.getElementById("modelo_modulo").value =
+  config.modelo_modulo || "";
+
+document.getElementById("potencia_modulo_w").value =
+  config.potencia_modulo_w || "";
+
+document.getElementById("quantidade_modulos").value =
+  config.quantidade_modulos || "";
+
+document.getElementById("voc_modulo").value =
+  config.voc_modulo || "";
+
+document.getElementById("vmp_modulo").value =
+  config.vmp_modulo || "";
+
+document.getElementById("isc_modulo").value =
+  config.isc_modulo || "";
+
+document.getElementById("imp_modulo").value =
+  config.imp_modulo || "";
+
+
+/* Strings e MPPT */
+
+document.getElementById("quantidade_strings").value =
+  config.quantidade_strings || "";
+
+document.getElementById("modulos_por_string").value =
+  config.modulos_por_string || "";
+
+document.getElementById("quantidade_mppt").value =
+  config.quantidade_mppt || "";
+
+document.getElementById("strings_por_mppt").value =
+  config.strings_por_mppt || "";
+
+
+/* Inversor */
+
+document.getElementById("fabricante_inversor").value =
+  config.fabricante_inversor || "";
+
+document.getElementById("modelo_inversor").value =
+  config.modelo_inversor || "";
+
+document.getElementById("potencia_inversor_kw").value =
+  config.potencia_inversor_kw || "";
+
+document.getElementById("quantidade_inversores").value =
+  config.quantidade_inversores || "";
+
+
+/* Dados elétricos do inversor */
+
+document.getElementById("tensao_max_entrada_v").value =
+  config.tensao_max_entrada_v || "";
+
+document.getElementById("tensao_mppt_min_v").value =
+  config.tensao_mppt_min_v || "";
+
+document.getElementById("tensao_mppt_max_v").value =
+  config.tensao_mppt_max_v || "";
+
+document.getElementById("corrente_max_mppt_a").value =
+  config.corrente_max_mppt_a || "";
+
+
 /* Recalcular */
 
 if (
