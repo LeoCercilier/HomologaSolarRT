@@ -1120,16 +1120,23 @@ async function iniciar() {
   membro.organizacao_id;
 
 
+/* MODO TEMPLATE */
+if (modoTemplate) {
+
+  await carregarTemplateParaEdicao();
+
+}
+
+
 await carregarProjeto();
 
 await carregarSistema();
 
 await criarChecklistDocumentos();
 
-await carregarDocumentos();  
+await carregarDocumentos();
 
 await carregarDocumentosUpload();
-}
 
   catch (erro) {
 
@@ -1147,6 +1154,15 @@ await carregarDocumentosUpload();
 ========================================= */
 
 async function carregarProjeto() {
+
+	if (modoTemplate && window.templateAtual) {
+
+  preencherCamposTemplate(
+    window.templateAtual
+  );
+
+  return;
+	}
 
   const {
     data,
