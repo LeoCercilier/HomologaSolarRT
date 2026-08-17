@@ -846,40 +846,26 @@
 
 			function editarTemplate(id) {
 
-			const template =
-			templates.find(
-			item => item.id === id
-			);
+  const template =
+    templates.find(
+      item => item.id === id
+    );
 
-			if (!template)
-			return;
+  if (!template)
+    return;
 
-			/*
-			* Template padrão:
-			* continua protegido contra edição direta.
-			*/
-			if (
-			template.organizacao_id === null
-			) {
 
-			alert(
-			"Este é um template padrão. Para personalizá-lo, use o botão Duplicar."
-			);
+  /*
+   * Abre a mesma página de projeto
+   * em modo de edição de template.
+   */
+  window.location.href =
+    "projeto-detalhes.html" +
+    "?modo=template" +
+    "&template_id=" +
+    encodeURIComponent(template.id);
 
-			return;
-			}
-
-			/*
-			* Template personalizado:
-			* abre a página de projeto em modo template.
-			*/
-
-			window.location.href =
-			"projeto-detalhes.html?modo=template&template_id=" +
-			encodeURIComponent(template.id);
-
-			}
-
+}
 
 			/* =========================================
 			DUPLICAR E ABRIR PARA EDITAR
