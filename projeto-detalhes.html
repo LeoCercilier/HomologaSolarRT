@@ -1173,9 +1173,34 @@ async function iniciar() {
 
     }
 
-
-    organizacaoAtual =
+		organizacaoAtual =
   membro.organizacao_id;
+
+
+/* =========================================
+   MODO TEMPLATE
+========================================= */
+
+if (modoTemplate) {
+
+  await carregarTemplateParaEdicao();
+
+  document.getElementById(
+    "carregando"
+  ).style.display = "none";
+
+  document.getElementById(
+    "conteudo"
+  ).style.display = "block";
+
+  return;
+
+}
+
+
+/* =========================================
+   MODO PROJETO NORMAL
+========================================= */
 
 await carregarProjeto();
 
@@ -1186,13 +1211,6 @@ await criarChecklistDocumentos();
 await carregarDocumentos();
 
 await carregarDocumentosUpload();
-
-/* MODO TEMPLATE */
-if (modoTemplate) {
-
-  await carregarTemplateParaEdicao();
-
-}
 
   catch (erro) {
 
