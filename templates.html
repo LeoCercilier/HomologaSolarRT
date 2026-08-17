@@ -599,35 +599,31 @@ async function iniciar() {
 async function carregarTemplates() {
 
   const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("templates_projeto")
-    .select(`
-      id,
-      organizacao_id,
-      nome,
-      categoria,
-      concessionaria,
-      descricao,
-      configuracao,
-      ativo
-    `)
-    .eq(
-      "ativo",
-      true
-    )
-    .or(
-      `organizacao_id.is.null,organizacao_id.eq.${organizacaoAtual}`
-    )
-    .order(
-      "nome",
-      {
-        ascending: true
-      }
-    );
-
+  data,
+  error
+} =
+await supabaseClient
+  .from("templates_projeto")
+  .select(`
+    id,
+    organizacao_id,
+    nome,
+    categoria,
+    concessionaria,
+    descricao,
+    configuracao,
+    ativo
+  `)
+  .eq(
+    "ativo",
+    true
+  )
+  .order(
+    "nome",
+    {
+      ascending: true
+    }
+  );
 
 if (error) {
 
