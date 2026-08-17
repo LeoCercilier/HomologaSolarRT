@@ -987,6 +987,52 @@ const modoTemplate =
 const templateId =
   parametrosURL.get("template_id");
 
+	async function carregarTemplateParaEdicao() {
+
+  if (!modoTemplate || !templateId) {
+    return;
+  }
+
+  const {
+    data: template,
+    error
+  } = await supabaseClient
+    .from("templates_projeto")
+    .select(`
+      id,
+      nome,
+      categoria,
+      concessionaria,
+      descricao,
+      configuracao
+    `)
+    .eq("id", templateId)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!template) {
+    throw new Error(
+      "Template não encontrado."
+    );
+  }
+
+  console.log(
+    "Template carregado:",
+    template
+  );
+
+  /*
+   * Guardamos o template para que
+   * o restante da página possa utilizá-lo.
+   */
+  window.templateAtual =
+    template;
+
+	}
+
 
 	
 /* =========================================
