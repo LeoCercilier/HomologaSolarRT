@@ -1209,6 +1209,79 @@
             .value
             .trim();
 
+				/* =========================================
+   DADOS DO SISTEMA FOTOVOLTAICO
+========================================= */
+
+configuracao.fabricante_modulo =
+document.getElementById("fabricanteModulo").value.trim();
+
+configuracao.modelo_modulo =
+document.getElementById("modeloModulo").value.trim();
+
+configuracao.potencia_modulo_w =
+document.getElementById("potenciaModuloW").value.trim();
+
+configuracao.quantidade_modulos =
+document.getElementById("quantidadeModulos").value.trim();
+
+configuracao.voc_modulo =
+document.getElementById("vocModulo").value.trim();
+
+configuracao.vmp_modulo =
+document.getElementById("vmpModulo").value.trim();
+
+configuracao.isc_modulo =
+document.getElementById("iscModulo").value.trim();
+
+configuracao.imp_modulo =
+document.getElementById("impModulo").value.trim();
+
+
+/* Strings e MPPT */
+
+configuracao.quantidade_strings =
+document.getElementById("quantidadeStrings").value.trim();
+
+configuracao.modulos_por_string =
+document.getElementById("modulosPorString").value.trim();
+
+configuracao.quantidade_mppt =
+document.getElementById("quantidadeMppt").value.trim();
+
+configuracao.strings_por_mppt =
+document.getElementById("stringsPorMppt").value.trim();
+
+
+/* Inversor */
+
+configuracao.fabricante_inversor =
+document.getElementById("fabricanteInversor").value.trim();
+
+configuracao.modelo_inversor =
+document.getElementById("modeloInversor").value.trim();
+
+configuracao.potencia_inversor_kw =
+document.getElementById("potenciaInversorKw").value.trim();
+
+configuracao.quantidade_inversores =
+document.getElementById("quantidadeInversores").value.trim();
+
+
+/* Dados elétricos do inversor */
+
+configuracao.tensao_max_entrada_v =
+document.getElementById("tensaoMaxEntradaV").value.trim();
+
+configuracao.tensao_mppt_min_v =
+document.getElementById("tensaoMpptMinV").value.trim();
+
+configuracao.tensao_mppt_max_v =
+document.getElementById("tensaoMpptMaxV").value.trim();
+
+configuracao.corrente_max_mppt_a =
+document.getElementById("correnteMaxMpptA").value.trim();
+
 
 			/*
 			* Só cria documentos vazios
