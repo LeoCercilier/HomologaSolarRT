@@ -1209,78 +1209,25 @@
             .value
             .trim();
 
-	/* =========================================
-   DADOS DO SISTEMA FOTOVOLTAICO
-========================================= */
-
-configuracao.fabricante_modulo =
-document.getElementById("fabricante_modulo").value.trim();
-
-configuracao.modelo_modulo =
-document.getElementById("modelo_modulo").value.trim();
-
-configuracao.potencia_modulo_w =
-document.getElementById("potencia_modulo_w").value.trim();
-
-configuracao.quantidade_modulos =
-document.getElementById("quantidade_modulos").value.trim();
-
-configuracao.voc_modulo =
-document.getElementById("voc_modulo").value.trim();
-
-configuracao.vmp_modulo =
-document.getElementById("vmp_modulo").value.trim();
-
-configuracao.isc_modulo =
-document.getElementById("isc_modulo").value.trim();
-
-configuracao.imp_modulo =
-document.getElementById("imp_modulo").value.trim();
+	configuracao.tensao_nominal =
+document
+.getElementById(
+    "tensaoNominal"
+)
+.value
+.trim();
 
 
-/* Strings e MPPT */
+if (
+!Array.isArray(
+    configuracao.documentos
+)
+) {
 
-configuracao.quantidade_strings =
-document.getElementById("quantidade_strings").value.trim();
+configuracao.documentos =
+    [];
 
-configuracao.modulos_por_string =
-document.getElementById("modulos_por_string").value.trim();
-
-configuracao.quantidade_mppt =
-document.getElementById("quantidade_mppt").value.trim();
-
-configuracao.strings_por_mppt =
-document.getElementById("strings_por_mppt").value.trim();
-
-
-/* Inversor */
-
-configuracao.fabricante_inversor =
-document.getElementById("fabricante_inversor").value.trim();
-
-configuracao.modelo_inversor =
-document.getElementById("modelo_inversor").value.trim();
-
-configuracao.potencia_inversor_kw =
-document.getElementById("potencia_inversor_kw").value.trim();
-
-configuracao.quantidade_inversores =
-document.getElementById("quantidade_inversores").value.trim();
-
-
-/* Dados elétricos do inversor */
-
-configuracao.tensao_max_entrada_v =
-document.getElementById("tensao_max_entrada_v").value.trim();
-
-configuracao.tensao_mppt_min_v =
-document.getElementById("tensao_mppt_min_v").value.trim();
-
-configuracao.tensao_mppt_max_v =
-document.getElementById("tensao_mppt_max_v").value.trim();
-
-configuracao.corrente_max_mppt_a =
-document.getElementById("corrente_max_mppt_a").value.trim();
+}
 
 
 			if (
