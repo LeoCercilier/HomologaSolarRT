@@ -1707,47 +1707,18 @@ async function usarTemplateComoProjeto() {
     );
 
 
-    /* =====================================
+/* =====================================
    ESCOLHER CLIENTE
 ===================================== */
 
-const escolhaCliente =
-  prompt(
-    "Digite o número correspondente ao cliente:\n\n" +
-    clientes
-      .map(
-        (cliente, indice) =>
-          `${indice + 1} - ${cliente.nome}`
-      )
-      .join("\n")
-  );
-
-
-if (escolhaCliente === null) {
-  return;
-}
-
-
-const indiceCliente =
-  parseInt(escolhaCliente, 10) - 1;
-
-
-if (
-  isNaN(indiceCliente) ||
-  !clientes[indiceCliente]
-) {
-
-  alert(
-    "Cliente inválido.\n\n" +
-    "Digite o número apresentado na lista."
-  );
-
-  return;
-}
-
-
 const clienteSelecionado =
-  clientes[indiceCliente];
+  await selecionarClienteTemplate(
+    clientes
+  );
+
+if (!clienteSelecionado) {
+  return;
+}
 
 
     /* =====================================
