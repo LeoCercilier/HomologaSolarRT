@@ -5767,6 +5767,47 @@ iniciar();
 
 </script>
 
+	<!-- MODAL SELEÇÃO DE CLIENTE -->
+<div id="modalSelecionarCliente" class="modal-template" style="display:none;">
+
+  <div class="modal-template-conteudo">
+
+    <div class="modal-template-cabecalho">
+      <h3>👤 Selecionar cliente</h3>
+
+      <button
+        type="button"
+        onclick="fecharModalCliente()"
+        class="modal-template-fechar"
+      >
+        ✕
+      </button>
+    </div>
+
+    <input
+      type="text"
+      id="pesquisaClienteTemplate"
+      placeholder="🔎 Pesquisar cliente..."
+      autocomplete="off"
+      class="modal-template-pesquisa"
+    >
+
+    <div id="listaClientesTemplate">
+      <!-- clientes serão inseridos aqui -->
+    </div>
+
+    <button
+      type="button"
+      onclick="fecharModalCliente()"
+      class="modal-template-cancelar"
+    >
+      Cancelar
+    </button>
+
+  </div>
+
+</div>
+
 </body>
 
   </html>
