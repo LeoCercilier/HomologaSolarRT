@@ -2562,32 +2562,31 @@ function calcularSistema() {
 
   }
 
+if (
+  quantidadeStrings > 0 &&
+  quantidadeMppt > 0 &&
+  stringsPorMppt > 0
+) {
+
+  const capacidadeStrings =
+    quantidadeMppt *
+    stringsPorMppt;
+
 
   if (
-    quantidadeStrings > 0 &&
-    quantidadeMppt > 0 &&
-    stringsPorMppt > 0
+    quantidadeStrings >
+    capacidadeStrings
   ) {
 
-    const stringsCalculadas =
-      quantidadeMppt *
-      stringsPorMppt;
-
-
-    if (
-      stringsCalculadas !==
-      quantidadeStrings
-    ) {
-
-      erros.push(
-        "Quantidade de strings não corresponde aos MPPTs."
-      );
-
-    }
+    erros.push(
+      "Quantidade de strings excede a capacidade configurada dos MPPTs."
+    );
 
   }
 
+}
 
+	
   if (erros.length === 0) {
 
     if (
