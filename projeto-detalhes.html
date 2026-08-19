@@ -2660,14 +2660,15 @@ if (
   }
 
   if (
-    quantidadeStrings > 0 &&
-    quantidadeMppt > 0 &&
-    stringsPorMppt > 0 &&
-    quantidadeMppt * stringsPorMppt !== quantidadeStrings
-  ) {
-    problemasTecnicos.push(
-      "Quantidade de strings incompatível com os MPPTs."
-    );
+  quantidadeStrings > 0 &&
+  quantidadeMppt > 0 &&
+  stringsPorMppt > 0 &&
+  quantidadeStrings >
+    quantidadeMppt * stringsPorMppt
+) {
+  problemasTecnicos.push(
+    "Quantidade de strings excede a capacidade configurada dos MPPTs."
+  );
   }
 
   if (
