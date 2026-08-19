@@ -303,7 +303,7 @@ Carregando projeto...
 
   <button
     type="button"
-    onclick="duplicarProjeto()"
+    onclick="acaoBotaoProjeto()"
     style="
       padding:8px 12px;
       border:none;
@@ -1267,6 +1267,18 @@ if (modoTemplate) {
     "conteudo"
   ).style.display = "block";
 
+	const botaoProjeto =
+  document.querySelector(
+    'button[onclick="acaoBotaoProjeto()"]'
+  );
+
+if (botaoProjeto) {
+
+  botaoProjeto.textContent =
+    "📋 Usar este template";
+
+}
+
   return;
 
 }
@@ -1460,6 +1472,292 @@ async function carregarProjeto() {
     "conteudo"
   ).style.display =
     "block";
+
+}
+
+	/* =========================================
+   AÇÃO DO BOTÃO DE PROJETO
+========================================= */
+
+async function acaoBotaoProjeto() {
+
+  if (modoTemplate) {
+    await usarTemplateComoProjeto();
+    return;
+  }
+
+  await duplicarProjeto();
+
+}
+
+
+/* =========================================
+   USAR TEMPLATE COMO NOVO PROJETO
+========================================= */
+
+async function usarTemplateComoProjeto() {
+
+  try {
+
+    if (!window.templateAtual) {
+      throw new Error(
+        "Template não carregado."
+      );
+    }
+
+    if (!organizacaoAtual) {
+      throw new Error(
+        "Organização atual não encontrada."
+      );
+    }
+
+    if (!usuarioAtual || !usuarioAtual.id) {
+      throw new Error(
+        "Usuário atual não encontrado."
+      );
+    }
+
+
+    /* =====================================
+       BUSCAR CLIENTES
+    ===================================== */
+
+    const {
+      data: clientes,
+      error: erroClientes
+    } = await supabaseClient
+      .from("clientes")
+      .select("id, nome, cpf_cnpj")
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      )
+      .order(
+        "nome",
+        {
+          ascending: true
+        }
+      );
+
+
+    if (erroClientes) {
+      throw erroClientes;
+    }
+
+
+    if (!clientes || clientes.length === 0) {
+
+      alert(
+        "Nenhum cliente cadastrado.\n\n" +
+        "Cadastre um cliente antes de utilizar este template."
+      );
+
+      return;
+    }
+
+
+    /* =====================================
+       MONTAR LISTA DE CLIENTES
+    ===================================== */
+
+    let listaClientes =
+      "👤 Selecione o cliente:\n\n";
+
+    clientes.forEach(
+      (cliente, indice) => {
+
+        listaClientes +=
+          (indice + 1) +
+          " - " +
+          cliente.nome;
+
+        if (cliente.cpf_cnpj) {
+
+          listaClientes +=
+            " (" +
+            cliente.cpf_cnpj +
+            ")";
+
+        }
+
+        listaClientes += "\n";
+
+      }
+    );
+
+
+    /* =====================================
+       ESCOLHER CLIENTE
+    ===================================== */
+
+    const escolha =
+      prompt(
+        listaClientes +
+        "\nDigite o número do cliente:"
+      );
+
+
+    if (escolha === null) {
+      return;
+    }
+
+
+    const indice =
+      parseInt(escolha, 10) - 1;
+
+
+    if (
+      isNaN(indice) ||
+      !clientes[indice]
+    ) {
+
+      alert(
+        "Cliente inválido."
+      );
+
+      return;
+    }
+
+
+    const clienteSelecionado =
+      clientes[indice];
+
+
+    /* =====================================
+       NOME DO NOVO PROJETO
+    ===================================== */
+
+    const nomeSugerido =
+      window.templateAtual.nome ||
+      "Novo projeto";
+
+
+    const nomeProjeto =
+      prompt(
+        "📋 Usar este template\n\n" +
+        "Digite o nome do novo projeto:",
+        nomeSugerido
+      );
+
+
+    if (nomeProjeto === null) {
+      return;
+    }
+
+
+    const nomeFinal =
+      nomeProjeto.trim();
+
+
+    if (!nomeFinal) {
+
+      alert(
+        "Informe um nome para o novo projeto."
+      );
+
+      return;
+    }
+
+
+    /* =====================================
+       CONFIRMAÇÃO
+    ===================================== */
+
+    const confirmar =
+      confirm(
+        "Criar novo projeto?\n\n" +
+
+        "Template:\n" +
+        window.templateAtual.nome +
+        "\n\n" +
+
+        "Cliente:\n" +
+        clienteSelecionado.nome +
+        "\n\n" +
+
+        "Projeto:\n" +
+        nomeFinal +
+        "\n\n" +
+
+        "Os dados técnicos do template serão copiados.\n" +
+        "Os documentos começarão como pendentes."
+      );
+
+
+    if (!confirmar) {
+      return;
+    }
+
+
+    /* =====================================
+       CHAMAR RPC
+    ===================================== */
+
+    const {
+      data: novoProjetoId,
+      error: erroRPC
+    } =
+    await supabaseClient.rpc(
+      "usar_template_projeto",
+      {
+        p_template_id:
+          window.templateAtual.id,
+
+        p_cliente_id:
+          clienteSelecionado.id,
+
+        p_nome_projeto:
+          nomeFinal
+      }
+    );
+
+
+    if (erroRPC) {
+      throw erroRPC;
+    }
+
+
+    if (!novoProjetoId) {
+      throw new Error(
+        "O banco não retornou o ID do novo projeto."
+      );
+    }
+
+
+    /* =====================================
+       SUCESSO
+    ===================================== */
+
+    alert(
+      "✅ Projeto criado com sucesso!"
+    );
+
+
+    /* =====================================
+       ABRIR PROJETO NORMAL
+    ===================================== */
+
+    window.location.href =
+      window.location.pathname +
+      "?id=" +
+      novoProjetoId;
+
+
+  }
+  catch (erro) {
+
+    console.error(
+      "Erro ao usar template:",
+      erro
+    );
+
+    alert(
+      "❌ Não foi possível criar o projeto.\n\n" +
+      "Erro: " +
+      erro.message
+    );
+
+  }
 
 }
 
