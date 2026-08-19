@@ -1611,6 +1611,192 @@ async function acaoBotaoProjeto() {
 
 }
 
+	/* =========================================
+   SELECIONAR CLIENTE - TEMPLATE
+========================================= */
+
+function selecionarClienteTemplate(clientes) {
+
+  return new Promise((resolve) => {
+
+    const modal =
+      document.getElementById(
+        "modalSelecionarCliente"
+      );
+
+    const lista =
+      document.getElementById(
+        "listaClientesTemplate"
+      );
+
+    const pesquisa =
+      document.getElementById(
+        "pesquisaClienteTemplate"
+      );
+
+
+    function renderizarClientes(
+      texto = ""
+    ) {
+
+      const termo =
+        texto
+          .trim()
+          .toLowerCase();
+
+
+      const filtrados =
+        clientes.filter(
+          (cliente) => {
+
+            const nome =
+              (
+                cliente.nome || ""
+              ).toLowerCase();
+
+            const documento =
+              (
+                cliente.cpf_cnpj || ""
+              ).toLowerCase();
+
+            return (
+              nome.includes(termo) ||
+              documento.includes(termo)
+            );
+
+          }
+        );
+
+
+      if (filtrados.length === 0) {
+
+        lista.innerHTML = `
+          <div style="
+            padding:20px;
+            text-align:center;
+            color:#666;
+          ">
+            Nenhum cliente encontrado.
+          </div>
+        `;
+
+        return;
+      }
+
+
+      lista.innerHTML =
+        filtrados
+          .map(
+            (cliente) => {
+
+              const documento =
+                cliente.cpf_cnpj
+                  ? `
+                    <div class="cliente-template-documento">
+                      ${cliente.cpf_cnpj}
+                    </div>
+                  `
+                  : "";
+
+
+              return `
+                <button
+                  type="button"
+                  class="cliente-template-item"
+                  data-cliente-id="${cliente.id}"
+                >
+
+                  <div class="cliente-template-nome">
+                    ${cliente.nome}
+                  </div>
+
+                  ${documento}
+
+                </button>
+              `;
+
+            }
+          )
+          .join("");
+
+
+      lista
+        .querySelectorAll(
+          ".cliente-template-item"
+        )
+        .forEach(
+          (botao) => {
+
+            botao.addEventListener(
+              "click",
+              () => {
+
+                const cliente =
+                  clientes.find(
+                    (item) =>
+                      item.id ===
+                      botao.dataset.clienteId
+                  );
+
+
+                fecharModalCliente();
+
+                resolve(cliente);
+
+              }
+            );
+
+          }
+        );
+
+    }
+
+
+    pesquisa.value = "";
+
+    renderizarClientes();
+
+    modal.style.display = "flex";
+
+
+    pesquisa.oninput =
+      () => {
+
+        renderizarClientes(
+          pesquisa.value
+        );
+
+      };
+
+
+    setTimeout(
+      () => pesquisa.focus(),
+      100
+    );
+
+
+  });
+
+}
+
+
+/* =========================================
+   FECHAR MODAL CLIENTE
+========================================= */
+
+function fecharModalCliente() {
+
+  const modal =
+    document.getElementById(
+      "modalSelecionarCliente"
+    );
+
+  if (modal) {
+    modal.style.display = "none";
+  }
+
+	}
+
 
 /* =========================================
    USAR TEMPLATE COMO NOVO PROJETO
