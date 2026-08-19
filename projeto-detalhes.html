@@ -181,7 +181,128 @@ h4 {
   }
 
 }
+	/* =========================================
+   MODAL - USAR TEMPLATE
+========================================= */
 
+.modal-template {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+}
+
+.modal-template-conteudo {
+  width: 100%;
+  max-width: 520px;
+  max-height: 85vh;
+
+  background: #fff;
+  border-radius: 14px;
+
+  padding: 20px;
+
+  overflow: hidden;
+
+  box-shadow: 0 10px 40px rgba(0,0,0,.25);
+}
+
+.modal-template-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 15px;
+}
+
+.modal-template-cabecalho h3 {
+  margin: 0;
+}
+
+.modal-template-fechar {
+  border: none;
+  background: transparent;
+
+  font-size: 22px;
+
+  cursor: pointer;
+}
+
+.modal-template-pesquisa {
+  width: 100%;
+
+  padding: 12px 14px;
+
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+  font-size: 16px;
+
+  margin-bottom: 12px;
+}
+
+#listaClientesTemplate {
+  max-height: 45vh;
+  overflow-y: auto;
+}
+
+.cliente-template-item {
+  width: 100%;
+
+  text-align: left;
+
+  border: 1px solid #e0e0e0;
+  background: #fff;
+
+  border-radius: 10px;
+
+  padding: 13px 14px;
+
+  margin-bottom: 8px;
+
+  cursor: pointer;
+}
+
+.cliente-template-item:hover {
+  background: #f5f5f5;
+}
+
+.cliente-template-nome {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.cliente-template-documento {
+  margin-top: 4px;
+
+  font-size: 13px;
+
+  color: #666;
+}
+
+.modal-template-cancelar {
+  width: 100%;
+
+  margin-top: 14px;
+
+  padding: 12px;
+
+  border: none;
+
+  border-radius: 8px;
+
+  cursor: pointer;
+
+  font-size: 15px;
+}
+
+	
 </style>
 
 </head>
