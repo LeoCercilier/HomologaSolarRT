@@ -1106,6 +1106,15 @@ function obterProjetoId() {
 const modoTemplate =
   parametrosURL.get("modo") === "template";
 
+	const btnExcluirProjeto =
+  document.getElementById(
+    "btnExcluirProjeto"
+  );
+
+if (modoTemplate && btnExcluirProjeto) {
+  btnExcluirProjeto.style.display = "none";
+}
+
 const templateId =
   parametrosURL.get("template_id");
 
