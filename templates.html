@@ -1057,6 +1057,52 @@
 
 			}
 
+			async function excluirTemplate(id) {
+
+  const confirmar = confirm(
+    "⚠️ Excluir este template?\n\n" +
+    "Esta ação não poderá ser desfeita."
+  );
+
+  if (!confirmar) {
+    return;
+  }
+
+  try {
+
+    const {
+      error
+    } = await supabaseClient
+      .from("templates_projeto")
+      .delete()
+      .eq("id", id)
+      .eq("organizacao_id", organizacaoAtual);
+
+    if (error) {
+      throw error;
+    }
+
+    alert(
+      "Template excluído com sucesso."
+    );
+
+    // Atualiza a lista
+    await carregarTemplates();
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao excluir template:",
+      erro
+    );
+
+    alert(
+      "Não foi possível excluir o template.\n\n" +
+      (erro.message || erro)
+    );
+  }
+			}
+
 
 			/* =========================================
 			DUPLICAR
