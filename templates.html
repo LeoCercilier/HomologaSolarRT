@@ -771,16 +771,31 @@
 
 			<div class="acoes-template">
 
-				<button
-					class="btn-editar"
-					onclick="editarTemplate(
-					'${template.id}'
-					)"
-				>
-    👁️ Ver template
-</button>
+    <button
+        class="btn-editar"
+        onclick="editarTemplate(
+        '${template.id}'
+        )"
+    >
+        👁️ Ver template
+    </button>
 
-			</div>
+    ${
+      template.organizacao_id === organizacaoAtual
+        ? `
+          <button
+            class="btn-excluir"
+            onclick="excluirTemplate(
+              '${template.id}'
+            )"
+          >
+            🗑️ Excluir template
+          </button>
+        `
+        : ""
+    }
+
+</div>
 
 			`;
 
