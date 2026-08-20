@@ -1071,22 +1071,34 @@
   try {
 
     const {
+      data,
       error
     } = await supabaseClient
       .from("templates_projeto")
       .delete()
       .eq("id", id)
-      .eq("organizacao_id", organizacaoAtual);
+      .eq("organizacao_id", organizacaoAtual)
+      .select();
 
     if (error) {
       throw error;
+    }
+
+    if (!data || data.length === 0) {
+
+      alert(
+        "O template não foi excluído.\n\n" +
+        "Ele pode não pertencer à organização logada " +
+        "ou a política de segurança do banco não permite a exclusão."
+      );
+
+      return;
     }
 
     alert(
       "Template excluído com sucesso."
     );
 
-    // Atualiza a lista
     await carregarTemplates();
 
   } catch (erro) {
@@ -1101,7 +1113,7 @@
       (erro.message || erro)
     );
   }
-			}
+}
 
 
 			/* =========================================
