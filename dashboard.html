@@ -1137,6 +1137,9 @@ async function carregarProjetos() {
     data.forEach(
         projeto => {
 
+			const statusART =
+  mapaART[projeto.id];
+
             const item =
                 document.createElement(
                     "div"
@@ -1169,21 +1172,46 @@ async function carregarProjetos() {
 
             item.innerHTML = `
 
-                <strong>
-                    ${escaparHtml(
-                        projeto.nome
-                    )}
-                </strong>
+    <strong>
+        ${escaparHtml(
+            projeto.nome
+        )}
+    </strong>
 
-                <span>
-                    Status:
-                    ${escaparHtml(
-                        projeto.status ||
-                        "Sem status"
-                    )}
-                </span>
+    <span>
+        Status:
+        ${escaparHtml(
+            projeto.status ||
+            "Sem status"
+        )}
+    </span>
 
-            `;
+    ${
+        statusART
+        ? `
+            <span style="
+                display:block;
+                margin-top:6px;
+                font-size:13px;
+                font-weight:bold;
+                color:${statusART.cor};
+            ">
+                ${statusART.texto}
+            </span>
+          `
+        : `
+            <span style="
+                display:block;
+                margin-top:6px;
+                font-size:13px;
+                color:#64748b;
+            ">
+                ⚪ ART — não cadastrada
+            </span>
+          `
+    }
+
+`;
 
 
             lista.appendChild(item);
