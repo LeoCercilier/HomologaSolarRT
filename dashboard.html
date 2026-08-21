@@ -943,7 +943,141 @@ async function carregarStatusProjetos() {
 
 }
 
+/* =========================================
+   STATUS DA ART PARA O DASHBOARD
+========================================= */
 
+function calcularStatusART(dataTermino) {
+
+  if (!dataTermino) {
+
+    return {
+      texto: "⚪ ART — data de término não informada",
+      cor: "#64748b"
+    };
+
+  }
+
+  const hoje = new Date();
+
+  hoje.setHours(0, 0, 0, 0);
+
+  const termino = new Date(
+    dataTermino + "T00:00:00"
+  );
+
+  const diferenca =
+    termino.getTime() -
+    hoje.getTime();
+
+  const diasRestantes =
+    Math.ceil(
+      diferenca /
+      (1000 * 60 * 60 * 24)
+    );
+
+
+  /* ART com prazo ultrapassado */
+
+  if (diasRestantes < 0) {
+
+    return {
+      texto:
+        "🔴 ART — prazo informado ultrapassado",
+      cor: "#991b1b"
+    };
+
+  }
+
+
+  /* ART próxima do término */
+
+  if (diasRestantes <= 30) {
+
+    return {
+      texto:
+        "🟡 ART — prazo informado próximo do término: " +
+        diasRestantes +
+        " dias",
+      cor: "#92400e"
+    };
+
+  }
+
+
+  /* Prazo ainda distante */
+
+  return {
+    texto:
+      "🟢 ART — prazo informado: " +
+      diasRestantes +
+      " dias",
+    cor: "#166534"
+  };
+
+}
+	/* =========================================
+   CARREGAR STATUS DAS ARTs
+========================================= */
+
+async function carregarStatusARTs(projetos) {
+
+  const mapaART = {};
+
+  if (!projetos || projetos.length === 0) {
+    return mapaART;
+  }
+
+  const idsProjetos =
+    projetos.map(projeto => projeto.id);
+
+  const {
+    data,
+    error
+  } = await supabaseClient
+    .from("documentos_projeto")
+    .select(`
+      projeto_id,
+      tipo_documento,
+      data_termino_art
+    `)
+    .eq(
+      "organizacao_id",
+      organizacaoAtual
+    )
+    .eq(
+      "tipo_documento",
+      "art_trt"
+    )
+    .in(
+      "projeto_id",
+      idsProjetos
+    );
+
+  if (error) {
+    console.error(
+      "Erro ao carregar ARTs:",
+      error
+    );
+
+    return mapaART;
+  }
+
+
+  (data || []).forEach(art => {
+
+    mapaART[art.projeto_id] =
+      calcularStatusART(
+        art.data_termino_art
+      );
+
+  });
+
+
+  return mapaART;
+}
+
+	
 /* =========================================
    PROJETOS RECENTES
 ========================================= */
