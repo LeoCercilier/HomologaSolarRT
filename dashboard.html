@@ -470,6 +470,25 @@
             📁 Projetos recentes
         </h3>
 
+		<div style="margin-bottom:15px;">
+
+    <input
+        type="search"
+        id="pesquisaProjetos"
+        placeholder="🔎 Pesquisar projeto..."
+        oninput="pesquisarProjetos()"
+        style="
+            width:100%;
+            padding:12px 14px;
+            border:1px solid #cbd5e1;
+            border-radius:9px;
+            font-size:15px;
+            background:white;
+        "
+    >
+
+		</div>
+
         <div id="listaProjetos">
 
             <div class="vazio">
@@ -1218,6 +1237,48 @@ data.forEach(
 
 
             lista.appendChild(item);
+
+        }
+    );
+
+}
+
+	/* =========================================
+   PESQUISAR PROJETOS
+========================================= */
+
+function pesquisarProjetos() {
+
+    const pesquisa =
+        document
+            .getElementById("pesquisaProjetos")
+            .value
+            .toLowerCase()
+            .trim();
+
+    const projetos =
+        document.querySelectorAll(
+            "#listaProjetos .projeto"
+        );
+
+    projetos.forEach(
+        projeto => {
+
+            const texto =
+                projeto.textContent
+                    .toLowerCase();
+
+            if (
+                texto.includes(pesquisa)
+            ) {
+
+                projeto.style.display = "";
+
+            } else {
+
+                projeto.style.display = "none";
+
+            }
 
         }
     );
