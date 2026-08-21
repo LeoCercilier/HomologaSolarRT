@@ -278,7 +278,9 @@ Carregando responsáveis técnicos...
 
 <div class="modal-conteudo">
 
-<h2>Novo Responsável Técnico</h2>
+<h2 id="modal-conteudo-titulo">
+  Novo Responsável Técnico
+</h2>
 
 
 <form id="formRT">
@@ -451,6 +453,7 @@ const supabaseClient =
   let usuarioAtual = null;
 let organizacaoAtual = null;
 let listaRTsAtual = [];
+  let rtEditandoId = null;
 
 
 /* =========================================
@@ -629,9 +632,16 @@ function renderizarRTs(lista) {
 
 
     div.innerHTML = `
-      <strong>
-        ${escaparHtml(rt.nome)}
-      </strong>
+      <strong
+  onclick="editarRT('${rt.id}')"
+  style="
+    cursor:pointer;
+    color:#0f766e;
+  "
+  title="Clique para editar"
+>
+  ${escaparHtml(rt.nome)}
+</strong>
 
       <span>
         CREA: ${escaparHtml(rt.crea)}
@@ -747,7 +757,71 @@ function pesquisarRTs() {
   );
 
 }
+  
+/* =========================================
+   EDITAR RT
+========================================= */
 
+function editarRT(id) {
+
+  const rt =
+    listaRTsAtual.find(
+      item => item.id === id
+    );
+
+  if (!rt) {
+    return;
+  }
+
+
+  rtEditandoId = rt.id;
+
+
+  document.querySelector(
+    "#modal-conteudo-titulo"
+  ).textContent =
+    "Editar Responsável Técnico";
+
+
+  document.getElementById("nome").value =
+    rt.nome || "";
+
+  document.getElementById("cpf").value =
+    rt.cpf || "";
+
+  document.getElementById("crea").value =
+    rt.crea || "";
+
+  document.getElementById("uf_crea").value =
+    rt.uf_crea || "";
+
+  document.getElementById("registro_profissional").value =
+    rt.registro_profissional || "";
+
+  document.getElementById("titulo_profissional").value =
+    rt.titulo_profissional || "";
+
+  document.getElementById("telefone").value =
+    rt.telefone || "";
+
+  document.getElementById("email").value =
+    rt.email || "";
+
+  document.getElementById("endereco_profissional").value =
+    rt.endereco_profissional || "";
+
+  document.getElementById("numero_art").value =
+    rt.numero_art || "";
+
+  document.getElementById("observacoes").value =
+    rt.observacoes || "";
+
+
+  document.getElementById(
+    "modal"
+  ).style.display = "block";
+
+}
 
 /* =========================================
    MODAL
@@ -771,7 +845,12 @@ function fecharModal() {
   document.getElementById(
     "formRT"
   ).reset();
+rtEditandoId = null;
 
+document.getElementById(
+  "modal-conteudo-titulo"
+).textContent =
+  "Novo Responsável Técnico";
 }
 
 
@@ -802,90 +881,257 @@ document
 
       try {
 
-        const {
-          error
-        } =
-        await supabaseClient
-          .from("responsaveis_tecnicos")
-          .insert({
+let resultado;
 
-            organizacao_id:
-              organizacaoAtual,
 
-            usuario_id:
-              usuarioAtual.id,
+const dadosRT = {
 
-            nome:
-              document
-                .getElementById("nome")
-                .value
-                .trim(),
+  organizacao_id:
+    organizacaoAtual,
 
-            cpf:
-              document
-                .getElementById("cpf")
-                .value
-                .trim() || null,
+  usuario_id:
+    usuarioAtual.id,
 
-            crea:
-              document
-                .getElementById("crea")
-                .value
-                .trim(),
+  nome:
+    document
+      .getElementById("nome")
+      .value
+      .trim(),
 
-            uf_crea:
-              document
-                .getElementById("uf_crea")
-                .value
-                .trim()
-                .toUpperCase() || null,
+  cpf:
+    document
+      .getElementById("cpf")
+      .value
+      .trim() || null,
 
-            registro_profissional:
-              document
-                .getElementById("registro_profissional")
-                .value
-                .trim() || null,
+  crea:
+    document
+      .getElementById("crea")
+      .value
+      .trim(),
 
-            titulo_profissional:
-              document
-                .getElementById("titulo_profissional")
-                .value
-                .trim() || null,
+  uf_crea:
+    document
+      .getElementById("uf_crea")
+      .value
+      .trim()
+      .toUpperCase() || null,
 
-            telefone:
-              document
-                .getElementById("telefone")
-                .value
-                .trim() || null,
+  registro_profissional:
+    document
+      .getElementById("registro_profissional")
+      .value
+      .trim() || null,
 
-            email:
-              document
-                .getElementById("email")
-                .value
-                .trim() || null,
+  titulo_profissional:
+    document
+      .getElementById("titulo_profissional")
+      .value
+      .trim() || null,
 
-            endereco_profissional:
-              document
-                .getElementById("endereco_profissional")
-                .value
-                .trim() || null,
+  telefone:
+    document
+      .getElementById("telefone")
+      .value
+      .trim() || null,
 
-            numero_art:
-              document
-                .getElementById("numero_art")
-                .value
-                .trim() || null,
+  email:
+    document
+      .getElementById("email")
+      .value
+      .trim() || null,
 
-            observacoes:
-              document
-                .getElementById("observacoes")
-                .value
-                .trim() || null,
+  endereco_profissional:
+    document
+      .getElementById("endereco_profissional")
+      .value
+      .trim() || null,
 
-            ativo: true
+  numero_art:
+    document
+      .getElementById("numero_art")
+      .value
+      .trim() || null,
 
-          });
+  observacoes:
+    document
+      .getElementById("observacoes")
+      .value
+      .trim() || null
 
+};
+
+
+/* =========================================
+   EDITAR RT EXISTENTE
+========================================= */
+
+if (rtEditandoId) {
+
+  resultado =
+    await supabaseClient
+      .from("responsaveis_tecnicos")
+      .update(dadosRT)
+      .eq(
+        "id",
+        rtEditandoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      );
+
+}
+
+
+/* =========================================
+   NOVO RT
+========================================= */
+
+else {
+
+  resultado =
+    await supabaseClient
+      .from("responsaveis_tecnicos")
+      .insert({
+
+        ...dadosRT,
+
+        ativo: true
+
+      });
+
+}
+
+
+if (resultado.error)
+  throw resultado.error;
+        
+let resultado;
+
+
+const dadosRT = {
+
+  organizacao_id:
+    organizacaoAtual,
+
+  usuario_id:
+    usuarioAtual.id,
+
+  nome:
+    document
+      .getElementById("nome")
+      .value
+      .trim(),
+
+  cpf:
+    document
+      .getElementById("cpf")
+      .value
+      .trim() || null,
+
+  crea:
+    document
+      .getElementById("crea")
+      .value
+      .trim(),
+
+  uf_crea:
+    document
+      .getElementById("uf_crea")
+      .value
+      .trim()
+      .toUpperCase() || null,
+
+  registro_profissional:
+    document
+      .getElementById("registro_profissional")
+      .value
+      .trim() || null,
+
+  titulo_profissional:
+    document
+      .getElementById("titulo_profissional")
+      .value
+      .trim() || null,
+
+  telefone:
+    document
+      .getElementById("telefone")
+      .value
+      .trim() || null,
+
+  email:
+    document
+      .getElementById("email")
+      .value
+      .trim() || null,
+
+  endereco_profissional:
+    document
+      .getElementById("endereco_profissional")
+      .value
+      .trim() || null,
+
+  numero_art:
+    document
+      .getElementById("numero_art")
+      .value
+      .trim() || null,
+
+  observacoes:
+    document
+      .getElementById("observacoes")
+      .value
+      .trim() || null
+
+};
+
+
+/* =========================================
+   EDITAR RT EXISTENTE
+========================================= */
+
+if (rtEditandoId) {
+
+  resultado =
+    await supabaseClient
+      .from("responsaveis_tecnicos")
+      .update(dadosRT)
+      .eq(
+        "id",
+        rtEditandoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      );
+
+}
+
+
+/* =========================================
+   NOVO RT
+========================================= */
+
+else {
+
+  resultado =
+    await supabaseClient
+      .from("responsaveis_tecnicos")
+      .insert({
+
+        ...dadosRT,
+
+        ativo: true
+
+      });
+
+}
+
+
+if (resultado.error)
+  throw resultado.error;
 
         if (error)
           throw error;
