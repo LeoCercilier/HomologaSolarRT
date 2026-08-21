@@ -3645,6 +3645,7 @@ document.getElementById(
 			caminho_storage,
 			tamanho,
 			mime_type
+			data_termino_art
 			`)
 			.eq("projeto_id", projetoId)
 			.eq("organizacao_id", organizacaoAtual)
@@ -3891,6 +3892,128 @@ document.getElementById(
 			</div>
 			`;
 			}
+				/* ===================================
+   VALIDADE DA ART
+=================================== */
+
+let areaValidadeART = "";
+
+if (documento.tipo_documento === "art_trt") {
+
+  let textoValidade =
+    "Informe a data de término da ART.";
+
+  let corValidade = "#92400e";
+  let fundoValidade = "#fff7ed";
+  let bordaValidade = "#fed7aa";
+
+  if (documento.data_termino_art) {
+
+    const hoje = new Date();
+    hoje.setHours(0, 0, 0, 0);
+
+    const dataTermino =
+      new Date(
+        documento.data_termino_art +
+        "T00:00:00"
+      );
+
+    const diferenca =
+      Math.ceil(
+        (dataTermino - hoje) /
+        (1000 * 60 * 60 * 24)
+      );
+
+    if (diferenca < 0) {
+
+      textoValidade =
+        "🔴 ART vencida.";
+
+      corValidade = "#991b1b";
+      fundoValidade = "#fef2f2";
+      bordaValidade = "#fecaca";
+
+    }
+
+    else if (diferenca <= 30) {
+
+      textoValidade =
+        "🟡 ART próxima do vencimento. " +
+        "Restam " +
+        diferenca +
+        " dias.";
+
+      corValidade = "#92400e";
+      fundoValidade = "#fffbeb";
+      bordaValidade = "#fde68a";
+
+    }
+
+    else {
+
+      textoValidade =
+        "🟢 ART válida. " +
+        "Restam " +
+        diferenca +
+        " dias.";
+
+      corValidade = "#166534";
+      fundoValidade = "#f0fdf4";
+      bordaValidade = "#bbf7d0";
+
+    }
+
+  }
+
+  areaValidadeART = `
+
+    <div style="
+      margin-top:12px;
+      padding:12px;
+      background:${fundoValidade};
+      border:1px solid ${bordaValidade};
+      border-radius:8px;
+    ">
+
+      <div style="
+        font-weight:bold;
+        color:#334155;
+        margin-bottom:8px;
+      ">
+        📅 Validade da ART
+      </div>
+
+      <input
+        type="date"
+        id="dataTerminoART_${documento.id}"
+        value="${documento.data_termino_art || ""}"
+        onchange="salvarDataTerminoART('${documento.id}', this.value)"
+        style="
+          width:100%;
+          padding:9px;
+          border:1px solid #cbd5e1;
+          border-radius:7px;
+          background:white;
+        "
+      >
+
+      <div style="
+        margin-top:8px;
+        padding:8px;
+        border-radius:7px;
+        background:white;
+        color:${corValidade};
+        font-size:13px;
+        font-weight:bold;
+      ">
+        ${textoValidade}
+      </div>
+
+    </div>
+
+  `;
+
+	}
 
 
 			/* ===================================
@@ -3983,6 +4106,7 @@ document.getElementById(
 			<!-- ARQUIVO -->
 
 			${areaArquivo}
+			${areaValidadeART}
 
 
 		<!-- UPLOAD COMPACTO -->
@@ -4535,6 +4659,57 @@ async function salvarObservacaoDocumento(
   return div.innerHTML;
 
   }
+
+	/* =========================================
+   SALVAR DATA DE TÉRMINO DA ART
+========================================= */
+
+async function salvarDataTerminoART(
+  documentoId,
+  dataTermino
+) {
+
+  try {
+
+    const { error } =
+      await supabaseClient
+        .from("documentos_projeto")
+        .update({
+          data_termino_art:
+            dataTermino || null
+        })
+        .eq("id", documentoId)
+        .eq("projeto_id", projetoId)
+        .eq(
+          "organizacao_id",
+          organizacaoAtual
+        );
+
+    if (error)
+      throw error;
+
+
+    /* Recarrega o cartão para
+       atualizar a situação da ART */
+
+    await carregarDocumentos();
+
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao salvar validade da ART:",
+      erro
+    );
+
+    alert(
+      "Não foi possível salvar a data de término da ART.\n\n" +
+      erro.message
+    );
+
+  }
+
+}
 
 /* =========================================
    SALVAR SISTEMA
