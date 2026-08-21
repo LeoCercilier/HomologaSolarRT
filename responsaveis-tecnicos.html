@@ -233,10 +233,12 @@ button:disabled {
   class="erro"
 ></div>
 
+
 <div
   id="sucesso"
   class="sucesso"
 ></div>
+
 
 <div style="margin-bottom:15px;">
 
@@ -256,6 +258,7 @@ button:disabled {
   >
 
 </div>
+
 
 <div
   id="lista"
@@ -450,10 +453,10 @@ const supabaseClient =
   );
 
 
-  let usuarioAtual = null;
+let usuarioAtual = null;
 let organizacaoAtual = null;
 let listaRTsAtual = [];
-  let rtEditandoId = null;
+let rtEditandoId = null;
 
 
 /* =========================================
@@ -561,7 +564,9 @@ async function carregarRTs() {
       titulo_profissional,
       telefone,
       email,
+      endereco_profissional,
       numero_art,
+      observacoes,
       ativo
     `)
     .eq(
@@ -584,11 +589,14 @@ async function carregarRTs() {
     throw error;
 
 
-  listaRTsAtual = data || [];
+  listaRTsAtual =
+    data || [];
 
-renderizarRTs(
-  listaRTsAtual
-);
+
+  renderizarRTs(
+    listaRTsAtual
+  );
+
 }
 
 
@@ -626,55 +634,67 @@ function renderizarRTs(lista) {
   lista.forEach(rt => {
 
     const div =
-      document.createElement("div");
+      document.createElement(
+        "div"
+      );
 
-    div.className = "rt";
+
+    div.className =
+      "rt";
 
 
     div.innerHTML = `
       <strong
-  onclick="editarRT('${rt.id}')"
-  style="
-    cursor:pointer;
-    color:#0f766e;
-  "
-  title="Clique para editar"
->
-  ${escaparHtml(rt.nome)}
-</strong>
+        onclick="editarRT('${rt.id}')"
+        style="
+          cursor:pointer;
+          color:#0f766e;
+        "
+        title="Clique para editar"
+      >
+        ${escaparHtml(rt.nome)}
+      </strong>
 
       <span>
-        CREA: ${escaparHtml(rt.crea)}
-        ${rt.uf_crea ? " - " + escaparHtml(rt.uf_crea) : ""}
+        CREA:
+        ${escaparHtml(rt.crea)}
+        ${
+          rt.uf_crea
+            ? " - " + escaparHtml(rt.uf_crea)
+            : ""
+        }
       </span>
 
       ${
         rt.titulo_profissional
-        ? `<span>${escaparHtml(rt.titulo_profissional)}</span>`
-        : ""
+          ? `<span>${escaparHtml(rt.titulo_profissional)}</span>`
+          : ""
       }
 
       ${
         rt.telefone
-        ? `<span>Telefone: ${escaparHtml(rt.telefone)}</span>`
-        : ""
+          ? `<span>Telefone: ${escaparHtml(rt.telefone)}</span>`
+          : ""
       }
 
       ${
         rt.email
-        ? `<span>${escaparHtml(rt.email)}</span>`
-        : ""
+          ? `<span>${escaparHtml(rt.email)}</span>`
+          : ""
       }
     `;
 
 
-    elemento.appendChild(div);
+    elemento.appendChild(
+      div
+    );
 
   });
 
 }
 
-  /* =========================================
+
+/* =========================================
    PESQUISAR RTS
 ========================================= */
 
@@ -684,6 +704,7 @@ function pesquisarRTs() {
     document.getElementById(
       "pesquisaRT"
     );
+
 
   const termo =
     campo.value
@@ -703,53 +724,55 @@ function pesquisarRTs() {
 
 
   const resultados =
-    listaRTsAtual.filter(rt => {
+    listaRTsAtual.filter(
+      rt => {
 
-      return (
+        return (
 
-        (rt.nome || "")
-          .toLowerCase()
-          .includes(termo)
+          (rt.nome || "")
+            .toLowerCase()
+            .includes(termo)
 
-        ||
+          ||
 
-        (rt.crea || "")
-          .toLowerCase()
-          .includes(termo)
+          (rt.crea || "")
+            .toLowerCase()
+            .includes(termo)
 
-        ||
+          ||
 
-        (rt.cpf || "")
-          .toLowerCase()
-          .includes(termo)
+          (rt.cpf || "")
+            .toLowerCase()
+            .includes(termo)
 
-        ||
+          ||
 
-        (rt.email || "")
-          .toLowerCase()
-          .includes(termo)
+          (rt.email || "")
+            .toLowerCase()
+            .includes(termo)
 
-        ||
+          ||
 
-        (rt.telefone || "")
-          .toLowerCase()
-          .includes(termo)
+          (rt.telefone || "")
+            .toLowerCase()
+            .includes(termo)
 
-        ||
+          ||
 
-        (rt.uf_crea || "")
-          .toLowerCase()
-          .includes(termo)
+          (rt.uf_crea || "")
+            .toLowerCase()
+            .includes(termo)
 
-        ||
+          ||
 
-        (rt.titulo_profissional || "")
-          .toLowerCase()
-          .includes(termo)
+          (rt.titulo_profissional || "")
+            .toLowerCase()
+            .includes(termo)
 
-      );
+        );
 
-    });
+      }
+    );
 
 
   renderizarRTs(
@@ -757,7 +780,8 @@ function pesquisarRTs() {
   );
 
 }
-  
+
+
 /* =========================================
    EDITAR RT
 ========================================= */
@@ -769,12 +793,14 @@ function editarRT(id) {
       item => item.id === id
     );
 
+
   if (!rt) {
     return;
   }
 
 
-  rtEditandoId = rt.id;
+  rtEditandoId =
+    rt.id;
 
 
   document.querySelector(
@@ -783,45 +809,79 @@ function editarRT(id) {
     "Editar Responsável Técnico";
 
 
-  document.getElementById("nome").value =
+  document.getElementById(
+    "nome"
+  ).value =
     rt.nome || "";
 
-  document.getElementById("cpf").value =
+
+  document.getElementById(
+    "cpf"
+  ).value =
     rt.cpf || "";
 
-  document.getElementById("crea").value =
+
+  document.getElementById(
+    "crea"
+  ).value =
     rt.crea || "";
 
-  document.getElementById("uf_crea").value =
+
+  document.getElementById(
+    "uf_crea"
+  ).value =
     rt.uf_crea || "";
 
-  document.getElementById("registro_profissional").value =
+
+  document.getElementById(
+    "registro_profissional"
+  ).value =
     rt.registro_profissional || "";
 
-  document.getElementById("titulo_profissional").value =
+
+  document.getElementById(
+    "titulo_profissional"
+  ).value =
     rt.titulo_profissional || "";
 
-  document.getElementById("telefone").value =
+
+  document.getElementById(
+    "telefone"
+  ).value =
     rt.telefone || "";
 
-  document.getElementById("email").value =
+
+  document.getElementById(
+    "email"
+  ).value =
     rt.email || "";
 
-  document.getElementById("endereco_profissional").value =
+
+  document.getElementById(
+    "endereco_profissional"
+  ).value =
     rt.endereco_profissional || "";
 
-  document.getElementById("numero_art").value =
+
+  document.getElementById(
+    "numero_art"
+  ).value =
     rt.numero_art || "";
 
-  document.getElementById("observacoes").value =
+
+  document.getElementById(
+    "observacoes"
+  ).value =
     rt.observacoes || "";
 
 
   document.getElementById(
     "modal"
-  ).style.display = "block";
+  ).style.display =
+    "block";
 
 }
+
 
 /* =========================================
    MODAL
@@ -830,8 +890,23 @@ function editarRT(id) {
 function abrirModal() {
 
   document.getElementById(
+    "formRT"
+  ).reset();
+
+
+  rtEditandoId = null;
+
+
+  document.getElementById(
+    "modal-conteudo-titulo"
+  ).textContent =
+    "Novo Responsável Técnico";
+
+
+  document.getElementById(
     "modal"
-  ).style.display = "block";
+  ).style.display =
+    "block";
 
 }
 
@@ -840,22 +915,28 @@ function fecharModal() {
 
   document.getElementById(
     "modal"
-  ).style.display = "none";
+  ).style.display =
+    "none";
+
 
   document.getElementById(
     "formRT"
   ).reset();
-rtEditandoId = null;
 
-document.getElementById(
-  "modal-conteudo-titulo"
-).textContent =
-  "Novo Responsável Técnico";
+
+  rtEditandoId = null;
+
+
+  document.getElementById(
+    "modal-conteudo-titulo"
+  ).textContent =
+    "Novo Responsável Técnico";
+
 }
 
 
 /* =========================================
-   SALVAR RT
+   SALVAR / EDITAR RT
 ========================================= */
 
 document
@@ -875,273 +956,167 @@ document
 
       botao.disabled = true;
 
+
       botao.textContent =
         "Salvando...";
 
 
       try {
 
-let resultado;
+        let resultado;
 
 
-const dadosRT = {
+        const dadosRT = {
 
-  organizacao_id:
-    organizacaoAtual,
+          organizacao_id:
+            organizacaoAtual,
 
-  usuario_id:
-    usuarioAtual.id,
+          usuario_id:
+            usuarioAtual.id,
 
-  nome:
-    document
-      .getElementById("nome")
-      .value
-      .trim(),
+          nome:
+            document
+              .getElementById("nome")
+              .value
+              .trim(),
 
-  cpf:
-    document
-      .getElementById("cpf")
-      .value
-      .trim() || null,
+          cpf:
+            document
+              .getElementById("cpf")
+              .value
+              .trim() || null,
 
-  crea:
-    document
-      .getElementById("crea")
-      .value
-      .trim(),
+          crea:
+            document
+              .getElementById("crea")
+              .value
+              .trim(),
 
-  uf_crea:
-    document
-      .getElementById("uf_crea")
-      .value
-      .trim()
-      .toUpperCase() || null,
+          uf_crea:
+            document
+              .getElementById("uf_crea")
+              .value
+              .trim()
+              .toUpperCase() || null,
 
-  registro_profissional:
-    document
-      .getElementById("registro_profissional")
-      .value
-      .trim() || null,
+          registro_profissional:
+            document
+              .getElementById(
+                "registro_profissional"
+              )
+              .value
+              .trim() || null,
 
-  titulo_profissional:
-    document
-      .getElementById("titulo_profissional")
-      .value
-      .trim() || null,
+          titulo_profissional:
+            document
+              .getElementById(
+                "titulo_profissional"
+              )
+              .value
+              .trim() || null,
 
-  telefone:
-    document
-      .getElementById("telefone")
-      .value
-      .trim() || null,
+          telefone:
+            document
+              .getElementById(
+                "telefone"
+              )
+              .value
+              .trim() || null,
 
-  email:
-    document
-      .getElementById("email")
-      .value
-      .trim() || null,
+          email:
+            document
+              .getElementById(
+                "email"
+              )
+              .value
+              .trim() || null,
 
-  endereco_profissional:
-    document
-      .getElementById("endereco_profissional")
-      .value
-      .trim() || null,
+          endereco_profissional:
+            document
+              .getElementById(
+                "endereco_profissional"
+              )
+              .value
+              .trim() || null,
 
-  numero_art:
-    document
-      .getElementById("numero_art")
-      .value
-      .trim() || null,
+          numero_art:
+            document
+              .getElementById(
+                "numero_art"
+              )
+              .value
+              .trim() || null,
 
-  observacoes:
-    document
-      .getElementById("observacoes")
-      .value
-      .trim() || null
+          observacoes:
+            document
+              .getElementById(
+                "observacoes"
+              )
+              .value
+              .trim() || null
 
-};
-
-
-/* =========================================
-   EDITAR RT EXISTENTE
-========================================= */
-
-if (rtEditandoId) {
-
-  resultado =
-    await supabaseClient
-      .from("responsaveis_tecnicos")
-      .update(dadosRT)
-      .eq(
-        "id",
-        rtEditandoId
-      )
-      .eq(
-        "organizacao_id",
-        organizacaoAtual
-      );
-
-}
+        };
 
 
-/* =========================================
-   NOVO RT
-========================================= */
+        /* =========================================
+           EDITAR RT EXISTENTE
+        ========================================= */
 
-else {
+        if (rtEditandoId) {
 
-  resultado =
-    await supabaseClient
-      .from("responsaveis_tecnicos")
-      .insert({
+          resultado =
+            await supabaseClient
+              .from(
+                "responsaveis_tecnicos"
+              )
+              .update(
+                dadosRT
+              )
+              .eq(
+                "id",
+                rtEditandoId
+              )
+              .eq(
+                "organizacao_id",
+                organizacaoAtual
+              );
 
-        ...dadosRT,
-
-        ativo: true
-
-      });
-
-}
-
-
-if (resultado.error)
-  throw resultado.error;
-        
-let resultado;
-
-
-const dadosRT = {
-
-  organizacao_id:
-    organizacaoAtual,
-
-  usuario_id:
-    usuarioAtual.id,
-
-  nome:
-    document
-      .getElementById("nome")
-      .value
-      .trim(),
-
-  cpf:
-    document
-      .getElementById("cpf")
-      .value
-      .trim() || null,
-
-  crea:
-    document
-      .getElementById("crea")
-      .value
-      .trim(),
-
-  uf_crea:
-    document
-      .getElementById("uf_crea")
-      .value
-      .trim()
-      .toUpperCase() || null,
-
-  registro_profissional:
-    document
-      .getElementById("registro_profissional")
-      .value
-      .trim() || null,
-
-  titulo_profissional:
-    document
-      .getElementById("titulo_profissional")
-      .value
-      .trim() || null,
-
-  telefone:
-    document
-      .getElementById("telefone")
-      .value
-      .trim() || null,
-
-  email:
-    document
-      .getElementById("email")
-      .value
-      .trim() || null,
-
-  endereco_profissional:
-    document
-      .getElementById("endereco_profissional")
-      .value
-      .trim() || null,
-
-  numero_art:
-    document
-      .getElementById("numero_art")
-      .value
-      .trim() || null,
-
-  observacoes:
-    document
-      .getElementById("observacoes")
-      .value
-      .trim() || null
-
-};
+        }
 
 
-/* =========================================
-   EDITAR RT EXISTENTE
-========================================= */
+        /* =========================================
+           NOVO RT
+        ========================================= */
 
-if (rtEditandoId) {
+        else {
 
-  resultado =
-    await supabaseClient
-      .from("responsaveis_tecnicos")
-      .update(dadosRT)
-      .eq(
-        "id",
-        rtEditandoId
-      )
-      .eq(
-        "organizacao_id",
-        organizacaoAtual
-      );
+          resultado =
+            await supabaseClient
+              .from(
+                "responsaveis_tecnicos"
+              )
+              .insert({
 
-}
+                ...dadosRT,
 
+                ativo: true
 
-/* =========================================
-   NOVO RT
-========================================= */
+              });
 
-else {
-
-  resultado =
-    await supabaseClient
-      .from("responsaveis_tecnicos")
-      .insert({
-
-        ...dadosRT,
-
-        ativo: true
-
-      });
-
-}
+        }
 
 
-if (resultado.error)
-  throw resultado.error;
-
-        if (error)
-          throw error;
+        if (resultado.error)
+          throw resultado.error;
 
 
         fecharModal();
 
 
         mostrarSucesso(
-          "Responsável técnico cadastrado com sucesso!"
+          rtEditandoId
+            ? "Responsável técnico atualizado com sucesso!"
+            : "Responsável técnico cadastrado com sucesso!"
         );
 
 
@@ -1159,7 +1134,9 @@ if (resultado.error)
 
       finally {
 
-        botao.disabled = false;
+        botao.disabled =
+          false;
+
 
         botao.textContent =
           "Salvar RT";
@@ -1181,8 +1158,10 @@ function mostrarErro(mensagem) {
       "erro"
     );
 
+
   elemento.textContent =
     "ERRO: " + mensagem;
+
 
   elemento.style.display =
     "block";
@@ -1197,8 +1176,10 @@ function mostrarSucesso(mensagem) {
       "sucesso"
     );
 
+
   elemento.textContent =
     mensagem;
+
 
   elemento.style.display =
     "block";
@@ -1209,10 +1190,14 @@ function mostrarSucesso(mensagem) {
 function escaparHtml(texto) {
 
   const div =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
+
 
   div.textContent =
     texto || "";
+
 
   return div.innerHTML;
 
@@ -1225,4 +1210,4 @@ iniciar();
 
 </body>
 
-  </html>
+</html>
