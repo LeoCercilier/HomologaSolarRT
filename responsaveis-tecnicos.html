@@ -448,8 +448,9 @@ const supabaseClient =
   );
 
 
-let usuarioAtual = null;
+  let usuarioAtual = null;
 let organizacaoAtual = null;
+let listaRTsAtual = [];
 
 
 /* =========================================
@@ -580,10 +581,11 @@ async function carregarRTs() {
     throw error;
 
 
-  renderizarRTs(
-    data || []
-  );
+  listaRTsAtual = data || [];
 
+renderizarRTs(
+  listaRTsAtual
+);
 }
 
 
@@ -659,6 +661,90 @@ function renderizarRTs(lista) {
     elemento.appendChild(div);
 
   });
+
+}
+
+  /* =========================================
+   PESQUISAR RTS
+========================================= */
+
+function pesquisarRTs() {
+
+  const campo =
+    document.getElementById(
+      "pesquisaRT"
+    );
+
+  const termo =
+    campo.value
+      .trim()
+      .toLowerCase();
+
+
+  if (!termo) {
+
+    renderizarRTs(
+      listaRTsAtual
+    );
+
+    return;
+
+  }
+
+
+  const resultados =
+    listaRTsAtual.filter(rt => {
+
+      return (
+
+        (rt.nome || "")
+          .toLowerCase()
+          .includes(termo)
+
+        ||
+
+        (rt.crea || "")
+          .toLowerCase()
+          .includes(termo)
+
+        ||
+
+        (rt.cpf || "")
+          .toLowerCase()
+          .includes(termo)
+
+        ||
+
+        (rt.email || "")
+          .toLowerCase()
+          .includes(termo)
+
+        ||
+
+        (rt.telefone || "")
+          .toLowerCase()
+          .includes(termo)
+
+        ||
+
+        (rt.uf_crea || "")
+          .toLowerCase()
+          .includes(termo)
+
+        ||
+
+        (rt.titulo_profissional || "")
+          .toLowerCase()
+          .includes(termo)
+
+      );
+
+    });
+
+
+  renderizarRTs(
+    resultados
+  );
 
 }
 
