@@ -1130,20 +1130,23 @@ async function carregarProjetos() {
 
     }
 
+lista.innerHTML = "";
 
-    lista.innerHTML = "";
+const mapaART =
+    await carregarStatusARTs(
+        data || []
+    );
 
+data.forEach(
+    projeto => {
 
-    data.forEach(
-        projeto => {
+        const statusART =
+            mapaART[projeto.id];
 
-			const statusART =
-  mapaART[projeto.id];
-
-            const item =
-                document.createElement(
-                    "div"
-                );
+        const item =
+            document.createElement(
+                "div"
+            );
 
 
             item.className =
