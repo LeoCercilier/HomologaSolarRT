@@ -4273,21 +4273,29 @@ if (
 
 			catch (erro) {
 
-			console.error(
-			"Erro ao carregar documentos:",
-			erro
-			);
+  console.error(
+    "Erro ao carregar documentos:",
+    erro
+  );
 
-			resumo.textContent =
-			"Erro ao carregar documentação.";
+  resumo.textContent =
+    "Erro ao carregar documentação.";
 
-			lista.innerHTML = `
-			<div class="vazio">
-				Não foi possível carregar os documentos.
-			</div>
-			`;
+  lista.innerHTML = `
+    <div class="vazio">
+      Não foi possível carregar os documentos.
+      <br><br>
+      <small>
+        ${escaparHtml(
+          erro.message ||
+          "Erro desconhecido."
+        )}
+      </small>
+    </div>
+  `;
+	}
 			}
-			}
+			
 
 	/* =========================================
    ENVIAR DOCUMENTO DO CHECKLIST
