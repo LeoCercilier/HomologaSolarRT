@@ -1,0 +1,10 @@
+{
+  "name": "HomologaSolar RT",
+  "short_name": "HomologaSolar",
+  "description": "Sistema de gestão de homologação fotovoltaica",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f6f8",
+  "theme_color": "#0f766e",
+  "orientation": "portrait"
+}
