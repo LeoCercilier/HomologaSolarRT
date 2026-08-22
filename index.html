@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f766e">
-  <title>HomologaSolar RT — Gestão inteligente de projetos fotovoltaicos</title>
-  <meta name="description" content="Sistema completo para gerenciar clientes, responsáveis técnicos e projetos de energia solar. Cálculos automáticos, acompanhamento de status e organização da homologação.">
-  
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <link rel="manifest" href="manifest.json">
+
+  <meta
+    name="theme-color"
+    content="#0f766e"
+  >
+
+  <title>
+    HomologaSolar RT — Gestão inteligente de projetos fotovoltaicos
+  </title>
+
+  <meta
+    name="description"
+    content="Sistema completo para gerenciar clientes, responsáveis técnicos e projetos de energia solar. Cálculos automáticos, acompanhamento de status e organização da homologação."
+  >
+
   <style>
+
     :root {
       --primary: #0f766e;
       --primary-dark: #0d5c56;
@@ -29,7 +48,15 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        'Segoe UI',
+        Roboto,
+        'Helvetica Neue',
+        Arial,
+        sans-serif;
+
       background: var(--bg);
       color: var(--text);
       line-height: 1.6;
@@ -42,30 +69,41 @@
     }
 
     /* ========== NAV ========== */
+
     nav {
       position: sticky;
       top: 0;
       z-index: 100;
+
       background: rgba(255, 255, 255, 0.92);
+
       backdrop-filter: blur(12px);
+
       border-bottom: 1px solid var(--border);
     }
 
     .nav-inner {
       max-width: 1100px;
       margin: 0 auto;
+
       padding: 14px 24px;
+
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+      gap: 15px;
     }
 
     .logo {
       display: flex;
       align-items: center;
+
       gap: 10px;
+
       font-weight: 700;
       font-size: 1.25rem;
+
       color: var(--primary);
     }
 
@@ -76,20 +114,29 @@
     .nav-links {
       display: flex;
       align-items: center;
+
       gap: 12px;
     }
 
     .btn {
       display: inline-flex;
+
       align-items: center;
       justify-content: center;
+
       gap: 8px;
+
       padding: 11px 22px;
+
       border-radius: 10px;
+
       font-weight: 600;
       font-size: 0.95rem;
+
       border: none;
+
       cursor: pointer;
+
       transition: all 0.2s ease;
     }
 
@@ -100,13 +147,18 @@
 
     .btn-primary:hover {
       background: var(--primary-dark);
+
       transform: translateY(-1px);
-      box-shadow: 0 6px 20px rgba(15, 118, 110, 0.25);
+
+      box-shadow:
+        0 6px 20px rgba(15, 118, 110, 0.25);
     }
 
     .btn-outline {
       background: transparent;
+
       color: var(--primary);
+
       border: 2px solid var(--primary);
     }
 
@@ -117,6 +169,7 @@
 
     .btn-ghost {
       background: transparent;
+
       color: var(--text-muted);
     }
 
@@ -126,39 +179,61 @@
 
     .btn-lg {
       padding: 16px 32px;
+
       font-size: 1.05rem;
+
       border-radius: 12px;
     }
 
     /* ========== HERO ========== */
+
     .hero {
       max-width: 1100px;
+
       margin: 0 auto;
+
       padding: 80px 24px 60px;
+
       text-align: center;
     }
 
     .badge {
       display: inline-flex;
+
       align-items: center;
+
       gap: 6px;
+
       background: #ecfdf5;
+
       color: var(--primary);
+
       font-size: 0.85rem;
+
       font-weight: 600;
+
       padding: 6px 14px;
+
       border-radius: 50px;
+
       margin-bottom: 24px;
+
       border: 1px solid #a7f3d0;
     }
 
     .hero h1 {
       font-size: clamp(2.1rem, 5vw, 3.2rem);
+
       font-weight: 800;
+
       line-height: 1.15;
+
       letter-spacing: -0.03em;
+
       color: var(--text);
+
       max-width: 780px;
+
       margin: 0 auto 20px;
     }
 
@@ -168,27 +243,41 @@
 
     .hero p {
       font-size: 1.2rem;
+
       color: var(--text-muted);
+
       max-width: 600px;
+
       margin: 0 auto 36px;
     }
 
     .hero-cta {
       display: flex;
+
       flex-wrap: wrap;
+
       gap: 14px;
+
       justify-content: center;
+
       margin-bottom: 50px;
     }
 
     .hero-stats {
       display: flex;
+
       flex-wrap: wrap;
+
       justify-content: center;
+
       gap: 40px;
+
       padding-top: 20px;
+
       border-top: 1px solid var(--border);
+
       max-width: 600px;
+
       margin: 0 auto;
     }
 
@@ -198,270 +287,388 @@
 
     .stat strong {
       display: block;
+
       font-size: 1.6rem;
+
       font-weight: 800;
+
       color: var(--primary);
     }
 
     .stat span {
       font-size: 0.9rem;
+
       color: var(--text-muted);
     }
 
     /* ========== SECTIONS ========== */
+
     section {
       padding: 80px 24px;
     }
 
     .section-inner {
       max-width: 1100px;
+
       margin: 0 auto;
     }
 
     .section-header {
       text-align: center;
+
       margin-bottom: 50px;
     }
 
     .section-header h2 {
       font-size: clamp(1.7rem, 3.5vw, 2.3rem);
+
       font-weight: 800;
+
       letter-spacing: -0.02em;
+
       margin-bottom: 12px;
     }
 
     .section-header p {
       font-size: 1.1rem;
+
       color: var(--text-muted);
+
       max-width: 560px;
+
       margin: 0 auto;
     }
 
     /* ========== FEATURES ========== */
+
     .features {
       background: var(--white);
     }
 
     .features-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+
+      grid-template-columns:
+        repeat(auto-fit, minmax(280px, 1fr));
+
       gap: 24px;
     }
 
     .feature-card {
       background: var(--bg);
+
       border: 1px solid var(--border);
+
       border-radius: var(--radius);
+
       padding: 28px;
+
       transition: all 0.25s ease;
     }
 
     .feature-card:hover {
       border-color: var(--primary-light);
+
       box-shadow: var(--shadow);
+
       transform: translateY(-3px);
     }
 
     .feature-icon {
       width: 48px;
       height: 48px;
+
       background: #ecfdf5;
+
       border-radius: 12px;
+
       display: flex;
+
       align-items: center;
       justify-content: center;
+
       font-size: 1.4rem;
+
       margin-bottom: 18px;
     }
 
     .feature-card h3 {
       font-size: 1.15rem;
+
       font-weight: 700;
+
       margin-bottom: 8px;
     }
 
     .feature-card p {
       font-size: 0.95rem;
+
       color: var(--text-muted);
+
       line-height: 1.55;
     }
 
     /* ========== FOR WHOM ========== */
+
     .for-whom {
-      background: linear-gradient(180deg, #f0fdfa 0%, var(--bg) 100%);
+      background:
+        linear-gradient(
+          180deg,
+          #f0fdfa 0%,
+          var(--bg) 100%
+        );
     }
 
     .audience-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+
+      grid-template-columns:
+        repeat(auto-fit, minmax(240px, 1fr));
+
       gap: 20px;
     }
 
     .audience-card {
       background: var(--white);
+
       border-radius: var(--radius);
+
       padding: 28px 24px;
+
       text-align: center;
+
       border: 1px solid var(--border);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+
+      box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.03);
     }
 
     .audience-card .emoji {
       font-size: 2.2rem;
+
       margin-bottom: 14px;
     }
 
     .audience-card h3 {
       font-size: 1.1rem;
+
       font-weight: 700;
+
       margin-bottom: 8px;
     }
 
     .audience-card p {
       font-size: 0.92rem;
+
       color: var(--text-muted);
     }
 
     /* ========== HOW IT WORKS ========== */
+
     .steps {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+      grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+
       gap: 30px;
+
       counter-reset: step;
     }
 
     .step {
       position: relative;
+
       text-align: center;
+
       padding: 10px;
     }
 
     .step-number {
       width: 52px;
       height: 52px;
+
       background: var(--primary);
+
       color: white;
+
       border-radius: 50%;
+
       display: flex;
+
       align-items: center;
       justify-content: center;
+
       font-weight: 800;
+
       font-size: 1.2rem;
+
       margin: 0 auto 18px;
     }
 
     .step h3 {
       font-size: 1.1rem;
+
       font-weight: 700;
+
       margin-bottom: 8px;
     }
 
     .step p {
       font-size: 0.93rem;
+
       color: var(--text-muted);
     }
 
     /* ========== BENEFITS ========== */
+
     .benefits-list {
       display: grid;
+
       grid-template-columns: 1fr 1fr;
+
       gap: 20px 40px;
+
       max-width: 800px;
+
       margin: 0 auto;
     }
 
     .benefit-item {
       display: flex;
+
       gap: 14px;
+
       align-items: flex-start;
     }
 
     .benefit-item .check {
       flex-shrink: 0;
+
       width: 26px;
       height: 26px;
+
       background: #ecfdf5;
+
       color: var(--primary);
+
       border-radius: 50%;
+
       display: flex;
+
       align-items: center;
       justify-content: center;
+
       font-size: 0.85rem;
+
       font-weight: 700;
     }
 
     .benefit-item strong {
       display: block;
+
       font-size: 1rem;
+
       margin-bottom: 2px;
     }
 
     .benefit-item span {
       font-size: 0.9rem;
+
       color: var(--text-muted);
     }
 
     /* ========== CTA FINAL ========== */
+
     .cta-final {
-      background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%);
+      background:
+        linear-gradient(
+          135deg,
+          #0f766e 0%,
+          #0d9488 100%
+        );
+
       color: white;
+
       text-align: center;
+
       padding: 90px 24px;
     }
 
     .cta-final h2 {
       font-size: clamp(1.8rem, 4vw, 2.5rem);
+
       font-weight: 800;
+
       margin-bottom: 16px;
+
       letter-spacing: -0.02em;
     }
 
     .cta-final p {
       font-size: 1.15rem;
+
       opacity: 0.9;
+
       max-width: 520px;
+
       margin: 0 auto 32px;
     }
 
     .cta-final .btn-primary {
       background: white;
+
       color: var(--primary);
     }
 
     .cta-final .btn-primary:hover {
       background: #f0fdfa;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+
+      box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.15);
     }
 
     .cta-final .btn-outline {
       border-color: rgba(255,255,255,0.6);
+
       color: white;
     }
 
     .cta-final .btn-outline:hover {
       background: rgba(255,255,255,0.15);
+
       border-color: white;
     }
 
     .cta-buttons {
       display: flex;
+
       flex-wrap: wrap;
+
       gap: 14px;
+
       justify-content: center;
     }
 
     /* ========== FOOTER ========== */
+
     footer {
       background: #0f172a;
+
       color: #94a3b8;
+
       padding: 40px 24px;
+
       text-align: center;
+
       font-size: 0.9rem;
     }
 
     footer .logo {
       color: white;
+
       justify-content: center;
+
       margin-bottom: 12px;
     }
 
@@ -474,7 +681,25 @@
     }
 
     /* ========== RESPONSIVE ========== */
+
     @media (max-width: 640px) {
+
+      .nav-inner {
+        flex-direction: column;
+
+        align-items: stretch;
+      }
+
+      .logo {
+        justify-content: center;
+      }
+
+      .nav-links {
+        justify-content: center;
+
+        flex-wrap: wrap;
+      }
+
       .nav-links .btn-ghost {
         display: none;
       }
@@ -494,340 +719,968 @@
       section {
         padding: 60px 20px;
       }
+
     }
+
   </style>
+
 </head>
+
 <body>
 
-  <!-- NAV -->
+  <!-- =====================================================
+       NAV
+  ====================================================== -->
+
   <nav>
-    <div class="nav-links">
 
-  <a href="login.html" class="btn btn-ghost">
-    Entrar
-  </a>
+    <div class="nav-inner">
 
-  <button
-    id="btnInstalarApp"
-    class="btn btn-outline"
-    style="display:none;"
-  >
-    📲 Instalar app
-  </button>
+      <div class="logo">
 
-  <a
-    href="https://chat.whatsapp.com/DV7NiC9WgjR5NodQt42hcc?s=sh&p=a&mlu=4"
-    class="btn btn-primary"
-  >
-    Criar conta grátis (Solicitar no grupo)
-  </a>
+        <span>☀️</span>
 
-	</div>
-    </div>
-  </nav>
+        HomologaSolar RT
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="badge">
-      ⚡ Feito para o mercado brasileiro de GD
-    </div>
-    <h1>
-      Organize seus projetos solares.<br>
-      <span class="highlight">Do projeto ao acompanhamento da homologação</span>
-    </h1>
-    <p>
-      Sistema completo para gerenciar clientes, responsáveis técnicos e projetos fotovoltaicos com cálculos automáticos e acompanhamento de status.
-    </p>
-    <div class="hero-cta">
-      <a href="login.html" class="btn btn-primary btn-lg">
-        Começar agora — é grátis
-      </a>
-      <a href="#funcionalidades" class="btn btn-outline btn-lg">
-        Ver funcionalidades
-      </a>
-    </div>
-    <div class="hero-stats">
-      <div class="stat">
-        <strong>100%</strong>
-        <span>Focado em homologação</span>
-      </div>
-      <div class="stat">
-        <strong>Cálculos</strong>
-        <span>automáticos de sistema</span>
-      </div>
-      <div class="stat">
-        <strong>Status</strong>
-        <span>Das etapas do projeto de forma organizada</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- PARA QUEM É -->
-  <section class="for-whom">
-    <div class="section-inner">
-      <div class="section-header">
-        <h2>Feito para quem vive de energia solar</h2>
-        <p>Se você lida com projetos, ART, distribuidoras e clientes, o HomologaSolar RT foi pensado para o seu dia a dia.</p>
-      </div>
-      <div class="audience-grid">
-        <div class="audience-card">
-          <div class="emoji">👷</div>
-          <h3>Engenheiros e RTs</h3>
-          <p>Organize seus projetos, calcule dimensionamento e acompanhe o andamento das homologações.</p>
-        </div>
-        <div class="audience-card">
-          <div class="emoji">🏢</div>
-          <h3>Empresas instaladoras</h3>
-          <p>Centralize clientes, projetos e responsáveis técnicos em um só lugar. Saiba o status de cada obra.</p>
-        </div>
-        <div class="audience-card">
-          <div class="emoji">📐</div>
-          <h3>Projetistas</h3>
-          <p>Cadastre módulos, inversores, strings e MPPTs. O sistema calcula potência DC/AC e analisa o dimensionamento.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FUNCIONALIDADES -->
-  <section class="features" id="funcionalidades">
-    <div class="section-inner">
-      <div class="section-header">
-        <h2>Tudo que você precisa em um só lugar</h2>
-        <p>Do cadastro do cliente até a análise do dimensionamento elétrico.</p>
-      </div>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">👥</div>
-          <h3>Gestão de Clientes</h3>
-          <p>Cadastre e organize todos os seus clientes com CPF/CNPJ, telefone e e-mail. Acesso rápido em qualquer projeto.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">👷</div>
-          <h3>Responsáveis Técnicos</h3>
-          <p>Mantenha o cadastro de RTs com CREA, UF e registro profissional. Vincule facilmente aos projetos.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">☀️</div>
-          <h3>Dados do Sistema FV</h3>
-          <p>Módulos (fabricante, modelo, potência, Voc, Vmp, Isc, Imp), strings, MPPTs e inversores — tudo organizado.</p>
-        </div>
-		  <div class="feature-card">
-  <div class="feature-icon">📋</div>
-  <h3>Templates de Projetos</h3>
-  <p>
-    Crie modelos de projetos e utilize-os como base para novos projetos,
-    reaproveitando configurações e agilizando o preenchimento.
-  </p>
-		  </div>
-        <div class="feature-card">
-          <div class="feature-icon">📊</div>
-          <h3>Cálculos Automáticos</h3>
-          <p>Potência DC, potência AC, ratio DC/AC, tensão e corrente da string. Análise de dimensionamento na hora.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">📋</div>
-          <h3>Status do Projeto</h3>
-          <p>Rascunho → Documentação → Enviado → Em análise → Aprovado/Reprovado. Acompanhe cada etapa.</p>
-        </div>
-        <div class="feature-card">
-          <div class="feature-icon">🔌</div>
-          <h3>Dados da Conexão</h3>
-          <p>Distribuidora, tipo de ligação, número de fases e tensão nominal. Tudo pronto para a Organize os dados necessários para apoiar a preparação da documentação e do processo de homologação.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- COMO FUNCIONA -->
-  <section>
-    <div class="section-inner">
-      <div class="section-header">
-        <h2>Como funciona</h2>
-        <p>Simples, rápido e focado no que realmente importa.</p>
-      </div>
-      <div class="steps">
-        <div class="step">
-          <div class="step-number">1</div>
-          <h3>Crie sua conta</h3>
-          <p>Cadastro gratuito nesta fase de desenvolvimento.</p>
-        </div>
-        <div class="step">
-          <div class="step-number">2</div>
-          <h3>Cadastre clientes e RTs</h3>
-          <p>Organize sua base de clientes e responsáveis técnicos uma vez.</p>
-        </div>
-        <div class="step">
-          <div class="step-number">3</div>
-          <h3>Monte o projeto</h3>
-          <p>Preencha módulos, inversores e strings. O HomologaSolar RT realiza cálculos e análises para apoiar o dimensionamento.</p>
-        </div>
-        <div class="step">
-          <div class="step-number">4</div>
-          <h3>Acompanhe a homologação</h3>
-          <p>Atualize o status e tenha visão clara de todos os projetos.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- BENEFÍCIOS -->
-  <section style="background: var(--white);">
-    <div class="section-inner">
-      <div class="section-header">
-        <h2>Por que usar o HomologaSolar RT?</h2>
-        <p>Menos planilha. Mais controle. Projetos mais organizados.</p>
-      </div>
-      <div class="benefits-list">
-        <div class="benefit-item">
-          <div class="check">✓</div>
-          <div>
-            <strong>Análises automáticas para ajudar na conferência do sistema.</strong>
-            <span>Cálculos automáticos de potência e análise de strings</span>
-          </div>
-        </div>
-        <div class="benefit-item">
-          <div class="check">✓</div>
-          <div>
-            <strong>Visão clara do pipeline</strong>
-            <span>Saiba exatamente em qual etapa está cada projeto</span>
-          </div>
-        </div>
-        <div class="benefit-item">
-          <div class="check">✓</div>
-          <div>
-            <strong>Tudo centralizado</strong>
-            <span>Clientes, RTs e projetos no mesmo sistema</span>
-          </div>
-        </div>
-        <div class="benefit-item">
-          <div class="check">✓</div>
-          <div>
-            <strong>Feito para o Brasil</strong>
-            <span>Campos e fluxos pensados para a realidade da GD</span>
-          </div>
-        </div>
-        <div class="benefit-item">
-          <div class="check">✓</div>
-          <div>
-            <strong>Interface limpa e rápida</strong>
-            <span>Sem complexidade desnecessária. Foco no essencial</span>
-          </div>
-        </div>
-        <div class="benefit-item">
-          <div class="check">✓</div>
-          <div>
-            <strong>Acesso gratuito na fase de testes (Vagas Disponíveis)</strong>
-							<span><a
-									href="https://chat.whatsapp.com/DV7NiC9WgjR5NodQt42hcc?s=sh&p=a&mlu=4"
-									target="_blank"
-									rel="noopener noreferrer"
-								>
-									Entre no grupo oficial de testes e solicite a liberação do seu acesso ao HomologaSolar RT.
-								</a></span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA FINAL -->
-  <section class="cta-final">
-    <h2>Pronto para organizar seus projetos solares?</h2>
-    <p>
-      Crie sua conta gratuitamente e comece a gerenciar clientes, responsáveis técnicos e homologações em poucos minutos.
-    </p>
-    <div class="cta-buttons">
-      <a href="https://chat.whatsapp.com/DV7NiC9WgjR5NodQt42hcc?s=sh&p=a&mlu=4" class="btn btn-primary btn-lg">
-        Criar conta grátis (Solicitar no Grupo)
-      </a>
-      <a href="login.html" class="btn btn-outline btn-lg">
-        Já tenho conta — Entrar
-      </a>
-    </div>
-  </section>
-
-    <!-- TESTES -->
-  <section style="background: #f0fdfa;">
-    <div class="section-inner">
-
-      <div class="section-header">
-        <h2>🚀 Participe dos testes do HomologaSolar RT</h2>
-
-        <p>
-          O HomologaSolar RT está em desenvolvimento e queremos
-          contar com profissionais para testar a plataforma e
-          ajudar a definir os próximos recursos.
-        </p>
       </div>
 
-      <div style="
-        max-width: 700px;
-        margin: 0 auto;
-        text-align: center;
-      ">
+      <div class="nav-links">
 
-        <p style="
-          font-size: 1.05rem;
-          color: var(--text-muted);
-          margin-bottom: 28px;
-        ">
-          Durante esta fase, o acesso é
-          <strong>gratuito</strong>
-          e todas as funcionalidades disponíveis estão liberadas.
-        </p>
+        <a
+          href="login.html"
+          class="btn btn-ghost"
+        >
+          Entrar
+        </a>
+
+        <button
+          id="btnInstalarApp"
+          class="btn btn-outline"
+          style="display:none;"
+        >
+          📲 Instalar app
+        </button>
 
         <a
           href="https://chat.whatsapp.com/DV7NiC9WgjR5NodQt42hcc?s=sh&p=a&mlu=4"
           target="_blank"
           rel="noopener noreferrer"
-          class="btn btn-primary btn-lg"
+          class="btn btn-primary"
         >
-          💬 Quero participar dos testes
+          Criar conta grátis
+          (Solicitar no grupo)
         </a>
 
       </div>
 
     </div>
+
+  </nav>
+
+
+  <!-- =====================================================
+       HERO
+  ====================================================== -->
+
+  <section class="hero">
+
+    <div class="badge">
+      ⚡ Feito para o mercado brasileiro de GD
+    </div>
+
+    <h1>
+
+      Organize seus projetos solares.<br>
+
+      <span class="highlight">
+        Do projeto ao acompanhamento da homologação
+      </span>
+
+    </h1>
+
+    <p>
+      Sistema completo para gerenciar clientes,
+      responsáveis técnicos e projetos fotovoltaicos
+      com cálculos automáticos e acompanhamento de status.
+    </p>
+
+    <div class="hero-cta">
+
+      <a
+        href="login.html"
+        class="btn btn-primary btn-lg"
+      >
+        Começar agora — é grátis
+      </a>
+
+      <a
+        href="#funcionalidades"
+        class="btn btn-outline btn-lg"
+      >
+        Ver funcionalidades
+      </a>
+
+    </div>
+
+    <div class="hero-stats">
+
+      <div class="stat">
+
+        <strong>100%</strong>
+
+        <span>
+          Focado em homologação
+        </span>
+
+      </div>
+
+      <div class="stat">
+
+        <strong>Cálculos</strong>
+
+        <span>
+          automáticos de sistema
+        </span>
+
+      </div>
+
+      <div class="stat">
+
+        <strong>Status</strong>
+
+        <span>
+          Das etapas do projeto de forma organizada
+        </span>
+
+      </div>
+
+    </div>
+
   </section>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="logo">
-      <span>☀️</span> HomologaSolar RT
+
+  <!-- =====================================================
+       PARA QUEM É
+  ====================================================== -->
+
+  <section class="for-whom">
+
+    <div class="section-inner">
+
+      <div class="section-header">
+
+        <h2>
+          Feito para quem vive de energia solar
+        </h2>
+
+        <p>
+          Se você lida com projetos, ART,
+          distribuidoras e clientes,
+          o HomologaSolar RT foi pensado
+          para o seu dia a dia.
+        </p>
+
+      </div>
+
+      <div class="audience-grid">
+
+        <div class="audience-card">
+
+          <div class="emoji">👷</div>
+
+          <h3>
+            Engenheiros e RTs
+          </h3>
+
+          <p>
+            Organize seus projetos,
+            calcule dimensionamento e
+            acompanhe o andamento
+            das homologações.
+          </p>
+
+        </div>
+
+
+        <div class="audience-card">
+
+          <div class="emoji">🏢</div>
+
+          <h3>
+            Empresas instaladoras
+          </h3>
+
+          <p>
+            Centralize clientes,
+            projetos e responsáveis
+            técnicos em um só lugar.
+            Saiba o status de cada obra.
+          </p>
+
+        </div>
+
+
+        <div class="audience-card">
+
+          <div class="emoji">📐</div>
+
+          <h3>
+            Projetistas
+          </h3>
+
+          <p>
+            Cadastre módulos, inversores,
+            strings e MPPTs.
+            O sistema calcula potência
+            DC/AC e analisa o dimensionamento.
+          </p>
+
+        </div>
+
+      </div>
+
     </div>
-    <p>Gestão inteligente de projetos fotovoltaicos</p>
-    <p style="margin-top: 16px;">
-      HomologaSolar RT © 2026
-    </p>
-  </footer>
-<script>
-if ("serviceWorker" in navigator) {
 
-  window.addEventListener("load", function() {
+  </section>
 
-    navigator.serviceWorker
-      .register("./service-worker.js")
-      .then(function(registro) {
 
-        console.log(
-          "HomologaSolar RT instalado como PWA.",
-          registro
-        );
+  <!-- =====================================================
+       FUNCIONALIDADES
+  ====================================================== -->
 
-      })
-      .catch(function(erro) {
+  <section
+    class="features"
+    id="funcionalidades"
+  >
 
-        console.error(
-          "Erro ao registrar PWA:",
-          erro
-        );
+    <div class="section-inner">
 
-      });
+      <div class="section-header">
 
-  });
+        <h2>
+          Tudo que você precisa em um só lugar
+        </h2>
 
-}
-</script>
-</body>
+        <p>
+          Do cadastro do cliente até a análise
+          do dimensionamento elétrico.
+        </p>
+
+      </div>
+
+
+      <div class="features-grid">
+
+
+        <div class="feature-card">
+
+          <div class="feature-icon">
+            👥
+          </div>
+
+          <h3>
+            Gestão de Clientes
+          </h3>
+
+          <p>
+            Cadastre e organize todos os seus
+            clientes com CPF/CNPJ, telefone
+            e e-mail. Acesso rápido em qualquer projeto.
+          </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+          <div class="feature-icon">
+            👷
+          </div>
+
+          <h3>
+            Responsáveis Técnicos
+          </h3>
+
+          <p>
+            Mantenha o cadastro de RTs com
+            CREA, UF e registro profissional.
+            Vincule facilmente aos projetos.
+          </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+          <div class="feature-icon">
+            ☀️
+          </div>
+
+          <h3>
+            Dados do Sistema FV
+          </h3>
+
+          <p>
+            Módulos (fabricante, modelo,
+            potência, Voc, Vmp, Isc, Imp),
+            strings, MPPTs e inversores —
+            tudo organizado.
+          </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+          <div class="feature-icon">
+            📋
+          </div>
+
+          <h3>
+            Templates de Projetos
+          </h3>
+
+          <p>
+            Crie modelos de projetos e utilize-os
+            como base para novos projetos,
+            reaproveitando configurações e
+            agilizando o preenchimento.
+          </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+          <div class="feature-icon">
+            📊
+          </div>
+
+          <h3>
+            Cálculos Automáticos
+          </h3>
+
+          <p>
+            Potência DC, potência AC,
+            ratio DC/AC, tensão e corrente
+            da string. Análise de dimensionamento
+            na hora.
+          </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+          <div class="feature-icon">
+            📋
+          </div>
+
+          <h3>
+            Status do Projeto
+          </h3>
+
+          <p>
+            Rascunho → Documentação →
+            Enviado → Em análise →
+            Aprovado/Reprovado.
+            Acompanhe cada etapa.
+          </p>
+
+        </div>
+
+
+        <div class="feature-card">
+
+          <div class="feature-icon">
+            🔌
+          </div>
+
+          <h3>
+            Dados da Conexão
+          </h3>
+
+          <p>
+            Distribuidora, tipo de ligação,
+            número de fases e tensão nominal.
+            Organize os dados necessários para
+            apoiar a preparação da documentação
+            e do processo de homologação.
+          </p>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       COMO FUNCIONA
+  ====================================================== -->
+
+  <section>
+
+    <div class="section-inner">
+
+      <div class="section-header">
+
+        <h2>
+          Como funciona
+        </h2>
+
+        <p>
+          Simples, rápido e focado no que realmente importa.
+        </p>
+
+      </div>
+
+
+      <div class="steps">
+
+
+        <div class="step">
+
+          <div class="step-number">
+            1
+          </div>
+
+          <h3>
+            Crie sua conta
+          </h3>
+
+          <p>
+            Cadastro gratuito nesta fase
+            de desenvolvimento.
+          </p>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            2
+          </div>
+
+          <h3>
+            Cadastre clientes e RTs
+          </h3>
+
+          <p>
+            Organize sua base de clientes
+            e responsáveis técnicos uma vez.
+          </p>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            3
+          </div>
+
+          <h3>
+            Monte o projeto
+          </h3>
+
+          <p>
+            Preencha módulos, inversores e strings.
+            O HomologaSolar RT realiza cálculos
+            e análises para apoiar o dimensionamento.
+          </p>
+
+        </div>
+
+
+        <div class="step">
+
+          <div class="step-number">
+            4
+          </div>
+
+          <h3>
+            Acompanhe a homologação
+          </h3>
+
+          <p>
+            Atualize o status e tenha visão clara
+            de todos os projetos.
+          </p>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       BENEFÍCIOS
+  ====================================================== -->
+
+  <section
+    style="background: var(--white);"
+  >
+
+    <div class="section-inner">
+
+      <div class="section-header">
+
+        <h2>
+          Por que usar o HomologaSolar RT?
+        </h2>
+
+        <p>
+          Menos planilha. Mais controle.
+          Projetos mais organizados.
+        </p>
+
+		  </div>
+		  <div class="benefits-list">
+
+
+					<div class="benefit-item">
+
+						<div class="check">
+							✓
+						</div>
+
+						<div>
+
+							<strong>
+								Análises automáticas para ajudar
+								na conferência do sistema.
+							</strong>
+
+							<span>
+								Cálculos automáticos de potência
+								e análise de strings
+							</span>
+
+						</div>
+
+					</div>
+
+
+					<div class="benefit-item">
+
+						<div class="check">
+							✓
+						</div>
+
+						<div>
+
+							<strong>
+								Visão clara do pipeline
+							</strong>
+
+							<span>
+								Saiba exatamente em qual etapa
+								está cada projeto
+							</span>
+
+						</div>
+
+					</div>
+
+
+					<div class="benefit-item">
+
+						<div class="check">
+							✓
+						</div>
+
+						<div>
+
+							<strong>
+								Tudo centralizado
+							</strong>
+
+							<span>
+								Clientes, RTs e projetos
+								no mesmo sistema
+							</span>
+
+						</div>
+
+					</div>
+
+
+					<div class="benefit-item">
+
+						<div class="check">
+							✓
+						</div>
+
+						<div>
+
+							<strong>
+								Feito para o Brasil
+							</strong>
+
+							<span>
+								Campos e fluxos pensados
+								para a realidade da GD
+							</span>
+
+						</div>
+
+					</div>
+
+
+					<div class="benefit-item">
+
+						<div class="check">
+							✓
+						</div>
+
+						<div>
+
+							<strong>
+								Interface limpa e rápida
+							</strong>
+
+							<span>
+								Sem complexidade desnecessária.
+								Foco no essencial
+							</span>
+
+						</div>
+
+					</div>
+
+
+					<div class="benefit-item">
+
+						<div class="check">
+							✓
+						</div>
+
+						<div>
+
+							<strong>
+								Acesso gratuito na fase de testes
+								(Vagas Disponíveis)
+							</strong>
+
+							<span>
+
+								<a
+									href="https://chat.whatsapp.com/DV7NiC9WgjR5NodQt42hcc?s=sh&p=a&mlu=4"
+									target="_blank"
+									rel="noopener noreferrer"
+								>
+									Entre no grupo oficial de testes
+									e solicite a liberação do seu acesso
+									ao HomologaSolar RT.
+								</a>
+
+							</span>
+
+						</div>
+
+					</div>
+
+
+				</div>
+
+			</div>
+
+		</section>
+
+
+		<!-- =====================================================
+		CTA FINAL
+		====================================================== -->
+
+		<section class="cta-final">
+
+			<h2>
+				Pronto para organizar seus projetos solares?
+			</h2>
+
+			<p>
+				Crie sua conta gratuitamente e comece
+				a gerenciar clientes, responsáveis técnicos
+				e homologações em poucos minutos.
+			</p>
+
+
+			<div class="cta-buttons">
+
+				<a
+					href="https://chat.whatsapp.com/DV7NiC9WgjR5NodQt42hcc?s=sh&p=a&mlu=4"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="btn btn-primary btn-lg"
+				>
+					Criar conta grátis
+					(Solicitar no Grupo)
+				</a>
+
+
+				<a
+					href="login.html"
+					class="btn btn-outline btn-lg"
+				>
+					Já tenho conta — Entrar
+				</a>
+
+			</div>
+
+		</section>
+
+
+		<!-- =====================================================
+		TESTES
+		====================================================== -->
+
+		<section
+			style="background: #f0fdfa;"
+		>
+
+			<div class="section-inner">
+
+				<div class="section-header">
+
+					<h2>
+						🚀 Participe dos testes do HomologaSolar RT
+					</h2>
+
+					<p>
+						O HomologaSolar RT está em desenvolvimento
+						e queremos contar com profissionais para
+						testar a plataforma e ajudar a definir
+						os próximos recursos.
+					</p>
+
+				</div>
+
+
+				<div
+					style="
+					max-width: 700px;
+					margin: 0 auto;
+					text-align: center;
+					"
+				>
+
+					<p
+						style="
+						font-size: 1.05rem;
+						color: var(--text-muted);
+						margin-bottom: 28px;
+						"
+					>
+
+						Durante esta fase, o acesso é
+						<strong>gratuito</strong>
+						e todas as funcionalidades disponíveis
+						estão liberadas.
+
+					</p>
+
+
+					<a
+						href="https://chat.whatsapp.com/DV7NiC9WgjR5NodQt42hcc?s=sh&p=a&mlu=4"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="btn btn-primary btn-lg"
+					>
+						💬 Quero participar dos testes
+					</a>
+
+				</div>
+
+			</div>
+
+		</section>
+
+
+		<!-- =====================================================
+		FOOTER
+		====================================================== -->
+
+		<footer>
+
+			<div class="logo">
+
+				<span>☀️</span>
+
+				HomologaSolar RT
+
+			</div>
+
+			<p>
+				Gestão inteligente de projetos fotovoltaicos.
+			</p>
+
+			<p
+				style="
+				margin-top: 10px;
+				font-size: 0.8rem;
+				"
+			>
+				© 2026 HomologaSolar RT
+			</p>
+
+		</footer>
+
+
+		<!-- =====================================================
+		INSTALAÇÃO DO APP / PWA
+		====================================================== -->
+
+		<script>
+
+			let eventoInstalacao = null;
+
+
+			/*
+			* O Chrome dispara este evento quando
+			* o site pode ser instalado como aplicativo.
+			*/
+
+			window.addEventListener(
+			"beforeinstallprompt",
+			function(event) {
+
+			event.preventDefault();
+
+			eventoInstalacao = event;
+
+			const botao =
+			document.getElementById(
+            "btnInstalarApp"
+			);
+
+			if (botao) {
+
+			botao.style.display =
+            "inline-flex";
+
+			}
+
+			}
+			);
+
+
+			/*
+			* Clique no botão "Instalar app"
+			*/
+
+			document
+			.getElementById("btnInstalarApp")
+			?.addEventListener(
+			"click",
+			async function() {
+
+			if (!eventoInstalacao) {
+
+            return;
+
+			}
+
+			eventoInstalacao.prompt();
+
+
+			const resultado =
+            await eventoInstalacao.userChoice;
+
+
+			console.log(
+            "Resultado da instalação:",
+            resultado.outcome
+			);
+
+
+			eventoInstalacao = null;
+
+
+			this.style.display =
+            "none";
+
+			}
+			);
+
+
+			/*
+			* Quando o aplicativo for instalado
+			*/
+
+			window.addEventListener(
+			"appinstalled",
+			function() {
+
+			const botao =
+			document.getElementById(
+            "btnInstalarApp"
+			);
+
+			if (botao) {
+
+			botao.style.display =
+            "none";
+
+			}
+
+			console.log(
+			"HomologaSolar RT instalado como aplicativo."
+			);
+
+			}
+			);
+
+
+			/*
+			* Registro do Service Worker
+			*/
+
+			if ("serviceWorker" in navigator) {
+
+			window.addEventListener(
+			"load",
+			function() {
+
+			navigator.serviceWorker
+            .register("./service-worker.js")
+            .then(
+			function(registro) {
+
+			console.log(
+			"Service Worker registrado:",
+			registro.scope
+			);
+
+			}
+            )
+            .catch(
+			function(erro) {
+
+			console.error(
+			"Erro ao registrar Service Worker:",
+			erro
+			);
+
+			}
+            );
+
+			}
+			);
+
+			}
+
+		</script>
+
+
+	</body>
+
 </html>
