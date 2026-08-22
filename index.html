@@ -787,6 +787,33 @@
       HomologaSolar RT © 2026
     </p>
   </footer>
+<script>
+if ("serviceWorker" in navigator) {
 
+  window.addEventListener("load", function() {
+
+    navigator.serviceWorker
+      .register("./service-worker.js")
+      .then(function(registro) {
+
+        console.log(
+          "HomologaSolar RT instalado como PWA.",
+          registro
+        );
+
+      })
+      .catch(function(erro) {
+
+        console.error(
+          "Erro ao registrar PWA:",
+          erro
+        );
+
+      });
+
+  });
+
+}
+</script>
 </body>
 </html>
