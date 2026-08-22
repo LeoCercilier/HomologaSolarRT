@@ -85,6 +85,7 @@ button:disabled {
   padding: 16px;
   border-radius: 13px;
   box-shadow: 0 3px 12px rgba(0,0,0,.05);
+  cursor: pointer;
 }
 
 .rt strong {
@@ -642,18 +643,19 @@ function renderizarRTs(lista) {
     div.className =
       "rt";
 
+    div.onclick = function() {
+  editarRT(rt.id);
+};
 
     div.innerHTML = `
       <strong
-        onclick="editarRT('${rt.id}')"
-        style="
-          cursor:pointer;
-          color:#0f766e;
-        "
-        title="Clique para editar"
-      >
-        ${escaparHtml(rt.nome)}
-      </strong>
+  style="
+    color:#0f766e;
+  "
+  title="Clique para editar"
+>
+  ${escaparHtml(rt.nome)}
+</strong>
 
       <span>
         CREA:
