@@ -185,6 +185,18 @@
 					Criar minha conta  
 				</button>  
 
+		<button
+  id="btnInstalarApp"
+  style="
+    margin-top:12px;
+    background:#ffffff;
+    color:#0f766e;
+    border:2px solid #0f766e;
+  "
+>
+  📲 Instalar HomologaSolar RT
+		</button>
+
 
 				<div  
 					id="mensagem"  
@@ -356,6 +368,45 @@ setTimeout(() => {
   window.location.href = "dashboard.html";
 }, 500);
     }
+
+	  let deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", function(event) {
+
+  event.preventDefault();
+
+  deferredPrompt = event;
+
+});
+
+
+document.getElementById("btnInstalarApp").addEventListener("click", async function() {
+
+  if (deferredPrompt) {
+
+    deferredPrompt.prompt();
+
+    const resultado = await deferredPrompt.userChoice;
+
+    console.log("Instalação:", resultado.outcome);
+
+    deferredPrompt = null;
+
+    return;
+  }
+
+  alert(
+    "Para instalar o HomologaSolar RT, toque nos três pontinhos ⋮ do Chrome e escolha 'Instalar app' ou 'Adicionar à tela inicial'."
+  );
+
+});
+
+
+window.addEventListener("appinstalled", function() {
+
+  console.log("HomologaSolar RT instalado.");
+
+});
 
   </script>
 <script>
