@@ -8,6 +8,8 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0"
   >
+	<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f766e">
 
   <title>HomologaSolar RT</title>
 
@@ -356,7 +358,13 @@ setTimeout(() => {
     }
 
   </script>
-
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function() {
+    navigator.serviceWorker.register("./service-worker.js");
+  });
+}
+</script>
 </body>
 
 </html>
