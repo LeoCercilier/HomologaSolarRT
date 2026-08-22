@@ -1679,7 +1679,81 @@
 			}
 
 		</script>
+<script>
 
+let deferredPrompt = null;
+
+window.addEventListener("beforeinstallprompt", (event) => {
+
+  event.preventDefault();
+
+  deferredPrompt = event;
+
+  const botao = document.getElementById("btnInstalarApp");
+
+  if (botao) {
+    botao.style.display = "inline-flex";
+  }
+
+});
+
+
+document.getElementById("btnInstalarApp")?.addEventListener("click", async () => {
+
+  if (!deferredPrompt) {
+    return;
+  }
+
+  deferredPrompt.prompt();
+
+  const resultado = await deferredPrompt.userChoice;
+
+  console.log("Resultado da instalação:", resultado.outcome);
+
+  deferredPrompt = null;
+
+  const botao = document.getElementById("btnInstalarApp");
+
+  if (botao) {
+    botao.style.display = "none";
+  }
+
+});
+
+
+window.addEventListener("appinstalled", () => {
+
+  console.log("HomologaSolar RT instalado como aplicativo.");
+
+  const botao = document.getElementById("btnInstalarApp");
+
+  if (botao) {
+    botao.style.display = "none";
+  }
+
+});
+
+</script>
+
+	<script>
+
+if ("serviceWorker" in navigator) {
+
+  window.addEventListener("load", () => {
+
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(() => {
+        console.log("Service Worker registrado com sucesso.");
+      })
+      .catch((erro) => {
+        console.error("Erro ao registrar Service Worker:", erro);
+      });
+
+  });
+
+}
+
+	</script>
 
 	</body>
 
