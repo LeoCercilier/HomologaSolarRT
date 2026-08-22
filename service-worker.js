@@ -2,7 +2,14 @@ const CACHE_NAME = "homologasolar-v1";
 
 const ARQUIVOS = [
   "./",
-  "./index.html"
+  "./index.html",
+  "./login.html",
+  "./dashboard.html",
+  "./clientes.html",
+  "./responsaveis-tecnicos.html",
+  "./projeto-detalhes.html",
+  "./projeto.html",
+  "./template.html"
 ];
 
 self.addEventListener("install", event => {
