@@ -1774,6 +1774,272 @@ navigator.serviceWorker.register(
 
 }
 
+    /* =========================================
+SALVAR PROJETO
+========================================= */
+
+document
+.getElementById("formProjeto")
+.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const botao =
+        document.getElementById("btnSalvar");
+
+    botao.disabled = true;
+    botao.textContent = "Salvando...";
+
+    try {
+
+        const clienteId =
+            document
+            .getElementById("cliente_id")
+            .value;
+
+        const nome =
+            document
+            .getElementById("nome")
+            .value
+            .trim();
+
+        const rtId =
+            document
+            .getElementById("responsavel_tecnico_id")
+            .value;
+
+        const observacoes =
+            document
+            .getElementById("observacoes")
+            .value
+            .trim();
+
+
+        if (!clienteId) {
+            throw new Error(
+                "Selecione um cliente."
+            );
+        }
+
+
+        if (!nome) {
+            throw new Error(
+                "Informe o nome do projeto."
+            );
+        }
+
+
+        /* =========================================
+        CRIAR PROJETO
+        ========================================= */
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+            .from("projetos")
+            .insert({
+
+                organizacao_id:
+                    organizacaoAtual,
+
+                cliente_id:
+                    clienteId,
+
+                nome:
+                    nome,
+
+                status:
+                    "rascunho",
+
+                observacoes:
+                    observacoes || null,
+
+                criado_por:
+                    usuarioAtual.id,
+
+                responsavel_tecnico_id:
+                    rtId || null
+
+            })
+            .select()
+            .single();
+
+
+        if (error)
+            throw error;
+
+
+        /* =========================================
+        VINCULAR EQUIPAMENTO
+        ========================================= */
+
+        if (equipamentoSelecionado) {
+
+            let dadosVinculo = {
+
+                projeto_id:
+                    data.id,
+
+                organizacao_id:
+                    organizacaoAtual,
+
+                quantidade_modulos:
+                    0,
+
+                quantidade_inversores:
+                    0
+
+            };
+
+
+            /* MÓDULO */
+
+            if (
+                equipamentoSelecionado.tipo ===
+                "modulo"
+            ) {
+
+                const {
+                    data: modulo,
+                    error: erroModulo
+                } = await supabaseClient
+                    .from("modulos")
+                    .select("id")
+                    .eq(
+                        "modelo",
+                        equipamentoSelecionado.modelo
+                    )
+                    .eq(
+                        "fabricante",
+                        equipamentoSelecionado.fabricante
+                    )
+                    .maybeSingle();
+
+
+                if (erroModulo)
+                    throw erroModulo;
+
+
+                if (!modulo) {
+
+                    throw new Error(
+                        "Módulo não encontrado no catálogo de módulos."
+                    );
+
+                }
+
+
+                dadosVinculo.modulo_id =
+                    modulo.id;
+
+                dadosVinculo.quantidade_modulos =
+                    1;
+
+            }
+
+
+            /* INVERSOR */
+
+            if (
+                equipamentoSelecionado.tipo ===
+                "inversor"
+            ) {
+
+                const {
+                    data: inversor,
+                    error: erroInversor
+                } = await supabaseClient
+                    .from("inversores")
+                    .select("id")
+                    .eq(
+                        "modelo",
+                        equipamentoSelecionado.modelo
+                    )
+                    .eq(
+                        "fabricante",
+                        equipamentoSelecionado.fabricante
+                    )
+                    .maybeSingle();
+
+
+                if (erroInversor)
+                    throw erroInversor;
+
+
+                if (!inversor) {
+
+                    throw new Error(
+                        "Inversor não encontrado no catálogo de inversores."
+                    );
+
+                }
+
+
+                dadosVinculo.inversor_id =
+                    inversor.id;
+
+                dadosVinculo.quantidade_inversores =
+                    1;
+
+            }
+
+
+            const {
+                error: erroEquipamento
+            } = await supabaseClient
+                .from("projeto_equipamentos")
+                .insert(
+                    dadosVinculo
+                );
+
+
+            if (erroEquipamento)
+                throw erroEquipamento;
+
+        }
+
+
+        /* =========================================
+        SUCESSO
+        ========================================= */
+
+        mostrarSucesso(
+            "Projeto criado com sucesso!"
+        );
+
+
+        setTimeout(function() {
+
+            window.location.href =
+                "projeto-detalhes.html?id=" +
+                data.id;
+
+        }, 1200);
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao salvar projeto:",
+            erro
+        );
+
+        mostrarErro(
+            erro.message
+        );
+
+    } finally {
+
+        botao.disabled = false;
+
+        botao.textContent =
+            "Salvar rascunho";
+
+    }
+
+});
+
 </script>
 
 </body>
