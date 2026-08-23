@@ -1739,22 +1739,37 @@ if (modulo) {
     if (erroInversor)
       throw erroInversor;
 
+if (inversor) {
 
-    if (inversor) {
+  document.getElementById(
+    "fabricante_inversor"
+  ).value =
+    inversor.fabricante || "";
 
-  console.log(
-    "INVERSOR DO PROJETO:",
-    inversor
-  );
+  document.getElementById(
+    "modelo_inversor"
+  ).value =
+    inversor.modelo || "";
 
-  alert(
-    "Inversor carregado: " +
-    inversor.fabricante +
-    " - " +
-    inversor.modelo
-  );
+  document.getElementById(
+    "potencia_inversor_kw"
+  ).value =
+    inversor.potencia_ac_kw || "";
 
-	}
+  document.getElementById(
+    "quantidade_inversores"
+  ).value =
+    equipamento.quantidade_inversores || 1;
+
+  document.getElementById(
+    "tensao_max_entrada_v"
+  ).value =
+    inversor.tensao_max_dc_v || "";
+
+  calcularSistema();
+
+}
+    
 
   }
 
