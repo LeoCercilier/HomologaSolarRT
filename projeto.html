@@ -1298,660 +1298,405 @@ async function carregarModelosEquipamentos() {
 
 }
 
-
 /* =========================================
 CARREGAR DADOS TÉCNICOS
 ========================================= */
 
 async function carregarDadosEquipamento() {
 
-const id =
-document.getElementById(
-"equipamento_modelo"
-).value;
-
-
-const caixa =
-document.getElementById(
-"dadosEquipamento"
-);
-
-const texto =
-document.getElementById(
-"dadosEquipamentoTexto"
-);
-
-
-caixa.style.display =
-"none";
-
-
-equipamentoSelecionado = null;
-
-
-if (!id)
-return;
-
-
-const {
-data,
-error
-} =
-await supabaseClient
-.from("equipamentos_fotovoltaicos")
-.select(`
-*,
-fabricante:fabricantes_equipamentos(
-id,
-nome,
-tipo_fabricante
-)
-`)
-.eq(
-"id",
-id
-)
-.maybeSingle();
-
-
-if (error) {
-
-console.error(
-"Erro ao carregar equipamento:",
-error
-);
-
-mostrarErro(
-"Erro ao carregar dados técnicos do equipamento."
-);
-
-return;
-
-}
-
-
-if (!data)
-return;
-
-
-equipamentoSelecionado =
-data;
-
-
-let html = "";
-
-
-if (
-data.fabricante &&
-data.fabricante.nome
-) {
-
-html +=
-"<strong>Fabricante:</strong> " +
-data.fabricante.nome +
-"<br>";
-
-}
-
-
-if (data.modelo) {
-
-html +=
-"<strong>Modelo:</strong> " +
-data.modelo +
-"<br>";
-
-}
-
-
-if (data.codigo_modelo) {
-
-html +=
-"<strong>Código do modelo:</strong> " +
-data.codigo_modelo +
-"<br>";
-
-}
-
-
-if (data.tipo) {
-
-html +=
-"<strong>Tipo:</strong> " +
-data.tipo +
-"<br>";
-
-}
-
-
-/* =========================================
-DADOS DE MÓDULO
-========================================= */
-
-if (
-data.potencia_w !== null &&
-data.potencia_w !== undefined
-) {
-
-html +=
-"<strong>Potência:</strong> " +
-data.potencia_w +
-" W<br>";
-
-}
-
-
-if (
-data.potencia_pico_w !== null &&
-data.potencia_pico_w !== undefined
-) {
-
-html +=
-"<strong>Potência de pico:</strong> " +
-data.potencia_pico_w +
-" W<br>";
-
-}
-
-
-if (
-data.eficiencia_percentual !== null &&
-data.eficiencia_percentual !== undefined
-) {
-
-html +=
-"<strong>Eficiência:</strong> " +
-data.eficiencia_percentual +
-"%<br>";
-
-}
-
-
-if (
-data.voc_v !== null &&
-data.voc_v !== undefined
-) {
-
-html +=
-"<strong>Voc:</strong> " +
-data.voc_v +
-" V<br>";
-
-}
-
-
-if (
-data.vmp_v !== null &&
-data.vmp_v !== undefined
-) {
-
-html +=
-"<strong>Vmp:</strong> " +
-data.vmp_v +
-" V<br>";
-
-}
-
-
-if (
-data.isc_a !== null &&
-data.isc_a !== undefined
-) {
-
-html +=
-"<strong>Isc:</strong> " +
-data.isc_a +
-" A<br>";
-
-}
-
-
-if (
-data.imp_a !== null &&
-data.imp_a !== undefined
-) {
-
-html +=
-"<strong>Imp:</strong> " +
-data.imp_a +
-" A<br>";
-
-}
-
-
-/* =========================================
-DADOS DE INVERSOR
-========================================= */
-
-if (
-data.potencia_nominal_kw !== null &&
-data.potencia_nominal_kw !== undefined
-) {
-
-html +=
-"<strong>Potência nominal:</strong> " +
-data.potencia_nominal_kw +
-" kW<br>";
-
-}
-
-
-if (
-data.potencia_maxima_kw !== null &&
-data.potencia_maxima_kw !== undefined
-) {
-
-html +=
-"<strong>Potência máxima:</strong> " +
-data.potencia_maxima_kw +
-" kW<br>";
-
-}
-
-
-if (
-data.tensao_cc_maxima_v !== null &&
-data.tensao_cc_maxima_v !== undefined
-) {
-
-html +=
-"<strong>Tensão CC máxima:</strong> " +
-data.tensao_cc_maxima_v +
-" V<br>";
-
-}
-
-
-if (
-data.tensao_mppt_min_v !== null &&
-data.tensao_mppt_min_v !== undefined
-) {
-
-html +=
-"<strong>MPPT mínimo:</strong> " +
-data.tensao_mppt_min_v +
-" V<br>";
-
-}
-
-
-if (
-data.tensao_mppt_max_v !== null &&
-data.tensao_mppt_max_v !== undefined
-) {
-
-html +=
-"<strong>MPPT máximo:</strong> " +
-data.tensao_mppt_max_v +
-" V<br>";
-
-}
-
-
-if (
-data.corrente_mppt_max_a !== null &&
-data.corrente_mppt_max_a !== undefined
-) {
-
-html +=
-"<strong>Corrente máxima por MPPT:</strong> " +
-data.corrente_mppt_max_a +
-" A<br>";
-
-}
-
-
-if (
-data.numero_mppt !== null &&
-data.numero_mppt !== undefined
-) {
-
-html +=
-"<strong>Número de MPPTs:</strong> " +
-data.numero_mppt +
-"<br>";
-
-}
-
-
-if (
-data.entradas_por_mppt !== null &&
-data.entradas_por_mppt !== undefined
-) {
-
-html +=
-"<strong>Entradas por MPPT:</strong> " +
-data.entradas_por_mppt +
-"<br>";
-
-}
-
-
-if (
-data.numero_fases !== null &&
-data.numero_fases !== undefined
-) {
-
-html +=
-"<strong>Número de fases:</strong> " +
-data.numero_fases +
-"<br>";
-
-}
-
-
-if (data.tipo_inversor) {
-
-html +=
-"<strong>Tipo de inversor:</strong> " +
-data.tipo_inversor +
-"<br>";
-
-}
-
-
-/* =========================================
-INFORMAÇÕES COMPLEMENTARES
-========================================= */
-
-if (data.tecnologia_celula) {
-
-html +=
-"<strong>Tecnologia da célula:</strong> " +
-data.tecnologia_celula +
-"<br>";
-
-}
-
-
-if (
-data.numero_celulas !== null &&
-data.numero_celulas !== undefined
-) {
-
-html +=
-"<strong>Número de células:</strong> " +
-data.numero_celulas +
-"<br>";
-
-}
-
-
-if (
-data.bifacialidade_percentual !== null &&
-data.bifacialidade_percentual !== undefined
-) {
-
-html +=
-"<strong>Bifacialidade:</strong> " +
-data.bifacialidade_percentual +
-"%<br>";
-
-}
-
-
-if (
-data.fusivel_maximo_a !== null &&
-data.fusivel_maximo_a !== undefined
-) {
-
-html +=
-"<strong>Fusível máximo:</strong> " +
-data.fusivel_maximo_a +
-" A<br>";
-
-}
-
-
-if (data.fonte_dados) {
-
-html +=
-"<strong>Fonte dos dados:</strong> " +
-data.fonte_dados +
-"<br>";
-
-}
-
-
-if (data.data_verificacao) {
-
-html +=
-"<strong>Dados verificados em:</strong> " +
-data.data_verificacao +
-"<br>";
-
-}
-
-
-if (data.observacoes) {
-
-html +=
-"<strong>Observações:</strong> " +
-data.observacoes +
-"<br>";
-
-}
-
-
-if (!html) {
-
-html =
-"Nenhum dado técnico disponível.";
-
-}
-
-
-texto.innerHTML =
-html;
-
-caixa.style.display =
-"block";
-
-}
-
-
-/* =========================================
-SALVAR PROJETO
-========================================= */
-
-document
-.getElementById("formProjeto")
-.addEventListener(
-"submit",
-async function(event) {
-
-event.preventDefault();
-
-
-const botao =
-document.getElementById(
-"btnSalvar"
-);
-
-
-botao.disabled = true;
-
-botao.textContent =
-"Salvando...";
-
-
-try {
-
-const clienteId =
-document
-.getElementById("cliente_id")
-.value;
-
-
-const nome =
-document
-.getElementById("nome")
-.value
-.trim();
-
-
-const rtId =
-document
-.getElementById(
-"responsavel_tecnico_id"
-)
-.value;
-
-
-const observacoes =
-document
-.getElementById(
-"observacoes"
-)
-.value
-.trim();
-
-
-if (!clienteId) {
-
-throw new Error(
-"Selecione um cliente."
-);
-
-}
-
-
-if (!nome) {
-
-throw new Error(
-"Informe o nome do projeto."
-);
-
-}
-
-
-/* =========================================
-CRIAR PROJETO
-========================================= */
-
-const {
-data,
-error
-} =
-await supabaseClient
-.from("projetos")
-.insert({
-
-organizacao_id:
-organizacaoAtual,
-
-cliente_id:
-clienteId,
-
-nome:
-nome,
-
-status:
-"rascunho",
-
-observacoes:
-observacoes || null,
-
-criado_por:
-usuarioAtual.id,
-
-responsavel_tecnico_id:
-rtId || null
-
-})
-.select()
-.single();
-
-
-if (error)
-throw error;
-
-
-/* =========================================
-VINCULAR EQUIPAMENTO
-========================================= */
-
-if (equipamentoSelecionado) {
-
-    const dadosVinculo = {
-        projeto_id: data.id,
-        organizacao_id: organizacaoAtual,
-        quantidade_modulos: 0,
-        quantidade_inversores: 0
-    };
-
-    if (equipamentoSelecionado.tipo === "modulo") {
-
-        dadosVinculo.modulo_id =
-            equipamentoSelecionado.id;
-
-        dadosVinculo.quantidade_modulos = 1;
-
-    }
-
-    if (equipamentoSelecionado.tipo === "inversor") {
-
-        dadosVinculo.inversor_id =
-            equipamentoSelecionado.id;
-
-        dadosVinculo.quantidade_inversores = 1;
-
-    }
-
-    const {
-        error: erroEquipamento
-    } = await supabaseClient
-        .from("projeto_equipamentos")
-        .insert(dadosVinculo);
-
-    if (erroEquipamento) {
-
-        console.error(
-            "Erro ao vincular equipamento:",
-            erroEquipamento
+    const id =
+        document.getElementById(
+            "equipamento_modelo"
+        ).value;
+
+    const caixa =
+        document.getElementById(
+            "dadosEquipamento"
         );
 
-        throw erroEquipamento;
+    const texto =
+        document.getElementById(
+            "dadosEquipamentoTexto"
+        );
+
+    caixa.style.display = "none";
+
+    equipamentoSelecionado = null;
+
+    if (!id) {
+        return;
+    }
+
+    try {
+
+        /* =========================================
+        BUSCAR EQUIPAMENTO
+        ========================================= */
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+
+            .from("equipamentos_fotovoltaicos")
+
+            .select(`
+                id,
+                tipo,
+                modelo,
+                potencia_w,
+                eficiencia_percentual,
+                voc_v,
+                vmp_v,
+                isc_a,
+                imp_a,
+                potencia_nominal_kw,
+                tensao_cc_maxima_v,
+                numero_fases,
+                tecnologia_celula,
+                numero_celulas,
+                bifacialidade_percentual,
+                fusivel_maximo_a,
+                fonte_dados,
+                data_verificacao,
+                fabricante_id
+            `)
+
+            .eq(
+                "id",
+                id
+            )
+
+            .maybeSingle();
+
+
+        if (error) {
+
+            console.error(
+                "Erro ao carregar equipamento:",
+                error
+            );
+
+            throw error;
+        }
+
+
+        if (!data) {
+
+            throw new Error(
+                "Equipamento não encontrado."
+            );
+
+        }
+
+
+        /* =========================================
+        BUSCAR FABRICANTE
+        ========================================= */
+
+        const {
+            data: fabricante,
+            error: erroFabricante
+        } = await supabaseClient
+
+            .from("fabricantes_equipamentos")
+
+            .select(`
+                id,
+                nome
+            `)
+
+            .eq(
+                "id",
+                data.fabricante_id
+            )
+
+            .maybeSingle();
+
+
+        if (erroFabricante) {
+
+            console.error(
+                "Erro ao carregar fabricante:",
+                erroFabricante
+            );
+
+            throw erroFabricante;
+        }
+
+
+        if (!fabricante) {
+
+            throw new Error(
+                "Fabricante não encontrado."
+            );
+
+        }
+
+
+        /* =========================================
+        GUARDAR EQUIPAMENTO SELECIONADO
+        ========================================= */
+
+        equipamentoSelecionado = {
+
+            ...data,
+
+            fabricante_nome:
+                fabricante.nome
+
+        };
+
+
+        /* =========================================
+        EXIBIR DADOS TÉCNICOS
+        ========================================= */
+
+        let html = "";
+
+
+        html +=
+            "<strong>Fabricante:</strong> " +
+            fabricante.nome +
+            "<br>";
+
+
+        if (data.modelo) {
+
+            html +=
+                "<strong>Modelo:</strong> " +
+                data.modelo +
+                "<br>";
+
+        }
+
+
+        if (data.tipo) {
+
+            html +=
+                "<strong>Tipo:</strong> " +
+                data.tipo +
+                "<br>";
+
+        }
+
+
+        if (
+            data.potencia_w !== null &&
+            data.potencia_w !== undefined
+        ) {
+
+            html +=
+                "<strong>Potência:</strong> " +
+                data.potencia_w +
+                " W<br>";
+
+        }
+
+
+        if (
+            data.potencia_nominal_kw !== null &&
+            data.potencia_nominal_kw !== undefined
+        ) {
+
+            html +=
+                "<strong>Potência nominal:</strong> " +
+                data.potencia_nominal_kw +
+                " kW<br>";
+
+        }
+
+
+        if (
+            data.eficiencia_percentual !== null &&
+            data.eficiencia_percentual !== undefined
+        ) {
+
+            html +=
+                "<strong>Eficiência:</strong> " +
+                data.eficiencia_percentual +
+                "%<br>";
+
+        }
+
+
+        if (
+            data.voc_v !== null &&
+            data.voc_v !== undefined
+        ) {
+
+            html +=
+                "<strong>Voc:</strong> " +
+                data.voc_v +
+                " V<br>";
+
+        }
+
+
+        if (
+            data.vmp_v !== null &&
+            data.vmp_v !== undefined
+        ) {
+
+            html +=
+                "<strong>Vmp:</strong> " +
+                data.vmp_v +
+                " V<br>";
+
+        }
+
+
+        if (
+            data.isc_a !== null &&
+            data.isc_a !== undefined
+        ) {
+
+            html +=
+                "<strong>Isc:</strong> " +
+                data.isc_a +
+                " A<br>";
+
+        }
+
+
+        if (
+            data.imp_a !== null &&
+            data.imp_a !== undefined
+        ) {
+
+            html +=
+                "<strong>Imp:</strong> " +
+                data.imp_a +
+                " A<br>";
+
+        }
+
+
+        if (
+            data.tensao_cc_maxima_v !== null &&
+            data.tensao_cc_maxima_v !== undefined
+        ) {
+
+            html +=
+                "<strong>Tensão CC máxima:</strong> " +
+                data.tensao_cc_maxima_v +
+                " V<br>";
+
+        }
+
+
+        if (
+            data.numero_fases !== null &&
+            data.numero_fases !== undefined
+        ) {
+
+            html +=
+                "<strong>Número de fases:</strong> " +
+                data.numero_fases +
+                "<br>";
+
+        }
+
+
+        if (data.tecnologia_celula) {
+
+            html +=
+                "<strong>Tecnologia da célula:</strong> " +
+                data.tecnologia_celula +
+                "<br>";
+
+        }
+
+
+        if (
+            data.numero_celulas !== null &&
+            data.numero_celulas !== undefined
+        ) {
+
+            html +=
+                "<strong>Número de células:</strong> " +
+                data.numero_celulas +
+                "<br>";
+
+        }
+
+
+        if (
+            data.bifacialidade_percentual !== null &&
+            data.bifacialidade_percentual !== undefined
+        ) {
+
+            html +=
+                "<strong>Bifacialidade:</strong> " +
+                data.bifacialidade_percentual +
+                "%<br>";
+
+        }
+
+
+        if (
+            data.fusivel_maximo_a !== null &&
+            data.fusivel_maximo_a !== undefined
+        ) {
+
+            html +=
+                "<strong>Fusível máximo:</strong> " +
+                data.fusivel_maximo_a +
+                " A<br>";
+
+        }
+
+
+        if (data.fonte_dados) {
+
+            html +=
+                "<strong>Fonte dos dados:</strong> " +
+                data.fonte_dados +
+                "<br>";
+
+        }
+
+
+        if (data.data_verificacao) {
+
+            html +=
+                "<strong>Dados verificados em:</strong> " +
+                data.data_verificacao +
+                "<br>";
+
+        }
+
+
+        if (!html) {
+
+            html =
+                "Nenhum dado técnico disponível.";
+
+        }
+
+
+        texto.innerHTML =
+            html;
+
+        caixa.style.display =
+            "block";
 
     }
 
-}
+    catch (erro) {
 
+        console.error(
+            "Erro ao carregar dados técnicos:",
+            erro
+        );
 
-mostrarSucesso(
-"Projeto criado com sucesso!"
-);
+        mostrarErro(
+            erro.message
+        );
 
+    }
 
-setTimeout(() => {
-
-window.location.href =
-"projeto-detalhes.html?id=" +
-data.id;
-
-}, 1200);
-
-}
-
-catch (erro) {
-
-mostrarErro(
-erro.message
-);
-
-}
-
-finally {
-
-botao.disabled = false;
-
-botao.textContent =
-"Salvar rascunho";
-
-}
-
-}
-);
+    }
 
 
 /* =========================================
