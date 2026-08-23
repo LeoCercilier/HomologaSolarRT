@@ -599,6 +599,7 @@
 
 			let usuarioAtual = null;
 			let organizacaoAtual = null;
+			let equipamentoSelecionado = null;
 
 
 			/* =========================================
@@ -1160,6 +1161,35 @@
 			if (error)
 			throw error;
 
+			/* =========================================
+   VINCULAR EQUIPAMENTO AO PROJETO
+========================================= */
+
+if (equipamentoSelecionado) {
+
+    const {
+        error: erroEquipamento
+    } = await supabaseClient
+        .from("projeto_equipamentos")
+        .insert({
+            projeto_id: data.id,
+            equipamento_id: equipamentoSelecionado.id,
+            organizacao_id: organizacaoAtual
+        });
+
+    if (erroEquipamento) {
+
+        console.error(
+            "Erro ao vincular equipamento:",
+            erroEquipamento
+        );
+
+        throw erroEquipamento;
+
+    }
+
+}
+
 
 			mostrarSucesso(
 			"Projeto criado com sucesso!"
@@ -1515,7 +1545,7 @@ async function carregarDadosEquipamento() {
         return;
 
     }
-
+equipamentoSelecionado = data;
 
     let html = "";
 
