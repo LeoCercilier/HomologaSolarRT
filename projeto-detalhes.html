@@ -1663,20 +1663,47 @@ if (
     if (erroModulo)
       throw erroModulo;
 
+if (modulo) {
 
-    if (modulo) {
+  document.getElementById(
+    "fabricante_modulo"
+  ).value =
+    modulo.fabricante || "";
 
-  console.log(
-    "MÓDULO DO PROJETO:",
-    modulo
-  );
+  document.getElementById(
+    "modelo_modulo"
+  ).value =
+    modulo.modelo || "";
 
-  alert(
-    "Módulo carregado: " +
-    modulo.fabricante +
-    " - " +
-    modulo.modelo
-  );
+  document.getElementById(
+    "potencia_modulo_w"
+  ).value =
+    modulo.potencia_w || "";
+
+  document.getElementById(
+    "voc_modulo"
+  ).value =
+    modulo.voc_v || "";
+
+  document.getElementById(
+    "vmp_modulo"
+  ).value =
+    modulo.vmpp_v || "";
+
+  document.getElementById(
+    "isc_modulo"
+  ).value =
+    modulo.isc_a || "";
+
+  document.getElementById(
+    "imp_modulo"
+  ).value =
+    modulo.impp_a || "";
+
+  document.getElementById(
+    "quantidade_modulos"
+  ).value =
+    equipamento.quantidade_modulos || 1;
 
 	}
 
