@@ -1138,15 +1138,19 @@ CARREGAR FABRICANTES
 
     if (error) {
 
-        console.error(
-            "Erro ao carregar fabricantes:",
-            error
-        );
+    console.error(
+        "Erro ao carregar fabricantes:",
+        error
+    );
 
-        fabricante.innerHTML =
-            '<option value="">Erro ao carregar</option>';
+    fabricante.innerHTML =
+        '<option value="">ERRO: ' +
+        error.message +
+        '</option>';
 
-        return;
+    fabricante.disabled = false;
+
+    return;
     }
 
 
