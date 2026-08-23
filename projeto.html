@@ -302,6 +302,226 @@
 
 					</div>
 
+					<!-- =========================================
+     EQUIPAMENTOS DO SISTEMA FV
+========================================= -->
+
+<div class="campo">
+
+    <label>
+        ⚙️ Equipamentos do sistema fotovoltaico
+    </label>
+
+    <div style="
+        background:#f8fafc;
+        border:1px solid #e2e8f0;
+        border-radius:12px;
+        padding:15px;
+    ">
+
+        <div class="campo">
+
+            <label for="equipamento_tipo">
+                Tipo de equipamento
+            </label>
+
+            <select
+                id="equipamento_tipo"
+                onchange="carregarFabricantesEquipamentos()"
+            >
+
+                <option value="">
+                    Selecione o tipo
+                </option>
+
+                <option value="modulo">
+                    Módulo fotovoltaico
+                </option>
+
+                <option value="inversor">
+                    Inversor
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="equipamento_fabricante">
+                Fabricante
+            </label>
+
+            <select
+                id="equipamento_fabricante"
+                onchange="carregarModelosEquipamentos()"
+                disabled
+            >
+
+                <option value="">
+                    Primeiro selecione o tipo
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="equipamento_modelo">
+                Modelo
+            </label>
+
+            <select
+                id="equipamento_modelo"
+                onchange="carregarDadosEquipamento()"
+                disabled
+            >
+
+                <option value="">
+                    Primeiro selecione o fabricante
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div
+            id="dadosEquipamento"
+            style="
+                display:none;
+                margin-top:15px;
+                background:white;
+                border:1px solid #dbeafe;
+                border-radius:10px;
+                padding:14px;
+            "
+        >
+
+            <strong>
+                📋 Dados técnicos
+            </strong>
+
+            <div
+                id="dadosEquipamentoTexto"
+                style="
+                    margin-top:10px;
+                    font-size:14px;
+                    line-height:1.7;
+                    color:#475569;
+                "
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     UNIDADE CONSUMIDORA
+========================================= -->
+
+<div class="campo">
+
+    <label>
+        ⚡ Unidade consumidora
+    </label>
+
+    <div style="
+        background:#f8fafc;
+        border:1px solid #e2e8f0;
+        border-radius:12px;
+        padding:15px;
+    ">
+
+        <div class="campo">
+
+            <label for="tipo_ligacao">
+                Tipo de ligação
+            </label>
+
+            <select id="tipo_ligacao">
+
+                <option value="">
+                    Selecione
+                </option>
+
+                <option value="monofasico">
+                    Monofásico
+                </option>
+
+                <option value="bifasico">
+                    Bifásico
+                </option>
+
+                <option value="trifasico">
+                    Trifásico
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="tensao_atendimento">
+                Tensão de atendimento
+            </label>
+
+            <select id="tensao_atendimento">
+
+                <option value="">
+                    Selecione
+                </option>
+
+                <option value="127">
+                    127 V
+                </option>
+
+                <option value="220">
+                    220 V
+                </option>
+
+                <option value="380">
+                    380 V
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="disjuntor_geral_a">
+                Disjuntor geral
+            </label>
+
+            <input
+                type="number"
+                id="disjuntor_geral_a"
+                placeholder="Ex.: 63"
+                min="1"
+            >
+
+            <small style="
+                color:#64748b;
+                font-size:12px;
+            ">
+                Corrente nominal em amperes (A)
+            </small>
+
+        </div>
+
+    </div>
+
+</div>
 
 					<div class="campo">
 
@@ -974,6 +1194,452 @@
 
 			}
 			);
+
+			/* =========================================
+   BANCO DE EQUIPAMENTOS
+========================================= */
+
+async function carregarFabricantesEquipamentos() {
+
+    const tipo =
+        document.getElementById(
+            "equipamento_tipo"
+        ).value;
+
+    const fabricante =
+        document.getElementById(
+            "equipamento_fabricante"
+        );
+
+    const modelo =
+        document.getElementById(
+            "equipamento_modelo"
+        );
+
+    fabricante.innerHTML =
+        '<option value="">Carregando...</option>';
+
+    fabricante.disabled = true;
+
+    modelo.innerHTML =
+        '<option value="">Selecione o fabricante</option>';
+
+    modelo.disabled = true;
+
+    document.getElementById(
+        "dadosEquipamento"
+    ).style.display = "none";
+
+
+    if (!tipo) {
+
+        fabricante.innerHTML =
+            '<option value="">Primeiro selecione o tipo</option>';
+
+        return;
+    }
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+        .from("equipamentos")
+
+        .select(`
+            id,
+            fabricante
+        `)
+
+        .eq(
+            "tipo",
+            tipo
+        )
+
+        .eq(
+            "situacao",
+            "Ativo"
+        )
+
+        .order(
+            "fabricante",
+            {
+                ascending: true
+            }
+        );
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao carregar fabricantes:",
+            error
+        );
+
+        fabricante.innerHTML =
+            '<option value="">Erro ao carregar</option>';
+
+        return;
+    }
+
+
+    const fabricantes =
+        [
+            ...new Set(
+                (data || [])
+                    .map(
+                        item =>
+                            item.fabricante
+                    )
+                    .filter(Boolean)
+            )
+        ];
+
+
+    fabricante.innerHTML =
+        '<option value="">Selecione o fabricante</option>';
+
+
+    fabricantes.forEach(
+        nome => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                nome;
+
+            option.textContent =
+                nome;
+
+            fabricante.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    fabricante.disabled =
+        fabricantes.length === 0;
+
+}
+
+
+/* =========================================
+   CARREGAR MODELOS
+========================================= */
+
+async function carregarModelosEquipamentos() {
+
+    const tipo =
+        document.getElementById(
+            "equipamento_tipo"
+        ).value;
+
+    const fabricante =
+        document.getElementById(
+            "equipamento_fabricante"
+        ).value;
+
+    const modelo =
+        document.getElementById(
+            "equipamento_modelo"
+        );
+
+
+    modelo.innerHTML =
+        '<option value="">Carregando...</option>';
+
+    modelo.disabled = true;
+
+
+    if (!tipo || !fabricante) {
+
+        modelo.innerHTML =
+            '<option value="">Selecione o fabricante</option>';
+
+        return;
+    }
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+        .from("equipamentos")
+
+        .select(`
+            id,
+            modelo
+        `)
+
+        .eq(
+            "tipo",
+            tipo
+        )
+
+        .eq(
+            "fabricante",
+            fabricante
+        )
+
+        .eq(
+            "situacao",
+            "Ativo"
+        )
+
+        .order(
+            "modelo",
+            {
+                ascending: true
+            }
+        );
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao carregar modelos:",
+            error
+        );
+
+        modelo.innerHTML =
+            '<option value="">Erro ao carregar</option>';
+
+        return;
+    }
+
+
+    modelo.innerHTML =
+        '<option value="">Selecione o modelo</option>';
+
+
+    (data || []).forEach(
+        item => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                item.id;
+
+            option.textContent =
+                item.modelo;
+
+            modelo.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    modelo.disabled =
+        !data ||
+        data.length === 0;
+
+}
+
+
+/* =========================================
+   CARREGAR DADOS TÉCNICOS
+========================================= */
+
+async function carregarDadosEquipamento() {
+
+    const id =
+        document.getElementById(
+            "equipamento_modelo"
+        ).value;
+
+
+    const caixa =
+        document.getElementById(
+            "dadosEquipamento"
+        );
+
+    const texto =
+        document.getElementById(
+            "dadosEquipamentoTexto"
+        );
+
+
+    caixa.style.display =
+        "none";
+
+
+    if (!id) {
+
+        return;
+
+    }
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+        .from("equipamentos")
+
+        .select("*")
+
+        .eq(
+            "id",
+            id
+        )
+
+        .maybeSingle();
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao carregar equipamento:",
+            error
+        );
+
+        return;
+    }
+
+
+    if (!data) {
+
+        return;
+
+    }
+
+
+    let html = "";
+
+
+    if (data.fabricante) {
+
+        html +=
+            "<strong>Fabricante:</strong> " +
+            data.fabricante +
+            "<br>";
+
+    }
+
+
+    if (data.modelo) {
+
+        html +=
+            "<strong>Modelo:</strong> " +
+            data.modelo +
+            "<br>";
+
+    }
+
+
+    if (
+        data.potencia_w !== null &&
+        data.potencia_w !== undefined
+    ) {
+
+        html +=
+            "<strong>Potência:</strong> " +
+            data.potencia_w +
+            " W<br>";
+
+    }
+
+
+    if (
+        data.potencia_nominal_kw !== null &&
+        data.potencia_nominal_kw !== undefined
+    ) {
+
+        html +=
+            "<strong>Potência nominal:</strong> " +
+            data.potencia_nominal_kw +
+            " kW<br>";
+
+    }
+
+
+    if (
+        data.eficiencia_percentual !== null &&
+        data.eficiencia_percentual !== undefined
+    ) {
+
+        html +=
+            "<strong>Eficiência:</strong> " +
+            data.eficiencia_percentual +
+            "%<br>";
+
+    }
+
+
+    if (
+        data.tensao_maxima_v !== null &&
+        data.tensao_maxima_v !== undefined
+    ) {
+
+        html +=
+            "<strong>Tensão máxima:</strong> " +
+            data.tensao_maxima_v +
+            " V<br>";
+
+    }
+
+
+    if (
+        data.tensao_cc_maxima_v !== null &&
+        data.tensao_cc_maxima_v !== undefined
+    ) {
+
+        html +=
+            "<strong>Tensão CC máxima:</strong> " +
+            data.tensao_cc_maxima_v +
+            " V<br>";
+
+    }
+
+
+    if (data.registro_inmetro) {
+
+        html +=
+            "<strong>Registro Inmetro:</strong> " +
+            data.registro_inmetro +
+            "<br>";
+
+    }
+
+
+    if (data.situacao) {
+
+        html +=
+            "<strong>Situação:</strong> " +
+            data.situacao +
+            "<br>";
+
+    }
+
+
+    if (!html) {
+
+        html =
+            "Nenhum dado técnico disponível.";
+
+    }
+
+
+    texto.innerHTML =
+        html;
+
+    caixa.style.display =
+        "block";
+
+			}
 
 
 			/* =========================================
