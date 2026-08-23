@@ -1435,17 +1435,20 @@ async function carregarDadosEquipamento() {
 
 
         /* =========================================
-        GUARDAR EQUIPAMENTO SELECIONADO
-        ========================================= */
+GUARDAR EQUIPAMENTO SELECIONADO
+========================================= */
 
-        equipamentoSelecionado = {
+equipamentoSelecionado = {
 
-            ...data,
+    ...data,
 
-            fabricante_nome:
-                fabricante.nome
+    fabricante_nome:
+        fabricante.nome,
 
-        };
+    fabricante:
+        fabricante.nome
+
+};
 
 
         /* =========================================
