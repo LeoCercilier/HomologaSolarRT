@@ -1873,35 +1873,47 @@ VINCULAR EQUIPAMENTO
 
 if (equipamentoSelecionado) {
 
-const {
-error: erroEquipamento
-} =
-await supabaseClient
-.from("projeto_equipamentos")
-.insert({
+    const dadosVinculo = {
+        projeto_id: data.id,
+        organizacao_id: organizacaoAtual,
+        quantidade_modulos: 0,
+        quantidade_inversores: 0
+    };
 
-projeto_id:
-data.id,
+    if (equipamentoSelecionado.tipo === "modulo") {
 
-equipamento_id:
-equipamentoSelecionado.id,
+        dadosVinculo.modulo_id =
+            equipamentoSelecionado.id;
 
-organizacao_id:
-organizacaoAtual
+        dadosVinculo.quantidade_modulos = 1;
 
-});
+    }
 
+    if (equipamentoSelecionado.tipo === "inversor") {
 
-if (erroEquipamento) {
+        dadosVinculo.inversor_id =
+            equipamentoSelecionado.id;
 
-console.error(
-"Erro ao vincular equipamento:",
-erroEquipamento
-);
+        dadosVinculo.quantidade_inversores = 1;
 
-throw erroEquipamento;
+    }
 
-}
+    const {
+        error: erroEquipamento
+    } = await supabaseClient
+        .from("projeto_equipamentos")
+        .insert(dadosVinculo);
+
+    if (erroEquipamento) {
+
+        console.error(
+            "Erro ao vincular equipamento:",
+            erroEquipamento
+        );
+
+        throw erroEquipamento;
+
+    }
 
 }
 
