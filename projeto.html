@@ -9,135 +9,141 @@
 				name="viewport"
 				content="width=device-width, initial-scale=1.0"
 			>
-		<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f766e">
 
-				<title>Novo Projeto - HomologaSolar RT</title>
+				<link rel="manifest" href="manifest.json">
 
-				<style>
+					<meta
+						name="theme-color"
+						content="#0f766e"
+					>
 
-					* {
-					box-sizing: border-box;
-					}
+						<title>Novo Projeto - HomologaSolar RT</title>
 
-					body {
-					margin: 0;
-					font-family: Arial, sans-serif;
-					background: #f4f6f8;
-					color: #1f2937;
-					}
+						<style>
 
-					header {
-					background: #0f766e;
-					color: white;
-					padding: 18px;
-					}
+							* {
+							box-sizing: border-box;
+							}
 
-					header h1 {
-					margin: 0;
-					font-size: 21px;
-					}
+							body {
+							margin: 0;
+							font-family: Arial, sans-serif;
+							background: #f4f6f8;
+							color: #1f2937;
+							}
 
-					.container {
-					max-width: 700px;
-					margin: auto;
-					padding: 20px;
-					}
+							header {
+							background: #0f766e;
+							color: white;
+							padding: 18px;
+							}
 
-					.card {
-					background: white;
-					padding: 20px;
-					border-radius: 14px;
-					box-shadow: 0 3px 12px rgba(0,0,0,.06);
-					}
+							header h1 {
+							margin: 0;
+							font-size: 21px;
+							}
 
-					h2 {
-					margin-top: 0;
-					}
+							.container {
+							max-width: 700px;
+							margin: auto;
+							padding: 20px;
+							}
 
-					.campo {
-					margin-bottom: 16px;
-					}
+							.card {
+							background: white;
+							padding: 20px;
+							border-radius: 14px;
+							box-shadow: 0 3px 12px rgba(0,0,0,.06);
+							}
 
-					label {
-					display: block;
-					font-weight: bold;
-					font-size: 14px;
-					margin-bottom: 6px;
-					}
+							h2 {
+							margin-top: 0;
+							}
 
-					input,
-					select,
-					textarea {
-					width: 100%;
-					padding: 13px;
-					border: 1px solid #cbd5e1;
-					border-radius: 9px;
-					font-size: 15px;
-					background: white;
-					}
+							.campo {
+							margin-bottom: 16px;
+							}
 
-					textarea {
-					min-height: 100px;
-					resize: vertical;
-					}
+							label {
+							display: block;
+							font-weight: bold;
+							font-size: 14px;
+							margin-bottom: 6px;
+							}
 
-					.acoes {
-					display: flex;
-					gap: 10px;
-					margin-top: 20px;
-					}
+							input,
+							select,
+							textarea {
+							width: 100%;
+							padding: 13px;
+							border: 1px solid #cbd5e1;
+							border-radius: 9px;
+							font-size: 15px;
+							background: white;
+							}
 
-					button {
-					border: none;
-					border-radius: 9px;
-					padding: 13px 16px;
-					font-weight: bold;
-					cursor: pointer;
-					flex: 1;
-					}
+							textarea {
+							min-height: 100px;
+							resize: vertical;
+							}
 
-					.btn-principal {
-					background: #0f766e;
-					color: white;
-					}
+							.acoes {
+							display: flex;
+							gap: 10px;
+							margin-top: 20px;
+							}
 
-					.btn-secundario {
-					background: #e2e8f0;
-					color: #334155;
-					}
+							button {
+							border: none;
+							border-radius: 9px;
+							padding: 13px 16px;
+							font-weight: bold;
+							cursor: pointer;
+							flex: 1;
+							}
 
-					button:disabled {
-					opacity: .6;
-					}
+							.btn-principal {
+							background: #0f766e;
+							color: white;
+							}
 
-					.erro {
-					display: none;
-					background: #fee2e2;
-					color: #991b1b;
-					padding: 14px;
-					border-radius: 9px;
-					margin-bottom: 15px;
-					}
+							.btn-secundario {
+							background: #e2e8f0;
+							color: #334155;
+							}
 
-					.sucesso {
-					display: none;
-					background: #dcfce7;
-					color: #166534;
-					padding: 14px;
-					border-radius: 9px;
-					margin-bottom: 15px;
-					}
+							button:disabled {
+							opacity: .6;
+							}
 
-					.carregando {
-					text-align: center;
-					color: #64748b;
-					padding: 20px;
-					}
+							.erro {
+							display: none;
+							background: #fee2e2;
+							color: #991b1b;
+							padding: 14px;
+							border-radius: 9px;
+							margin-bottom: 15px;
+							}
 
-				</style>
+							.sucesso {
+							display: none;
+							background: #dcfce7;
+							color: #166534;
+							padding: 14px;
+							border-radius: 9px;
+							margin-bottom: 15px;
+							}
+
+							.carregando {
+							text-align: center;
+							color: #64748b;
+							padding: 20px;
+							}
+
+						</style>
 
 	</head>
+
 
 	<body>
 
@@ -154,10 +160,12 @@
 
 				<h2>📁 Novo projeto</h2>
 
+
 				<div
 					id="erro"
 					class="erro"
 				></div>
+
 
 				<div
 					id="sucesso"
@@ -167,6 +175,10 @@
 
 				<form id="formProjeto">
 
+
+					<!-- =========================================
+					CLIENTE
+					========================================= -->
 
 					<div class="campo">
 
@@ -185,6 +197,7 @@
 
 						</select>
 
+
 						<button
 							type="button"
 							class="btn-secundario"
@@ -195,6 +208,11 @@
 						</button>
 
 					</div>
+
+
+					<!-- =========================================
+					CADASTRO RÁPIDO DE CLIENTE
+					========================================= -->
 
 					<div
 						id="cadastroCliente"
@@ -212,6 +230,7 @@
 							👤 Cadastrar novo cliente
 						</h3>
 
+
 						<div class="campo">
 
 							<label>
@@ -225,6 +244,7 @@
 
 						</div>
 
+
 						<div class="campo">
 
 							<label>
@@ -237,6 +257,7 @@
 							>
 
 						</div>
+
 
 						<div class="campo">
 
@@ -252,6 +273,7 @@
 
 						</div>
 
+
 						<div class="campo">
 
 							<label>
@@ -265,6 +287,7 @@
 
 						</div>
 
+
 						<div class="acoes">
 
 							<button
@@ -274,6 +297,7 @@
 							>
 								Cancelar
 							</button>
+
 
 							<button
 								type="button"
@@ -287,6 +311,11 @@
 						</div>
 
 					</div>
+
+
+					<!-- =========================================
+					NOME DO PROJETO
+					========================================= -->
 
 					<div class="campo">
 
@@ -302,232 +331,259 @@
 
 					</div>
 
+
 					<!-- =========================================
-     EQUIPAMENTOS DO SISTEMA FV
-========================================= -->
+					EQUIPAMENTOS
+					========================================= -->
 
-<div class="campo">
+					<div class="campo">
 
-    <label>
-        ⚙️ Equipamentos do sistema fotovoltaico
-    </label>
+						<label>
+							⚙️ Equipamentos do sistema fotovoltaico
+						</label>
 
-    <div style="
-        background:#f8fafc;
-        border:1px solid #e2e8f0;
-        border-radius:12px;
-        padding:15px;
-    ">
 
-        <div class="campo">
+						<div style="
+							background:#f8fafc;
+							border:1px solid #e2e8f0;
+							border-radius:12px;
+							padding:15px;
+							">
 
-            <label for="equipamento_tipo">
-                Tipo de equipamento
-            </label>
 
-            <select
-                id="equipamento_tipo"
-                onchange="carregarFabricantesEquipamentos()"
-            >
+							<!-- TIPO -->
 
-                <option value="">
-                    Selecione o tipo
-                </option>
+							<div class="campo">
 
-                <option value="modulo">
-                    Módulo fotovoltaico
-                </option>
+								<label for="equipamento_tipo">
+									Tipo de equipamento
+								</label>
 
-                <option value="inversor">
-                    Inversor
-                </option>
 
-            </select>
+								<select
+									id="equipamento_tipo"
+									onchange="carregarFabricantesEquipamentos()"
+								>
 
-        </div>
+									<option value="">
+										Selecione o tipo
+									</option>
 
+									<option value="modulo">
+										Módulo fotovoltaico
+									</option>
 
-        <div class="campo">
+									<option value="inversor">
+										Inversor
+									</option>
 
-            <label for="equipamento_fabricante">
-                Fabricante
-            </label>
+								</select>
 
-            <select
-                id="equipamento_fabricante"
-                onchange="carregarModelosEquipamentos()"
-                disabled
-            >
+							</div>
 
-                <option value="">
-                    Primeiro selecione o tipo
-                </option>
 
-            </select>
+							<!-- FABRICANTE -->
 
-        </div>
+							<div class="campo">
 
+								<label for="equipamento_fabricante">
+									Fabricante
+								</label>
 
-        <div class="campo">
 
-            <label for="equipamento_modelo">
-                Modelo
-            </label>
+								<select
+									id="equipamento_fabricante"
+									onchange="carregarModelosEquipamentos()"
+									disabled
+								>
 
-            <select
-                id="equipamento_modelo"
-                onchange="carregarDadosEquipamento()"
-                disabled
-            >
+									<option value="">
+										Primeiro selecione o tipo
+									</option>
 
-                <option value="">
-                    Primeiro selecione o fabricante
-                </option>
+								</select>
 
-            </select>
+							</div>
 
-        </div>
 
+							<!-- MODELO -->
 
-        <div
-            id="dadosEquipamento"
-            style="
-                display:none;
-                margin-top:15px;
-                background:white;
-                border:1px solid #dbeafe;
-                border-radius:10px;
-                padding:14px;
-            "
-        >
+							<div class="campo">
 
-            <strong>
-                📋 Dados técnicos
-            </strong>
+								<label for="equipamento_modelo">
+									Modelo
+								</label>
 
-            <div
-                id="dadosEquipamentoTexto"
-                style="
-                    margin-top:10px;
-                    font-size:14px;
-                    line-height:1.7;
-                    color:#475569;
-                "
-            ></div>
 
-        </div>
+								<select
+									id="equipamento_modelo"
+									onchange="carregarDadosEquipamento()"
+									disabled
+								>
 
-    </div>
+									<option value="">
+										Primeiro selecione o fabricante
+									</option>
 
-</div>
+								</select>
 
+							</div>
 
-<!-- =========================================
-     UNIDADE CONSUMIDORA
-========================================= -->
 
-<div class="campo">
+							<!-- DADOS TÉCNICOS -->
 
-    <label>
-        ⚡ Unidade consumidora
-    </label>
+							<div
+								id="dadosEquipamento"
+								style="
+								display:none;
+								margin-top:15px;
+								background:white;
+								border:1px solid #dbeafe;
+								border-radius:10px;
+								padding:14px;
+								"
+							>
 
-    <div style="
-        background:#f8fafc;
-        border:1px solid #e2e8f0;
-        border-radius:12px;
-        padding:15px;
-    ">
+								<strong>
+									📋 Dados técnicos
+								</strong>
 
-        <div class="campo">
 
-            <label for="tipo_ligacao">
-                Tipo de ligação
-            </label>
+								<div
+									id="dadosEquipamentoTexto"
+									style="
+									margin-top:10px;
+									font-size:14px;
+									line-height:1.7;
+									color:#475569;
+									"
+								></div>
 
-            <select id="tipo_ligacao">
+							</div>
 
-                <option value="">
-                    Selecione
-                </option>
+						</div>
 
-                <option value="monofasico">
-                    Monofásico
-                </option>
+					</div>
 
-                <option value="bifasico">
-                    Bifásico
-                </option>
 
-                <option value="trifasico">
-                    Trifásico
-                </option>
+					<!-- =========================================
+					UNIDADE CONSUMIDORA
+					========================================= -->
 
-            </select>
+					<div class="campo">
 
-        </div>
+						<label>
+							⚡ Unidade consumidora
+						</label>
 
 
-        <div class="campo">
+						<div style="
+							background:#f8fafc;
+							border:1px solid #e2e8f0;
+							border-radius:12px;
+							padding:15px;
+							">
 
-            <label for="tensao_atendimento">
-                Tensão de atendimento
-            </label>
 
-            <select id="tensao_atendimento">
+							<div class="campo">
 
-                <option value="">
-                    Selecione
-                </option>
+								<label for="tipo_ligacao">
+									Tipo de ligação
+								</label>
 
-                <option value="127">
-                    127 V
-                </option>
 
-                <option value="220">
-                    220 V
-                </option>
+								<select id="tipo_ligacao">
 
-                <option value="380">
-                    380 V
-                </option>
+									<option value="">
+										Selecione
+									</option>
 
-            </select>
+									<option value="monofasico">
+										Monofásico
+									</option>
 
-        </div>
+									<option value="bifasico">
+										Bifásico
+									</option>
 
+									<option value="trifasico">
+										Trifásico
+									</option>
 
-        <div class="campo">
+								</select>
 
-            <label for="disjuntor_geral_a">
-                Disjuntor geral
-            </label>
+							</div>
 
-            <input
-                type="number"
-                id="disjuntor_geral_a"
-                placeholder="Ex.: 63"
-                min="1"
-            >
 
-            <small style="
-                color:#64748b;
-                font-size:12px;
-            ">
-                Corrente nominal em amperes (A)
-            </small>
+							<div class="campo">
 
-        </div>
+								<label for="tensao_atendimento">
+									Tensão de atendimento
+								</label>
 
-    </div>
 
-</div>
+								<select id="tensao_atendimento">
+
+									<option value="">
+										Selecione
+									</option>
+
+									<option value="127">
+										127 V
+									</option>
+
+									<option value="220">
+										220 V
+									</option>
+
+									<option value="380">
+										380 V
+									</option>
+
+								</select>
+
+							</div>
+
+
+							<div class="campo">
+
+								<label for="disjuntor_geral_a">
+									Disjuntor geral
+								</label>
+
+
+								<input
+									type="number"
+									id="disjuntor_geral_a"
+									placeholder="Ex.: 63"
+									min="1"
+								>
+
+
+									<small style="
+										color:#64748b;
+										font-size:12px;
+										">
+										Corrente nominal em amperes (A)
+									</small>
+
+							</div>
+
+						</div>
+
+					</div>
+
+
+					<!-- =========================================
+					RESPONSÁVEL TÉCNICO
+					========================================= -->
 
 					<div class="campo">
 
 						<label>
 							Responsável Técnico
 						</label>
+
 
 						<select
 							id="responsavel_tecnico_id"
@@ -542,11 +598,16 @@
 					</div>
 
 
+					<!-- =========================================
+					OBSERVAÇÕES
+					========================================= -->
+
 					<div class="campo">
 
 						<label>
 							Observações
 						</label>
+
 
 						<textarea
 							id="observacoes"
@@ -555,6 +616,10 @@
 
 					</div>
 
+
+					<!-- =========================================
+					BOTÕES
+					========================================= -->
 
 					<div class="acoes">
 
@@ -566,6 +631,7 @@
 							Cancelar
 						</button>
 
+
 						<button
 							type="submit"
 							class="btn-principal"
@@ -575,6 +641,7 @@
 						</button>
 
 					</div>
+
 
 				</form>
 
@@ -598,7 +665,9 @@
 
 
 			let usuarioAtual = null;
+
 			let organizacaoAtual = null;
+
 			let equipamentoSelecionado = null;
 
 
@@ -611,67 +680,67 @@
 			try {
 
 			const {
-			data,
-			error
+            data,
+            error
 			} =
 			await supabaseClient.auth.getUser();
 
 
 			if (
-			error ||
-			!data.user
+            error ||
+            !data.user
 			) {
 
-			window.location.href =
+            window.location.href =
 			"login.html";
 
-			return;
+            return;
 
 			}
 
 
 			usuarioAtual =
-			data.user;
+            data.user;
 
 
-			/* ================================
+			/* =====================================
 			DESCOBRIR ORGANIZAÇÃO
-			================================= */
+			===================================== */
 
 			const {
-			data: membro,
-			error: erroMembro
+            data: membro,
+            error: erroMembro
 			} =
 			await supabaseClient
-			.from("organizacao_membros")
-			.select("organizacao_id")
-			.eq(
+            .from("organizacao_membros")
+            .select("organizacao_id")
+            .eq(
 			"usuario_id",
 			usuarioAtual.id
-			)
-			.eq(
+            )
+            .eq(
 			"ativo",
 			true
-			)
-			.limit(1)
-			.maybeSingle();
+            )
+            .limit(1)
+            .maybeSingle();
 
 
 			if (erroMembro)
-			throw erroMembro;
+            throw erroMembro;
 
 
 			if (!membro) {
 
-			throw new Error(
+            throw new Error(
 			"Usuário sem organização."
-			);
+            );
 
 			}
 
 
 			organizacaoAtual =
-			membro.organizacao_id;
+            membro.organizacao_id;
 
 
 			await carregarClientes();
@@ -683,7 +752,7 @@
 			catch (erro) {
 
 			mostrarErro(
-			erro.message
+            erro.message
 			);
 
 			}
@@ -704,18 +773,18 @@
 			await supabaseClient
 			.from("clientes")
 			.select(`
-			id,
-			nome
+            id,
+            nome
 			`)
 			.eq(
-			"organizacao_id",
-			organizacaoAtual
+            "organizacao_id",
+            organizacaoAtual
 			)
 			.order(
-			"nome",
-			{
+            "nome",
+            {
 			ascending: true
-			}
+            }
 			);
 
 
@@ -725,7 +794,7 @@
 
 			const select =
 			document.getElementById(
-			"cliente_id"
+            "cliente_id"
 			);
 
 
@@ -741,35 +810,41 @@
 			) {
 
 			select.innerHTML =
-			`<option value="">
-				Nenhum cliente cadastrado
-			</option>`;
+            `<option value="">
+                Nenhum cliente cadastrado
+            </option>`;
 
 			return;
 
 			}
 
 
-			data.forEach(cliente => {
+			data.forEach(
+			cliente => {
 
-			const option =
+            const option =
 			document.createElement(
 			"option"
 			);
 
-			option.value =
+
+            option.value =
 			cliente.id;
 
-			option.textContent =
+
+            option.textContent =
 			cliente.nome;
 
-			select.appendChild(
-			option
-			);
 
-			});
+            select.appendChild(
+			option
+            );
 
 			}
+			);
+
+			}
+
 
 			/* =========================================
 			CADASTRO RÁPIDO DE CLIENTE
@@ -780,6 +855,7 @@
 			document.getElementById(
 			"cadastroCliente"
 			).style.display = "block";
+
 
 			document.getElementById(
 			"novo_cliente_nome"
@@ -794,17 +870,21 @@
 			"cadastroCliente"
 			).style.display = "none";
 
+
 			document.getElementById(
 			"novo_cliente_nome"
 			).value = "";
+
 
 			document.getElementById(
 			"novo_cliente_cpf_cnpj"
 			).value = "";
 
+
 			document.getElementById(
 			"novo_cliente_email"
 			).value = "";
+
 
 			document.getElementById(
 			"novo_cliente_telefone"
@@ -817,34 +897,38 @@
 
 			const botao =
 			document.getElementById(
-			"btnSalvarCliente"
+            "btnSalvarCliente"
 			);
+
 
 			const nome =
 			document.getElementById(
-			"novo_cliente_nome"
+            "novo_cliente_nome"
 			).value.trim();
+
 
 			const cpfCnpj =
 			document.getElementById(
-			"novo_cliente_cpf_cnpj"
+            "novo_cliente_cpf_cnpj"
 			).value.trim();
+
 
 			const email =
 			document.getElementById(
-			"novo_cliente_email"
+            "novo_cliente_email"
 			).value.trim();
+
 
 			const telefone =
 			document.getElementById(
-			"novo_cliente_telefone"
+            "novo_cliente_telefone"
 			).value.trim();
 
 
 			if (!nome) {
 
 			mostrarErro(
-			"Informe o nome do cliente."
+            "Informe o nome do cliente."
 			);
 
 			return;
@@ -861,12 +945,12 @@
 			try {
 
 			const {
-			data,
-			error
+            data,
+            error
 			} =
 			await supabaseClient
-			.from("clientes")
-			.insert({
+            .from("clientes")
+            .insert({
 
 			organizacao_id:
 			organizacaoAtual,
@@ -886,71 +970,57 @@
 			criado_por:
 			usuarioAtual.id
 
-			})
-			.select()
-			.single();
+            })
+            .select()
+            .single();
 
 
 			if (error)
-			throw error;
+            throw error;
 
-
-			/*
-			Adiciona o novo cliente
-			imediatamente na lista
-			*/
 
 			const select =
-			document.getElementById(
+            document.getElementById(
 			"cliente_id"
-			);
+            );
 
 
 			const option =
-			document.createElement(
+            document.createElement(
 			"option"
-			);
+            );
 
 
 			option.value =
-			data.id;
+            data.id;
+
 
 			option.textContent =
-			data.nome;
+            data.nome;
 
 
 			select.appendChild(
-			option
+            option
 			);
 
 
-			/*
-			Seleciona automaticamente
-			o cliente recém-criado
-			*/
-
 			select.value =
-			data.id;
+            data.id;
 
-
-			/*
-			Fecha o formulário
-			*/
 
 			cancelarCadastroCliente();
 
 
 			mostrarSucesso(
-			"Cliente cadastrado com sucesso!"
+            "Cliente cadastrado com sucesso!"
 			);
-
 
 			}
 
 			catch (erro) {
 
 			mostrarErro(
-			erro.message
+            erro.message
 			);
 
 			}
@@ -960,11 +1030,12 @@
 			botao.disabled = false;
 
 			botao.textContent =
-			"Salvar cliente";
+            "Salvar cliente";
 
 			}
 
 			}
+
 
 			/* =========================================
 			RESPONSÁVEIS TÉCNICOS
@@ -979,24 +1050,24 @@
 			await supabaseClient
 			.from("responsaveis_tecnicos")
 			.select(`
-			id,
-			nome,
-			crea,
-			uf_crea
+            id,
+            nome,
+            crea,
+            uf_crea
 			`)
 			.eq(
-			"organizacao_id",
-			organizacaoAtual
+            "organizacao_id",
+            organizacaoAtual
 			)
 			.eq(
-			"ativo",
-			true
+            "ativo",
+            true
 			)
 			.order(
-			"nome",
-			{
+            "nome",
+            {
 			ascending: true
-			}
+            }
 			);
 
 
@@ -1006,7 +1077,7 @@
 
 			const select =
 			document.getElementById(
-			"responsavel_tecnico_id"
+            "responsavel_tecnico_id"
 			);
 
 
@@ -1020,17 +1091,20 @@
 			return;
 
 
-			data.forEach(rt => {
+			data.forEach(
+			rt => {
 
-			const option =
+            const option =
 			document.createElement(
 			"option"
 			);
 
-			option.value =
+
+            option.value =
 			rt.id;
 
-			option.textContent =
+
+            option.textContent =
 			rt.nome +
 			" - CREA " +
 			rt.crea +
@@ -1040,86 +1114,277 @@
 			: ""
 			);
 
-			select.appendChild(
-			option
-			);
 
-			});
+            select.appendChild(
+			option
+            );
+
+			}
+			);
 
 			}
 
 
 			/* =========================================
-			SALVAR PROJETO
+			FABRICANTES
+			NOVA ESTRUTURA
 			========================================= */
 
-			document
-			.getElementById("formProjeto")
-			.addEventListener(
-			"submit",
-			async function(event) {
+			async function carregarFabricantesEquipamentos() {
 
-			event.preventDefault();
-
-
-			const botao =
+			const tipo =
 			document.getElementById(
-			"btnSalvar"
+            "equipamento_tipo"
+			).value;
+
+
+			const fabricanteSelect =
+			document.getElementById(
+            "equipamento_fabricante"
 			);
 
 
-			botao.disabled = true;
-
-			botao.textContent =
-			"Salvando...";
-
-
-			try {
-
-			const clienteId =
-			document
-            .getElementById("cliente_id")
-            .value;
-
-
-			const nome =
-			document
-            .getElementById("nome")
-            .value
-            .trim();
-
-
-			const rtId =
-			document
-            .getElementById(
-			"responsavel_tecnico_id"
-            )
-            .value;
-
-
-			const observacoes =
-			document
-            .getElementById(
-			"observacoes"
-            )
-            .value
-            .trim();
-
-
-			if (!clienteId) {
-
-			throw new Error(
-            "Selecione um cliente."
+			const modeloSelect =
+			document.getElementById(
+            "equipamento_modelo"
 			);
+
+
+			equipamentoSelecionado =
+			null;
+
+
+			fabricanteSelect.innerHTML =
+			'<option value="">Carregando...</option>';
+
+			fabricanteSelect.disabled =
+			true;
+
+
+			modeloSelect.innerHTML =
+			'<option value="">Selecione o fabricante</option>';
+
+			modeloSelect.disabled =
+			true;
+
+
+			document.getElementById(
+			"dadosEquipamento"
+			).style.display =
+			"none";
+
+
+			if (!tipo) {
+
+			fabricanteSelect.innerHTML =
+            '<option value="">Primeiro selecione o tipo</option>';
+
+			return;
 
 			}
 
 
-			if (!nome) {
+			/*
+			* Agora consultamos diretamente
+			* equipamentos_fotovoltaicos.
+			*
+			* O fabricante não está nessa tabela
+			* como texto. Ela possui fabricante_id.
+			*/
 
-			throw new Error(
-            "Informe o nome do projeto."
+
+			const {
+			data,
+			error
+			} =
+			await supabaseClient
+			.from("equipamentos_fotovoltaicos")
+			.select(`
+            fabricante_id
+			`)
+			.eq(
+            "tipo",
+            tipo
+			)
+			.eq(
+            "ativo",
+            true
 			);
+
+
+			if (error) {
+
+			console.error(
+            "Erro ao carregar fabricantes:",
+            error
+			);
+
+
+			fabricanteSelect.innerHTML =
+            '<option value="">Erro ao carregar</option>';
+
+			return;
+
+			}
+
+
+			const ids =
+			[
+            ...new Set(
+			(data || [])
+			.map(
+			item =>
+			item.fabricante_id
+			)
+			.filter(Boolean)
+            )
+			];
+
+
+			fabricanteSelect.innerHTML =
+			'<option value="">Selecione o fabricante</option>';
+
+
+			if (ids.length === 0) {
+
+			fabricanteSelect.innerHTML =
+            '<option value="">Nenhum fabricante encontrado</option>';
+
+			return;
+
+			}
+
+
+			/*
+			* Busca os nomes na tabela
+			* fabricantes_equipamentos.
+			*/
+
+			const {
+			data: fabricantes,
+			error: erroFabricantes
+			} =
+			await supabaseClient
+			.from("fabricantes_equipamentos")
+			.select(`
+            id,
+            nome
+			`)
+			.in(
+            "id",
+            ids
+			)
+			.eq(
+            "ativo",
+            true
+			)
+			.order(
+            "nome",
+            {
+			ascending: true
+            }
+			);
+
+
+			if (erroFabricantes) {
+
+			console.error(
+            "Erro ao carregar nomes dos fabricantes:",
+            erroFabricantes
+			);
+
+
+			fabricanteSelect.innerHTML =
+            '<option value="">Erro ao carregar fabricantes</option>';
+
+			return;
+
+			}
+
+
+			(fabricantes || []).forEach(
+			fabricante => {
+
+            const option =
+			document.createElement(
+			"option"
+			);
+
+
+            option.value =
+			fabricante.id;
+
+
+            option.textContent =
+			fabricante.nome;
+
+
+            fabricanteSelect.appendChild(
+			option
+            );
+
+			}
+			);
+
+
+			fabricanteSelect.disabled =
+			!fabricantes ||
+			fabricantes.length === 0;
+
+			}
+
+
+			/* =========================================
+			MODELOS
+			NOVA ESTRUTURA
+			========================================= */
+
+					async function carregarModelosEquipamentos() {
+
+			const tipo =
+			document.getElementById(
+            "equipamento_tipo"
+			).value;
+
+
+			const fabricanteId =
+			document.getElementById(
+            "equipamento_fabricante"
+			).value;
+
+
+			const modeloSelect =
+			document.getElementById(
+            "equipamento_modelo"
+			);
+
+
+			equipamentoSelecionado =
+			null;
+
+
+			modeloSelect.innerHTML =
+			'<option value="">Carregando...</option>';
+
+			modeloSelect.disabled =
+			true;
+
+
+			document.getElementById(
+			"dadosEquipamento"
+			).style.display =
+			"none";
+
+
+			if (
+			!tipo ||
+			!fabricanteId
+			) {
+
+			modeloSelect.innerHTML =
+            '<option value="">Selecione o fabricante</option>';
+
+			return;
 
 			}
 
@@ -1129,613 +1394,948 @@
 			error
 			} =
 			await supabaseClient
-			.from("projetos")
-			.insert({
-
-            organizacao_id:
-			organizacaoAtual,
-
-            cliente_id:
-			clienteId,
-
-            nome:
-			nome,
-
-            status:
-			"rascunho",
-
-            observacoes:
-			observacoes || null,
-
-            criado_por:
-			usuarioAtual.id,
-
-            responsavel_tecnico_id:
-			rtId || null
-
-			})
-			.select()
-			.single();
-
-
-			if (error)
-			throw error;
-
-			/* =========================================
-   VINCULAR EQUIPAMENTO AO PROJETO
-========================================= */
-
-if (equipamentoSelecionado) {
-
-    const {
-        error: erroEquipamento
-    } = await supabaseClient
-        .from("projeto_equipamentos")
-        .insert({
-            projeto_id: data.id,
-            equipamento_id: equipamentoSelecionado.id,
-            organizacao_id: organizacaoAtual
-        });
-
-    if (erroEquipamento) {
-
-        console.error(
-            "Erro ao vincular equipamento:",
-            erroEquipamento
-        );
-
-        throw erroEquipamento;
-
-    }
-
-}
-
-
-			mostrarSucesso(
-			"Projeto criado com sucesso!"
-			);
-
-
-			setTimeout(() => {
-
-			window.location.href =
-			"projeto-detalhes.html?id=" + data.id;
-
-			}, 1200);
-
-			}
-
-			catch (erro) {
-
-			mostrarErro(
-			erro.message
-			);
-
-			}
-
-			finally {
-
-			botao.disabled = false;
-
-			botao.textContent =
-			"Salvar rascunho";
-
-			}
-
-			}
-			);
-
-			/* =========================================
-   BANCO DE EQUIPAMENTOS
-========================================= */
-
-async function carregarFabricantesEquipamentos() {
-
-    const tipo =
-        document.getElementById(
-            "equipamento_tipo"
-        ).value;
-
-    const fabricante =
-        document.getElementById(
-            "equipamento_fabricante"
-        );
-
-    const modelo =
-        document.getElementById(
-            "equipamento_modelo"
-        );
-
-    fabricante.innerHTML =
-        '<option value="">Carregando...</option>';
-
-    fabricante.disabled = true;
-
-    modelo.innerHTML =
-        '<option value="">Selecione o fabricante</option>';
-
-    modelo.disabled = true;
-
-    document.getElementById(
-        "dadosEquipamento"
-    ).style.display = "none";
-
-
-    if (!tipo) {
-
-        fabricante.innerHTML =
-            '<option value="">Primeiro selecione o tipo</option>';
-
-        return;
-    }
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-
-        .from("equipamentos")
-
-        .select(`
-            id,
-            fabricante
-        `)
-
-        .eq(
-            "tipo",
-            tipo
-        )
-
-        .eq(
-            "situacao",
-            "Ativo"
-        )
-
-        .order(
-            "fabricante",
-            {
-                ascending: true
-            }
-        );
-
-
-    if (error) {
-
-        console.error(
-            "Erro ao carregar fabricantes:",
-            error
-        );
-
-        fabricante.innerHTML =
-            '<option value="">Erro ao carregar</option>';
-
-        return;
-    }
-
-
-    const fabricantes =
-        [
-            ...new Set(
-                (data || [])
-                    .map(
-                        item =>
-                            item.fabricante
-                    )
-                    .filter(Boolean)
-            )
-        ];
-
-
-    fabricante.innerHTML =
-        '<option value="">Selecione o fabricante</option>';
-
-
-    fabricantes.forEach(
-        nome => {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
-
-            option.value =
-                nome;
-
-            option.textContent =
-                nome;
-
-            fabricante.appendChild(
-                option
-            );
-
-        }
-    );
-
-
-    fabricante.disabled =
-        fabricantes.length === 0;
-
-}
-
-
-/* =========================================
-   CARREGAR MODELOS
-========================================= */
-
-async function carregarModelosEquipamentos() {
-
-    const tipo =
-        document.getElementById(
-            "equipamento_tipo"
-        ).value;
-
-    const fabricante =
-        document.getElementById(
-            "equipamento_fabricante"
-        ).value;
-
-    const modelo =
-        document.getElementById(
-            "equipamento_modelo"
-        );
-
-
-    modelo.innerHTML =
-        '<option value="">Carregando...</option>';
-
-    modelo.disabled = true;
-
-
-    if (!tipo || !fabricante) {
-
-        modelo.innerHTML =
-            '<option value="">Selecione o fabricante</option>';
-
-        return;
-    }
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-
-        .from("equipamentos")
-
-        .select(`
+			.from("equipamentos_fotovoltaicos")
+			.select(`
             id,
             modelo
-        `)
-
-        .eq(
+			`)
+			.eq(
             "tipo",
             tipo
-        )
-
-        .eq(
-            "fabricante",
-            fabricante
-        )
-
-        .eq(
-            "situacao",
-            "Ativo"
-        )
-
-        .order(
+			)
+			.eq(
+            "fabricante_id",
+            fabricanteId
+			)
+			.eq(
+            "ativo",
+            true
+			)
+			.order(
             "modelo",
             {
-                ascending: true
+			ascending: true
             }
-        );
+			);
 
 
-    if (error) {
+			if (error) {
 
-        console.error(
+			console.error(
             "Erro ao carregar modelos:",
             error
-        );
+			);
 
-        modelo.innerHTML =
+
+			modeloSelect.innerHTML =
             '<option value="">Erro ao carregar</option>';
 
-        return;
-    }
+			return;
+
+			}
 
 
-    modelo.innerHTML =
-        '<option value="">Selecione o modelo</option>';
+			modeloSelect.innerHTML =
+			'<option value="">Selecione o modelo</option>';
 
 
-    (data || []).forEach(
-        item => {
+			(data || []).forEach(
+			item => {
 
             const option =
-                document.createElement(
-                    "option"
-                );
+			document.createElement(
+			"option"
+			);
+
 
             option.value =
-                item.id;
+			item.id;
+
 
             option.textContent =
-                item.modelo;
+			item.modelo;
 
-            modelo.appendChild(
-                option
+
+            modeloSelect.appendChild(
+			option
             );
 
-        }
-    );
+			}
+			);
 
 
-    modelo.disabled =
-        !data ||
-        data.length === 0;
-
-}
-
-
-/* =========================================
-   CARREGAR DADOS TÉCNICOS
-========================================= */
-
-async function carregarDadosEquipamento() {
-
-    const id =
-        document.getElementById(
-            "equipamento_modelo"
-        ).value;
-
-
-    const caixa =
-        document.getElementById(
-            "dadosEquipamento"
-        );
-
-    const texto =
-        document.getElementById(
-            "dadosEquipamentoTexto"
-        );
-
-
-    caixa.style.display =
-        "none";
-
-
-    if (!id) {
-
-        return;
-
-    }
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-
-        .from("equipamentos")
-
-        .select("*")
-
-        .eq(
-            "id",
-            id
-        )
-
-        .maybeSingle();
-
-
-    if (error) {
-
-        console.error(
-            "Erro ao carregar equipamento:",
-            error
-        );
-
-        return;
-    }
-
-
-    if (!data) {
-
-        return;
-
-    }
-equipamentoSelecionado = data;
-
-    let html = "";
-
-
-    if (data.fabricante) {
-
-        html +=
-            "<strong>Fabricante:</strong> " +
-            data.fabricante +
-            "<br>";
-
-    }
-
-
-    if (data.modelo) {
-
-        html +=
-            "<strong>Modelo:</strong> " +
-            data.modelo +
-            "<br>";
-
-    }
-
-
-    if (
-        data.potencia_w !== null &&
-        data.potencia_w !== undefined
-    ) {
-
-        html +=
-            "<strong>Potência:</strong> " +
-            data.potencia_w +
-            " W<br>";
-
-    }
-
-
-    if (
-        data.potencia_nominal_kw !== null &&
-        data.potencia_nominal_kw !== undefined
-    ) {
-
-        html +=
-            "<strong>Potência nominal:</strong> " +
-            data.potencia_nominal_kw +
-            " kW<br>";
-
-    }
-
-
-    if (
-        data.eficiencia_percentual !== null &&
-        data.eficiencia_percentual !== undefined
-    ) {
-
-        html +=
-            "<strong>Eficiência:</strong> " +
-            data.eficiencia_percentual +
-            "%<br>";
-
-    }
-
-
-    if (
-        data.tensao_maxima_v !== null &&
-        data.tensao_maxima_v !== undefined
-    ) {
-
-        html +=
-            "<strong>Tensão máxima:</strong> " +
-            data.tensao_maxima_v +
-            " V<br>";
-
-    }
-
-
-    if (
-        data.tensao_cc_maxima_v !== null &&
-        data.tensao_cc_maxima_v !== undefined
-    ) {
-
-        html +=
-            "<strong>Tensão CC máxima:</strong> " +
-            data.tensao_cc_maxima_v +
-            " V<br>";
-
-    }
-
-
-    if (data.registro_inmetro) {
-
-        html +=
-            "<strong>Registro Inmetro:</strong> " +
-            data.registro_inmetro +
-            "<br>";
-
-    }
-
-
-    if (data.situacao) {
-
-        html +=
-            "<strong>Situação:</strong> " +
-            data.situacao +
-            "<br>";
-
-    }
-
-
-    if (!html) {
-
-        html =
-            "Nenhum dado técnico disponível.";
-
-    }
-
-
-    texto.innerHTML =
-        html;
-
-    caixa.style.display =
-        "block";
+			modeloSelect.disabled =
+			!data ||
+			data.length === 0;
 
 			}
 
 
 			/* =========================================
-			MENSAGENS
+			DADOS TÉCNICOS
 			========================================= */
 
-			function mostrarErro(mensagem) {
+			async function carregarDadosEquipamento() {
 
-			const sucesso =
+			const id =
 			document.getElementById(
-			"sucesso"
+            "equipamento_modelo"
+			).value;
+
+
+			const caixa =
+			document.getElementById(
+            "dadosEquipamento"
 			);
 
-			sucesso.style.display =
+
+			const texto =
+			document.getElementById(
+            "dadosEquipamentoTexto"
+			);
+
+
+			caixa.style.display =
 			"none";
 
 
-			const elemento =
-			document.getElementById(
-			"erro"
+			equipamentoSelecionado =
+			null;
+
+
+			if (!id)
+			return;
+
+
+			/*
+			* Busca todos os dados disponíveis
+			* da tabela atual.
+			*/
+
+			const {
+			data,
+			error
+			} =
+			await supabaseClient
+			.from("equipamentos_fotovoltaicos")
+			.select("*")
+			.eq(
+            "id",
+            id
+			)
+			.maybeSingle();
+
+
+			if (error) {
+
+			console.error(
+            "Erro ao carregar equipamento:",
+            error
 			);
 
-			elemento.textContent =
-			"ERRO: " + mensagem;
-
-			elemento.style.display =
-			"block";
+			return;
 
 			}
 
 
-			function mostrarSucesso(mensagem) {
-
-			const erro =
-			document.getElementById(
-			"erro"
-			);
-
-			erro.style.display =
-			"none";
+			if (!data)
+			return;
 
 
-			const elemento =
-			document.getElementById(
-			"sucesso"
-			);
+			equipamentoSelecionado =
+			data;
 
-			elemento.textContent =
-			mensagem;
 
-			elemento.style.display =
-			"block";
+			/*
+			* Busca o fabricante separadamente.
+			*/
+
+			let nomeFabricante =
+			"";
+
+
+			if (data.fabricante_id) {
+
+			const {
+            data: fabricante,
+            error: erroFabricante
+			} =
+			await supabaseClient
+            .from("fabricantes_equipamentos")
+            .select(`
+			nome
+            `)
+            .eq(
+			"id",
+			data.fabricante_id
+            )
+            .maybeSingle();
+
+
+			if (!erroFabricante &&
+            fabricante) {
+
+            nomeFabricante =
+			fabricante.nome;
+
+			}
 
 			}
 
 
-			iniciar();
+			let html = "";
+
+
+			if (nomeFabricante) {
+
+			html +=
+            "<strong>Fabricante:</strong> " +
+            nomeFabricante +
+            "<br>";
+
+				}
+
+
+				if (data.modelo) {
+
+				html +=
+				"<strong>Modelo:</strong> " +
+				data.modelo +
+				"<br>";
+
+					}
+
+
+					if (data.tipo) {
+
+					html +=
+					"<strong>Tipo:</strong> " +
+					data.tipo +
+					"<br>";
+
+						}
+
+
+						if (
+						data.potencia_w !== null &&
+						data.potencia_w !== undefined
+						) {
+
+						html +=
+						"<strong>Potência:</strong> " +
+						data.potencia_w +
+						" W<br>";
+
+							}
+
+
+							if (
+							data.potencia_pico_w !== null &&
+							data.potencia_pico_w !== undefined
+							) {
+
+							html +=
+							"<strong>Potência de pico:</strong> " +
+							data.potencia_pico_w +
+							" W<br>";
+
+								}
+
+
+								if (
+								data.potencia_nominal_kw !== null &&
+								data.potencia_nominal_kw !== undefined
+								) {
+
+								html +=
+								"<strong>Potência nominal:</strong> " +
+								data.potencia_nominal_kw +
+								" kW<br>";
+
+									}
+
+
+									if (
+									data.potencia_maxima_kw !== null &&
+									data.potencia_maxima_kw !== undefined
+									) {
+
+									html +=
+									"<strong>Potência máxima:</strong> " +
+									data.potencia_maxima_kw +
+									" kW<br>";
+
+										}
+
+
+										if (
+										data.eficiencia_percentual !== null &&
+										data.eficiencia_percentual !== undefined
+										) {
+
+										html +=
+										"<strong>Eficiência:</strong> " +
+										data.eficiencia_percentual +
+										"%<br>";
+
+											}
+
+
+											if (
+											data.voc_v !== null &&
+											data.voc_v !== undefined
+											) {
+
+											html +=
+											"<strong>Voc:</strong> " +
+											data.voc_v +
+											" V<br>";
+
+												}
+
+
+												if (
+												data.vmp_v !== null &&
+												data.vmp_v !== undefined
+												) {
+
+												html +=
+												"<strong>Vmp:</strong> " +
+												data.vmp_v +
+												" V<br>";
+
+													}
+
+
+													if (
+													data.isc_a !== null &&
+													data.isc_a !== undefined
+													) {
+
+													html +=
+													"<strong>Isc:</strong> " +
+													data.isc_a +
+													" A<br>";
+
+														}
+
+
+														if (
+														data.imp_a !== null &&
+														data.imp_a !== undefined
+														) {
+
+														html +=
+														"<strong>Imp:</strong> " +
+														data.imp_a +
+														" A<br>";
+
+															}
+
+
+															if (
+															data.tensao_maxima_v !== null &&
+															data.tensao_maxima_v !== undefined
+															) {
+
+															html +=
+															"<strong>Tensão máxima:</strong> " +
+															data.tensao_maxima_v +
+															" V<br>";
+
+																}
+
+
+																if (
+																data.tensao_cc_maxima_v !== null &&
+																data.tensao_cc_maxima_v !== undefined
+																) {
+
+																html +=
+																"<strong>Tensão CC máxima:</strong> " +
+																data.tensao_cc_maxima_v +
+																" V<br>";
+
+																	}
+
+
+																	if (
+																	data.tensao_mppt_min_v !== null &&
+																	data.tensao_mppt_min_v !== undefined
+																	) {
+
+																	html +=
+																	"<strong>MPPT mínimo:</strong> " +
+																	data.tensao_mppt_min_v +
+																	" V<br>";
+
+																		}
+
+
+																		if (
+																		data.tensao_mppt_max_v !== null &&
+																		data.tensao_mppt_max_v !== undefined
+																		) {
+
+																		html +=
+																		"<strong>MPPT máximo:</strong> " +
+																		data.tensao_mppt_max_v +
+																		" V<br>";
+
+																			}
+
+
+																			if (
+																			data.corrente_maxima_a !== null &&
+																			data.corrente_maxima_a !== undefined
+																			) {
+
+																			html +=
+																			"<strong>Corrente máxima:</strong> " +
+																			data.corrente_maxima_a +
+																			" A<br>";
+
+																				}
+
+
+																				if (
+																				data.corrente_mppt_max_a !== null &&
+																				data.corrente_mppt_max_a !== undefined
+																				) {
+
+																				html +=
+																				"<strong>Corrente máxima por MPPT:</strong> " +
+																				data.corrente_mppt_max_a +
+																				" A<br>";
+
+																					}
+
+
+																					if (
+																					data.numero_mppt !== null &&
+																					data.numero_mppt !== undefined
+																					) {
+
+																					html +=
+																					"<strong>Número de MPPT:</strong> " +
+																					data.numero_mppt +
+																					"<br>";
+
+																						}
+
+
+																						if (
+																						data.entradas_por_mppt !== null &&
+																						data.entradas_por_mppt !== undefined
+																						) {
+
+																						html +=
+																						"<strong>Entradas por MPPT:</strong> " +
+																						data.entradas_por_mppt +
+																						"<br>";
+
+																							}
+
+
+																							if (
+																							data.numero_fases !== null &&
+																							data.numero_fases !== undefined
+																							) {
+
+																							html +=
+																							"<strong>Número de fases:</strong> " +
+																							data.numero_fases +
+																							"<br>";
+
+																								}
+
+
+																								if (data.tipo_inversor) {
+
+																								html +=
+																								"<strong>Tipo de inversor:</strong> " +
+																								data.tipo_inversor +
+																								"<br>";
+
+																									}
+
+
+																									if (data.codigo_modelo) {
+
+																									html +=
+																									"<strong>Código do modelo:</strong> " +
+																									data.codigo_modelo +
+																									"<br>";
+
+																										}
+
+
+																										if (data.tecnologia_celula) {
+
+																										html +=
+																										"<strong>Tecnologia da célula:</strong> " +
+																										data.tecnologia_celula +
+																										"<br>";
+
+																											}
+
+
+																											if (
+																											data.numero_celulas !== null &&
+																											data.numero_celulas !== undefined
+																											) {
+
+																											html +=
+																											"<strong>Número de células:</strong> " +
+																											data.numero_celulas +
+																											"<br>";
+
+																												}
+
+
+																												if (
+																												data.bifacialidade_percentual !== null &&
+																												data.bifacialidade_percentual !== undefined
+																												) {
+
+																												html +=
+																												"<strong>Bifacialidade:</strong> " +
+																												data.bifacialidade_percentual +
+																												"%<br>";
+
+																													}
+
+
+																													if (
+																													data.temperatura_operacao_min_c !== null &&
+																													data.temperatura_operacao_min_c !== undefined
+																													) {
+
+																													html +=
+																													"<strong>Temperatura mínima:</strong> " +
+																													data.temperatura_operacao_min_c +
+																													" °C<br>";
+
+																														}
+
+
+																														if (
+																														data.temperatura_operacao_max_c !== null &&
+																														data.temperatura_operacao_max_c !== undefined
+																														) {
+
+																														html +=
+																														"<strong>Temperatura máxima:</strong> " +
+																														data.temperatura_operacao_max_c +
+																														" °C<br>";
+
+																															}
+
+
+																															if (
+																															data.temperatura_noct_c !== null &&
+																															data.temperatura_noct_c !== undefined
+																															) {
+
+																															html +=
+																															"<strong>NOCT:</strong> " +
+																															data.temperatura_noct_c +
+																															" °C<br>";
+
+																																}
+
+
+																																if (
+																																data.noct_c !== null &&
+																																data.noct_c !== undefined
+																																) {
+
+																																html +=
+																																"<strong>NOCT:</strong> " +
+																																data.noct_c +
+																																" °C<br>";
+
+																																	}
+
+
+																																	if (
+																																	data.fusivel_maximo_a !== null &&
+																																	data.fusivel_maximo_a !== undefined
+																																	) {
+
+																																	html +=
+																																	"<strong>Fusível máximo:</strong> " +
+																																	data.fusivel_maximo_a +
+																																	" A<br>";
+
+																																		}
+
+
+																																		if (
+																																		data.peso_kg !== null &&
+																																		data.peso_kg !== undefined
+																																		) {
+
+																																		html +=
+																																		"<strong>Peso:</strong> " +
+																																		data.peso_kg +
+																																		" kg<br>";
+
+																																			}
+
+
+																																			if (data.observacoes) {
+
+																																			html +=
+																																			"<strong>Observações:</strong> " +
+																																			data.observacoes +
+																																			"<br>";
+
+																																				}
+
+
+																																				if (data.fonte_dados) {
+
+																																				html +=
+																																				"<strong>Fonte dos dados:</strong> " +
+																																				data.fonte_dados +
+																																				"<br>";
+
+																																					}
+
+
+																																					if (data.data_verificacao) {
+
+																																					html +=
+																																					"<strong>Data de verificação:</strong> " +
+																																					data.data_verificacao +
+																																					"<br>";
+
+																																						}
+
+
+																																						if (!html) {
+
+																																						html =
+																																						"Nenhum dado técnico disponível.";
+
+																																						}
+
+
+																																						texto.innerHTML =
+																																						html;
+
+
+																																						caixa.style.display =
+																																						"block";
+
+																																						}
+
+
+																																						/* =========================================
+																																						SALVAR PROJETO
+																																						========================================= */
+
+																																						document
+																																						.getElementById("formProjeto")
+																																						.addEventListener(
+																																						"submit",
+																																						async function(event) {
+
+																																						event.preventDefault();
+
+
+																																						const botao =
+																																						document.getElementById(
+																																						"btnSalvar"
+																																						);
+
+
+																																						botao.disabled =
+																																						true;
+
+
+																																						botao.textContent =
+																																						"Salvando...";
+
+
+																																						try {
+
+																																						const clienteId =
+																																						document
+																																						.getElementById(
+																																						"cliente_id"
+																																						)
+																																						.value;
+
+
+																																						const nome =
+																																						document
+																																						.getElementById(
+																																						"nome"
+																																						)
+																																						.value
+																																						.trim();
+
+
+																																						const rtId =
+																																						document
+																																						.getElementById(
+																																						"responsavel_tecnico_id"
+																																						)
+																																						.value;
+
+
+																																						const observacoes =
+																																						document
+																																						.getElementById(
+																																						"observacoes"
+																																						)
+																																						.value
+																																						.trim();
+
+
+																																						if (!clienteId) {
+
+																																						throw new Error(
+																																						"Selecione um cliente."
+																																						);
+
+																																						}
+
+
+																																						if (!nome) {
+
+																																						throw new Error(
+																																						"Informe o nome do projeto."
+																																						);
+
+																																						}
+
+
+																																						/* =====================================
+																																						SALVAR PROJETO
+																																						===================================== */
+
+																																						const {
+																																						data,
+																																						error
+																																						} =
+																																						await supabaseClient
+																																						.from("projetos")
+																																						.insert({
+
+																																						organizacao_id:
+																																						organizacaoAtual,
+
+																																						cliente_id:
+																																						clienteId,
+
+																																						nome:
+																																						nome,
+
+																																						status:
+																																						"rascunho",
+
+																																						observacoes:
+																																						observacoes || null,
+
+																																						criado_por:
+																																						usuarioAtual.id,
+
+																																						responsavel_tecnico_id:
+																																						rtId || null
+
+																																						})
+																																						.select()
+																																						.single();
+
+
+																																						if (error)
+																																						throw error;
+
+
+																																						/* =====================================
+																																						VINCULAR EQUIPAMENTO
+																																						===================================== */
+
+																																						if (equipamentoSelecionado) {
+
+																																						const {
+																																						error: erroEquipamento
+																																						} =
+																																						await supabaseClient
+																																						.from("projeto_equipamentos")
+																																						.insert({
+
+																																						projeto_id:
+																																						data.id,
+
+																																						equipamento_id:
+																																						equipamentoSelecionado.id,
+
+																																						organizacao_id:
+																																						organizacaoAtual
+
+																																						});
+
+
+																																						if (erroEquipamento) {
+																																							
+																																						console.error(
+																																						"Erro ao vincular equipamento:",
+																																						erroEquipamento
+																																						);
+
+
+																																						throw erroEquipamento;
+
+																																						}
+
+																																						}
+
+
+																																						/* =====================================
+																																						SUCESSO
+																																						===================================== */
+
+																																						mostrarSucesso(
+																																						"Projeto criado com sucesso!"
+																																						);
+
+
+																																						setTimeout(
+																																						() => {
+
+																																						window.location.href =
+																																						"projeto-detalhes.html?id=" +
+																																						data.id;
+
+																																						},
+																																						1200
+																																						);
+
+																																						}
+
+																																						catch (erro) {
+
+																																						console.error(
+																																						"Erro ao salvar projeto:",
+																																						erro
+																																						);
+
+
+																																						mostrarErro(
+																																						erro.message
+																																						);
+
+																																						}
+
+																																						finally {
+
+																																						botao.disabled =
+																																						false;
+
+
+																																						botao.textContent =
+																																						"Salvar rascunho";
+
+																																						}
+
+																																						}
+																																						);
+
+
+																																						/* =========================================
+																																						MENSAGENS
+																																						========================================= */
+
+																																						function mostrarErro(mensagem) {
+
+																																						const sucesso =
+																																						document.getElementById(
+																																						"sucesso"
+																																						);
+
+
+																																						sucesso.style.display =
+																																						"none";
+
+
+																																						const elemento =
+																																						document.getElementById(
+																																						"erro"
+																																						);
+
+
+																																						elemento.textContent =
+																																						"ERRO: " + mensagem;
+
+
+																																						elemento.style.display =
+																																						"block";
+
+																																						}
+
+
+																																						function mostrarSucesso(mensagem) {
+
+																																						const erro =
+																																						document.getElementById(
+																																						"erro"
+																																						);
+
+
+																																						erro.style.display =
+																																						"none";
+
+
+																																						const elemento =
+																																						document.getElementById(
+																																						"sucesso"
+																																						);
+
+
+																																						elemento.textContent =
+																																						mensagem;
+
+
+																																						elemento.style.display =
+																																						"block";
+
+																																						}
+
+
+																																						/* =========================================
+																																						INICIAR SISTEMA
+																																						========================================= */
+
+																																						iniciar();
 
 		</script>
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", function() {
-    navigator.serviceWorker.register("./service-worker.js");
-  });
-}
-</script>
+
+
+		<script>
+
+			if ("serviceWorker" in navigator) {
+
+			window.addEventListener(
+			"load",
+			function() {
+
+            navigator.serviceWorker.register(
+			"./service-worker.js"
+            );
+
+			}
+			);
+
+			}
+
+		</script>
+
+
 	</body>
 
 </html>
+																						
