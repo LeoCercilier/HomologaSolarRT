@@ -1050,136 +1050,213 @@ CARREGAR FABRICANTES
 
 async function carregarFabricantesEquipamentos() {
 
-const tipo =
-document.getElementById(
-"equipamento_tipo"
-).value;
+    const tipo =
+        document.getElementById(
+            "equipamento_tipo"
+        ).value;
 
-const fabricante =
-document.getElementById(
-"equipamento_fabricante"
-);
+    const fabricanteSelect =
+        document.getElementById(
+            "equipamento_fabricante"
+        );
 
-const modelo =
-document.getElementById(
-"equipamento_modelo"
-);
+    const modeloSelect =
+        document.getElementById(
+            "equipamento_modelo"
+        );
+
+    fabricanteSelect.innerHTML =
+        '<option value="">Carregando...</option>';
+
+    fabricanteSelect.disabled = true;
+
+    modeloSelect.innerHTML =
+        '<option value="">Selecione o fabricante</option>';
+
+    modeloSelect.disabled = true;
+
+    document.getElementById(
+        "dadosEquipamento"
+    ).style.display = "none";
+
+    equipamentoSelecionado = null;
 
 
-fabricante.innerHTML =
-'<option value="">Carregando...</option>';
+    if (!tipo) {
 
-fabricante.disabled = true;
+        fabricanteSelect.innerHTML =
+            '<option value="">Primeiro selecione o tipo</option>';
 
-modelo.innerHTML =
-'<option value="">Selecione o fabricante</option>';
-
-modelo.disabled = true;
-
-document.getElementById(
-"dadosEquipamento"
-).style.display = "none";
-
-equipamentoSelecionado = null;
+        return;
+    }
 
 
-if (!tipo) {
+    try {
 
-fabricante.innerHTML =
-'<option value="">Primeiro selecione o tipo</option>';
+        /*
+        =========================================
+        1. BUSCAR EQUIPAMENTOS ATIVOS
+        =========================================
+        */
 
-return;
+        const {
+            data: equipamentos,
+            error: erroEquipamentos
+        } = await supabaseClient
+
+            .from("equipamentos_fotovoltaicos")
+
+            .select(`
+                id,
+                fabricante_id
+            `)
+
+            .eq(
+                "tipo",
+                tipo
+            )
+
+            .eq(
+                "ativo",
+                true
+            );
+
+
+        if (erroEquipamentos)
+            throw erroEquipamentos;
+
+
+        if (
+            !equipamentos ||
+            equipamentos.length === 0
+        ) {
+
+            fabricanteSelect.innerHTML =
+                '<option value="">Nenhum fabricante encontrado</option>';
+
+            return;
+        }
+
+
+        /*
+        =========================================
+        2. PEGAR IDs ÚNICOS DOS FABRICANTES
+        =========================================
+        */
+
+        const fabricanteIds =
+            [
+                ...new Set(
+                    equipamentos
+                        .map(
+                            equipamento =>
+                                equipamento.fabricante_id
+                        )
+                        .filter(Boolean)
+                )
+            ];
+
+
+        if (fabricanteIds.length === 0) {
+
+            fabricanteSelect.innerHTML =
+                '<option value="">Nenhum fabricante encontrado</option>';
+
+            return;
+        }
+
+
+        /*
+        =========================================
+        3. BUSCAR NOMES DOS FABRICANTES
+        =========================================
+        */
+
+        const {
+            data: fabricantes,
+            error: erroFabricantes
+        } = await supabaseClient
+
+            .from("fabricantes_equipamentos")
+
+            .select(`
+                id,
+                nome
+            `)
+
+            .in(
+                "id",
+                fabricanteIds
+            )
+
+            .eq(
+                "ativo",
+                true
+            )
+
+            .order(
+                "nome",
+                {
+                    ascending: true
+                }
+            );
+
+
+        if (erroFabricantes)
+            throw erroFabricantes;
+
+
+        /*
+        =========================================
+        4. PREENCHER O SELECT
+        =========================================
+        */
+
+        fabricanteSelect.innerHTML =
+            '<option value="">Selecione o fabricante</option>';
+
+
+        (fabricantes || []).forEach(
+            fabricante => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    fabricante.id;
+
+                option.textContent =
+                    fabricante.nome;
+
+                fabricanteSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        fabricanteSelect.disabled =
+            !fabricantes ||
+            fabricantes.length === 0;
+
+
+    }
+    catch (erro) {
+
+        console.error(
+            "Erro ao carregar fabricantes:",
+            erro
+        );
+
+        fabricanteSelect.innerHTML =
+            '<option value="">Erro ao carregar</option>';
+
+    }
 
 }
-
-
-/*
-A tabela fabricantes_equipamentos
-possui:
-
-id
-nome
-tipo_fabricante
-ativo
-
-Primeiro buscamos os fabricantes
-compatíveis com o tipo.
-*/
-
-const {
-data: fabricantes,
-error: erroFabricantes
-} =
-await supabaseClient
-.from("fabricantes_equipamentos")
-.select(`
-id,
-nome,
-tipo_fabricante
-`)
-.eq(
-"tipo_fabricante",
-tipo
-)
-.eq(
-"ativo",
-true
-)
-.order(
-"nome",
-{
-ascending: true
-}
-);
-
-
-if (erroFabricantes) {
-
-console.error(
-"Erro ao carregar fabricantes:",
-erroFabricantes
-);
-
-fabricante.innerHTML =
-'<option value="">Erro ao carregar</option>';
-
-return;
-
-}
-
-
-fabricante.innerHTML =
-'<option value="">Selecione o fabricante</option>';
-
-
-(fabricantes || []).forEach(
-item => {
-
-const option =
-document.createElement(
-"option"
-);
-
-option.value =
-item.id;
-
-option.textContent =
-item.nome;
-
-fabricante.appendChild(
-option
-);
-
-}
-);
-
-
-fabricante.disabled =
-!fabricantes ||
-fabricantes.length === 0;
-
-}
-
 
 /* =========================================
 CARREGAR MODELOS
@@ -1220,31 +1297,38 @@ return;
 
 
 const {
-data,
-error
-} =
-await supabaseClient
-.from("equipamentos_fotovoltaicos")
-.select(`
-id,
-modelo,
-tipo,
-fabricante_id
-`)
-.eq(
-"fabricante_id",
-fabricanteId
-)
-.eq(
-"ativo",
-true
-)
-.order(
-"modelo",
-{
-ascending: true
-}
-);
+    data,
+    error
+} = await supabaseClient
+
+    .from("equipamentos_fotovoltaicos")
+
+    .select(`
+        id,
+        modelo
+    `)
+
+    .eq(
+        "tipo",
+        tipo
+    )
+
+    .eq(
+        "fabricante_id",
+        fabricante
+    )
+
+    .eq(
+        "ativo",
+        true
+    )
+
+    .order(
+        "modelo",
+        {
+            ascending: true
+        }
+    );
 
 
 if (error) {
