@@ -486,7 +486,7 @@
     <input
         type="search"
         id="pesquisaProjetos"
-        placeholder="🔎 Pesquisar projeto..."
+        placeholder="🔎 Pesquisar projeto ou cliente..."
         oninput="pesquisarProjetos()"
         style="
             width:100%;
@@ -1121,11 +1121,16 @@ async function carregarProjetos() {
     await supabaseClient
         .from("projetos")
         .select(`
-            id,
-            nome,
-            status,
-            criado_em
-        `)
+    id,
+    nome,
+    status,
+    criado_em,
+    cliente_id,
+    clientes (
+        id,
+        nome
+    )
+`)
         .eq(
             "organizacao_id",
             organizacaoAtual
@@ -1210,6 +1215,14 @@ data.forEach(
             projeto.nome
         )}
     </strong>
+
+    <span>
+        👤 Cliente:
+        ${escaparHtml(
+            projeto.clientes?.nome ||
+            "Cliente não informado"
+        )}
+    </span>
 
     <span>
         Status:
