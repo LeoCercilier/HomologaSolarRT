@@ -1048,7 +1048,7 @@ option
 CARREGAR FABRICANTES
 ========================================= */
 
-async function carregarFabricantesEquipamentos() {
+    async function carregarFabricantesEquipamentos() {
 
     const tipo =
         document.getElementById(
@@ -1065,19 +1065,23 @@ async function carregarFabricantesEquipamentos() {
             "equipamento_modelo"
         );
 
+
     fabricanteSelect.innerHTML =
         '<option value="">Carregando...</option>';
 
     fabricanteSelect.disabled = true;
+
 
     modeloSelect.innerHTML =
         '<option value="">Selecione o fabricante</option>';
 
     modeloSelect.disabled = true;
 
+
     document.getElementById(
         "dadosEquipamento"
     ).style.display = "none";
+
 
     equipamentoSelecionado = null;
 
@@ -1094,9 +1098,8 @@ async function carregarFabricantesEquipamentos() {
     try {
 
         /*
-        =========================================
-        1. BUSCAR EQUIPAMENTOS ATIVOS
-        =========================================
+        Busca os equipamentos ativos
+        do tipo selecionado.
         */
 
         const {
@@ -1106,10 +1109,9 @@ async function carregarFabricantesEquipamentos() {
 
             .from("equipamentos_fotovoltaicos")
 
-            .select(`
-                id,
-                fabricante_id
-            `)
+            .select(
+                "fabricante_id"
+            )
 
             .eq(
                 "tipo",
@@ -1122,13 +1124,37 @@ async function carregarFabricantesEquipamentos() {
             );
 
 
-        if (erroEquipamentos)
+        if (erroEquipamentos) {
+
+            console.error(
+                "Erro equipamentos:",
+                erroEquipamentos
+            );
+
             throw erroEquipamentos;
+        }
+
+
+        /*
+        Pega os fabricantes utilizados
+        pelos equipamentos encontrados.
+        */
+
+        const fabricanteIds =
+            [
+                ...new Set(
+                    (equipamentos || [])
+                        .map(
+                            item =>
+                                item.fabricante_id
+                        )
+                        .filter(Boolean)
+                )
+            ];
 
 
         if (
-            !equipamentos ||
-            equipamentos.length === 0
+            fabricanteIds.length === 0
         ) {
 
             fabricanteSelect.innerHTML =
@@ -1139,37 +1165,7 @@ async function carregarFabricantesEquipamentos() {
 
 
         /*
-        =========================================
-        2. PEGAR IDs ÚNICOS DOS FABRICANTES
-        =========================================
-        */
-
-        const fabricanteIds =
-            [
-                ...new Set(
-                    equipamentos
-                        .map(
-                            equipamento =>
-                                equipamento.fabricante_id
-                        )
-                        .filter(Boolean)
-                )
-            ];
-
-
-        if (fabricanteIds.length === 0) {
-
-            fabricanteSelect.innerHTML =
-                '<option value="">Nenhum fabricante encontrado</option>';
-
-            return;
-        }
-
-
-        /*
-        =========================================
-        3. BUSCAR NOMES DOS FABRICANTES
-        =========================================
+        Busca os nomes dos fabricantes.
         */
 
         const {
@@ -1177,12 +1173,13 @@ async function carregarFabricantesEquipamentos() {
             error: erroFabricantes
         } = await supabaseClient
 
-            .from("fabricantes_equipamentos")
+            .from(
+                "fabricantes_equipamentos"
+            )
 
-            .select(`
-                id,
-                nome
-            `)
+            .select(
+                "id, nome"
+            )
 
             .in(
                 "id",
@@ -1202,15 +1199,16 @@ async function carregarFabricantesEquipamentos() {
             );
 
 
-        if (erroFabricantes)
+        if (erroFabricantes) {
+
+            console.error(
+                "Erro fabricantes:",
+                erroFabricantes
+            );
+
             throw erroFabricantes;
+        }
 
-
-        /*
-        =========================================
-        4. PREENCHER O SELECT
-        =========================================
-        */
 
         fabricanteSelect.innerHTML =
             '<option value="">Selecione o fabricante</option>';
@@ -1239,7 +1237,6 @@ async function carregarFabricantesEquipamentos() {
 
 
         fabricanteSelect.disabled =
-            !fabricantes ||
             fabricantes.length === 0;
 
 
@@ -1247,12 +1244,15 @@ async function carregarFabricantesEquipamentos() {
     catch (erro) {
 
         console.error(
-            "Erro ao carregar fabricantes:",
+            "ERRO FINAL FABRICANTES:",
             erro
         );
 
         fabricanteSelect.innerHTML =
             '<option value="">Erro ao carregar</option>';
+
+        fabricanteSelect.disabled =
+            true;
 
     }
 
@@ -1310,12 +1310,14 @@ const {
 
     .eq(
         "tipo",
-        tipo
+        document.getElementById(
+            "equipamento_tipo"
+        ).value
     )
 
     .eq(
         "fabricante_id",
-        fabricante
+        fabricanteId
     )
 
     .eq(
