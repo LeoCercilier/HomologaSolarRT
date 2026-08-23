@@ -1,2341 +1,2020 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-	<head>
-
-		<meta charset="UTF-8">
-
-			<meta
-				name="viewport"
-				content="width=device-width, initial-scale=1.0"
-			>
-
-				<link rel="manifest" href="manifest.json">
-
-					<meta
-						name="theme-color"
-						content="#0f766e"
-					>
-
-						<title>Novo Projeto - HomologaSolar RT</title>
-
-						<style>
-
-							* {
-							box-sizing: border-box;
-							}
-
-							body {
-							margin: 0;
-							font-family: Arial, sans-serif;
-							background: #f4f6f8;
-							color: #1f2937;
-							}
-
-							header {
-							background: #0f766e;
-							color: white;
-							padding: 18px;
-							}
-
-							header h1 {
-							margin: 0;
-							font-size: 21px;
-							}
-
-							.container {
-							max-width: 700px;
-							margin: auto;
-							padding: 20px;
-							}
-
-							.card {
-							background: white;
-							padding: 20px;
-							border-radius: 14px;
-							box-shadow: 0 3px 12px rgba(0,0,0,.06);
-							}
-
-							h2 {
-							margin-top: 0;
-							}
-
-							.campo {
-							margin-bottom: 16px;
-							}
-
-							label {
-							display: block;
-							font-weight: bold;
-							font-size: 14px;
-							margin-bottom: 6px;
-							}
-
-							input,
-							select,
-							textarea {
-							width: 100%;
-							padding: 13px;
-							border: 1px solid #cbd5e1;
-							border-radius: 9px;
-							font-size: 15px;
-							background: white;
-							}
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<link rel="manifest" href="manifest.json">
+
+<meta name="theme-color" content="#0f766e">
+
+<title>Novo Projeto - HomologaSolar RT</title>
+
+<style>
+
+* {
+box-sizing: border-box;
+}
+
+body {
+margin: 0;
+font-family: Arial, sans-serif;
+background: #f4f6f8;
+color: #1f2937;
+}
+
+header {
+background: #0f766e;
+color: white;
+padding: 18px;
+}
+
+header h1 {
+margin: 0;
+font-size: 21px;
+}
+
+.container {
+max-width: 700px;
+margin: auto;
+padding: 20px;
+}
+
+.card {
+background: white;
+padding: 20px;
+border-radius: 14px;
+box-shadow: 0 3px 12px rgba(0,0,0,.06);
+}
+
+h2 {
+margin-top: 0;
+}
+
+.campo {
+margin-bottom: 16px;
+}
+
+label {
+display: block;
+font-weight: bold;
+font-size: 14px;
+margin-bottom: 6px;
+}
+
+input,
+select,
+textarea {
+width: 100%;
+padding: 13px;
+border: 1px solid #cbd5e1;
+border-radius: 9px;
+font-size: 15px;
+background: white;
+}
+
+textarea {
+min-height: 100px;
+resize: vertical;
+}
+
+.acoes {
+display: flex;
+gap: 10px;
+margin-top: 20px;
+}
+
+button {
+border: none;
+border-radius: 9px;
+padding: 13px 16px;
+font-weight: bold;
+cursor: pointer;
+flex: 1;
+}
+
+.btn-principal {
+background: #0f766e;
+color: white;
+}
 
-							textarea {
-							min-height: 100px;
-							resize: vertical;
-							}
+.btn-secundario {
+background: #e2e8f0;
+color: #334155;
+}
 
-							.acoes {
-							display: flex;
-							gap: 10px;
-							margin-top: 20px;
-							}
+button:disabled {
+opacity: .6;
+}
 
-							button {
-							border: none;
-							border-radius: 9px;
-							padding: 13px 16px;
-							font-weight: bold;
-							cursor: pointer;
-							flex: 1;
-							}
+.erro {
+display: none;
+background: #fee2e2;
+color: #991b1b;
+padding: 14px;
+border-radius: 9px;
+margin-bottom: 15px;
+}
 
-							.btn-principal {
-							background: #0f766e;
-							color: white;
-							}
+.sucesso {
+display: none;
+background: #dcfce7;
+color: #166534;
+padding: 14px;
+border-radius: 9px;
+margin-bottom: 15px;
+}
 
-							.btn-secundario {
-							background: #e2e8f0;
-							color: #334155;
-							}
+.carregando {
+text-align: center;
+color: #64748b;
+padding: 20px;
+}
 
-							button:disabled {
-							opacity: .6;
-							}
+</style>
 
-							.erro {
-							display: none;
-							background: #fee2e2;
-							color: #991b1b;
-							padding: 14px;
-							border-radius: 9px;
-							margin-bottom: 15px;
-							}
+</head>
 
-							.sucesso {
-							display: none;
-							background: #dcfce7;
-							color: #166534;
-							padding: 14px;
-							border-radius: 9px;
-							margin-bottom: 15px;
-							}
+<body>
 
-							.carregando {
-							text-align: center;
-							color: #64748b;
-							padding: 20px;
-							}
+<header>
 
-						</style>
+<h1>☀️ HomologaSolar RT</h1>
 
-	</head>
+</header>
 
 
-	<body>
+<div class="container">
 
-		<header>
+<div class="card">
 
-			<h1>☀️ HomologaSolar RT</h1>
+<h2>📁 Novo projeto</h2>
 
-		</header>
+<div
+id="erro"
+class="erro"
+></div>
 
+<div
+id="sucesso"
+class="sucesso"
+></div>
 
-		<div class="container">
 
-			<div class="card">
+<form id="formProjeto">
 
-				<h2>📁 Novo projeto</h2>
 
+<div class="campo">
 
-				<div
-					id="erro"
-					class="erro"
-				></div>
+<label>
+Cliente *
+</label>
 
+<select
+id="cliente_id"
+required
+>
 
-				<div
-					id="sucesso"
-					class="sucesso"
-				></div>
+<option value="">
+Carregando clientes...
+</option>
 
+</select>
 
-				<form id="formProjeto">
+<button
+type="button"
+class="btn-secundario"
+style="margin-top:8px; width:100%;"
+onclick="mostrarCadastroCliente()"
+>
++ Cadastrar novo cliente
+</button>
 
+</div>
 
-					<!-- =========================================
-					CLIENTE
-					========================================= -->
 
-					<div class="campo">
+<div
+id="cadastroCliente"
+style="
+display:none;
+background:#f8fafc;
+border:1px solid #e2e8f0;
+border-radius:10px;
+padding:15px;
+margin-bottom:16px;
+"
+>
 
-						<label>
-							Cliente *
-						</label>
+<h3 style="margin-top:0;">
+👤 Cadastrar novo cliente
+</h3>
 
-						<select
-							id="cliente_id"
-							required
-						>
+<div class="campo">
 
-							<option value="">
-								Carregando clientes...
-							</option>
+<label>
+Nome *
+</label>
 
-						</select>
+<input
+id="novo_cliente_nome"
+placeholder="Nome completo ou razão social"
+>
 
+</div>
 
-						<button
-							type="button"
-							class="btn-secundario"
-							style="margin-top:8px; width:100%;"
-							onclick="mostrarCadastroCliente()"
-						>
-							+ Cadastrar novo cliente
-						</button>
+<div class="campo">
 
-					</div>
+<label>
+CPF/CNPJ
+</label>
 
+<input
+id="novo_cliente_cpf_cnpj"
+placeholder="CPF ou CNPJ"
+>
 
-					<!-- =========================================
-					CADASTRO RÁPIDO DE CLIENTE
-					========================================= -->
+</div>
 
-					<div
-						id="cadastroCliente"
-						style="
-						display:none;
-						background:#f8fafc;
-						border:1px solid #e2e8f0;
-						border-radius:10px;
-						padding:15px;
-						margin-bottom:16px;
-						"
-					>
+<div class="campo">
 
-						<h3 style="margin-top:0;">
-							👤 Cadastrar novo cliente
-						</h3>
+<label>
+E-mail
+</label>
 
+<input
+id="novo_cliente_email"
+type="email"
+placeholder="E-mail"
+>
 
-						<div class="campo">
+</div>
 
-							<label>
-								Nome *
-							</label>
+<div class="campo">
 
-							<input
-								id="novo_cliente_nome"
-								placeholder="Nome completo ou razão social"
-							>
+<label>
+Telefone
+</label>
 
-						</div>
+<input
+id="novo_cliente_telefone"
+placeholder="Telefone / WhatsApp"
+>
 
+</div>
 
-						<div class="campo">
+<div class="acoes">
 
-							<label>
-								CPF/CNPJ
-							</label>
+<button
+type="button"
+class="btn-secundario"
+onclick="cancelarCadastroCliente()"
+>
+Cancelar
+</button>
 
-							<input
-								id="novo_cliente_cpf_cnpj"
-								placeholder="CPF ou CNPJ"
-							>
+<button
+type="button"
+class="btn-principal"
+id="btnSalvarCliente"
+onclick="salvarNovoCliente()"
+>
+Salvar cliente
+</button>
 
-						</div>
+</div>
 
+</div>
 
-						<div class="campo">
 
-							<label>
-								E-mail
-							</label>
+<div class="campo">
 
-							<input
-								id="novo_cliente_email"
-								type="email"
-								placeholder="E-mail"
-							>
+<label>
+Nome do projeto *
+</label>
 
-						</div>
+<input
+id="nome"
+placeholder="Ex.: Sistema Fotovoltaico - Cliente Teste"
+required
+>
 
+</div>
 
-						<div class="campo">
 
-							<label>
-								Telefone
-							</label>
+<!-- =========================================
+EQUIPAMENTOS DO SISTEMA FV
+========================================= -->
 
-							<input
-								id="novo_cliente_telefone"
-								placeholder="Telefone / WhatsApp"
-							>
+<div class="campo">
 
-						</div>
+<label>
+⚙️ Equipamentos do sistema fotovoltaico
+</label>
 
+<div style="
+background:#f8fafc;
+border:1px solid #e2e8f0;
+border-radius:12px;
+padding:15px;
+">
 
-						<div class="acoes">
+<div class="campo">
 
-							<button
-								type="button"
-								class="btn-secundario"
-								onclick="cancelarCadastroCliente()"
-							>
-								Cancelar
-							</button>
+<label for="equipamento_tipo">
+Tipo de equipamento
+</label>
 
+<select
+id="equipamento_tipo"
+onchange="carregarFabricantesEquipamentos()"
+>
 
-							<button
-								type="button"
-								class="btn-principal"
-								id="btnSalvarCliente"
-								onclick="salvarNovoCliente()"
-							>
-								Salvar cliente
-							</button>
+<option value="">
+Selecione o tipo
+</option>
 
-						</div>
+<option value="modulo">
+Módulo fotovoltaico
+</option>
 
-					</div>
+<option value="inversor">
+Inversor
+</option>
 
+</select>
 
-					<!-- =========================================
-					NOME DO PROJETO
-					========================================= -->
+</div>
 
-					<div class="campo">
 
-						<label>
-							Nome do projeto *
-						</label>
+<div class="campo">
 
-						<input
-							id="nome"
-							placeholder="Ex.: Sistema Fotovoltaico - Cliente Teste"
-							required
-						>
+<label for="equipamento_fabricante">
+Fabricante
+</label>
 
-					</div>
+<select
+id="equipamento_fabricante"
+onchange="carregarModelosEquipamentos()"
+disabled
+>
 
+<option value="">
+Primeiro selecione o tipo
+</option>
 
-					<!-- =========================================
-					EQUIPAMENTOS
-					========================================= -->
+</select>
 
-					<div class="campo">
+</div>
 
-						<label>
-							⚙️ Equipamentos do sistema fotovoltaico
-						</label>
 
+<div class="campo">
 
-						<div style="
-							background:#f8fafc;
-							border:1px solid #e2e8f0;
-							border-radius:12px;
-							padding:15px;
-							">
+<label for="equipamento_modelo">
+Modelo
+</label>
 
+<select
+id="equipamento_modelo"
+onchange="carregarDadosEquipamento()"
+disabled
+>
 
-							<!-- TIPO -->
+<option value="">
+Primeiro selecione o fabricante
+</option>
 
-							<div class="campo">
+</select>
 
-								<label for="equipamento_tipo">
-									Tipo de equipamento
-								</label>
+</div>
 
 
-								<select
-									id="equipamento_tipo"
-									onchange="carregarFabricantesEquipamentos()"
-								>
+<div
+id="dadosEquipamento"
+style="
+display:none;
+margin-top:15px;
+background:white;
+border:1px solid #dbeafe;
+border-radius:10px;
+padding:14px;
+"
+>
 
-									<option value="">
-										Selecione o tipo
-									</option>
+<strong>
+📋 Dados técnicos
+</strong>
 
-									<option value="modulo">
-										Módulo fotovoltaico
-									</option>
+<div
+id="dadosEquipamentoTexto"
+style="
+margin-top:10px;
+font-size:14px;
+line-height:1.7;
+color:#475569;
+"
+></div>
 
-									<option value="inversor">
-										Inversor
-									</option>
+</div>
 
-								</select>
+</div>
 
-							</div>
+</div>
 
 
-							<!-- FABRICANTE -->
+<!-- =========================================
+UNIDADE CONSUMIDORA
+========================================= -->
 
-							<div class="campo">
+<div class="campo">
 
-								<label for="equipamento_fabricante">
-									Fabricante
-								</label>
+<label>
+⚡ Unidade consumidora
+</label>
 
+<div style="
+background:#f8fafc;
+border:1px solid #e2e8f0;
+border-radius:12px;
+padding:15px;
+">
 
-								<select
-									id="equipamento_fabricante"
-									onchange="carregarModelosEquipamentos()"
-									disabled
-								>
+<div class="campo">
 
-									<option value="">
-										Primeiro selecione o tipo
-									</option>
+<label for="tipo_ligacao">
+Tipo de ligação
+</label>
 
-								</select>
+<select id="tipo_ligacao">
 
-							</div>
+<option value="">
+Selecione
+</option>
 
+<option value="monofasico">
+Monofásico
+</option>
 
-							<!-- MODELO -->
+<option value="bifasico">
+Bifásico
+</option>
 
-							<div class="campo">
+<option value="trifasico">
+Trifásico
+</option>
 
-								<label for="equipamento_modelo">
-									Modelo
-								</label>
+</select>
 
+</div>
 
-								<select
-									id="equipamento_modelo"
-									onchange="carregarDadosEquipamento()"
-									disabled
-								>
 
-									<option value="">
-										Primeiro selecione o fabricante
-									</option>
+<div class="campo">
 
-								</select>
+<label for="tensao_atendimento">
+Tensão de atendimento
+</label>
 
-							</div>
+<select id="tensao_atendimento">
 
+<option value="">
+Selecione
+</option>
 
-							<!-- DADOS TÉCNICOS -->
+<option value="127">
+127 V
+</option>
 
-							<div
-								id="dadosEquipamento"
-								style="
-								display:none;
-								margin-top:15px;
-								background:white;
-								border:1px solid #dbeafe;
-								border-radius:10px;
-								padding:14px;
-								"
-							>
+<option value="220">
+220 V
+</option>
 
-								<strong>
-									📋 Dados técnicos
-								</strong>
+<option value="380">
+380 V
+</option>
 
+</select>
 
-								<div
-									id="dadosEquipamentoTexto"
-									style="
-									margin-top:10px;
-									font-size:14px;
-									line-height:1.7;
-									color:#475569;
-									"
-								></div>
+</div>
 
-							</div>
 
-						</div>
+<div class="campo">
 
-					</div>
+<label for="disjuntor_geral_a">
+Disjuntor geral
+</label>
 
+<input
+type="number"
+id="disjuntor_geral_a"
+placeholder="Ex.: 63"
+min="1"
+>
 
-					<!-- =========================================
-					UNIDADE CONSUMIDORA
-					========================================= -->
+<small style="
+color:#64748b;
+font-size:12px;
+">
+Corrente nominal em amperes (A)
+</small>
 
-					<div class="campo">
+</div>
 
-						<label>
-							⚡ Unidade consumidora
-						</label>
+</div>
 
+</div>
 
-						<div style="
-							background:#f8fafc;
-							border:1px solid #e2e8f0;
-							border-radius:12px;
-							padding:15px;
-							">
 
+<div class="campo">
 
-							<div class="campo">
+<label>
+Responsável Técnico
+</label>
 
-								<label for="tipo_ligacao">
-									Tipo de ligação
-								</label>
+<select
+id="responsavel_tecnico_id"
+>
 
+<option value="">
+Nenhum RT selecionado
+</option>
 
-								<select id="tipo_ligacao">
+</select>
 
-									<option value="">
-										Selecione
-									</option>
+</div>
 
-									<option value="monofasico">
-										Monofásico
-									</option>
 
-									<option value="bifasico">
-										Bifásico
-									</option>
+<div class="campo">
 
-									<option value="trifasico">
-										Trifásico
-									</option>
+<label>
+Observações
+</label>
 
-								</select>
+<textarea
+id="observacoes"
+placeholder="Observações iniciais do projeto..."
+></textarea>
 
-							</div>
+</div>
 
 
-							<div class="campo">
+<div class="acoes">
 
-								<label for="tensao_atendimento">
-									Tensão de atendimento
-								</label>
+<button
+type="button"
+class="btn-secundario"
+onclick="window.location.href='dashboard.html'"
+>
+Cancelar
+</button>
 
+<button
+type="submit"
+class="btn-principal"
+id="btnSalvar"
+>
+Salvar rascunho
+</button>
 
-								<select id="tensao_atendimento">
+</div>
 
-									<option value="">
-										Selecione
-									</option>
+</form>
 
-									<option value="127">
-										127 V
-									</option>
+</div>
 
-									<option value="220">
-										220 V
-									</option>
+</div>
 
-									<option value="380">
-										380 V
-									</option>
 
-								</select>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-							</div>
+<script src="supabase-config.js"></script>
 
 
-							<div class="campo">
+<script>
 
-								<label for="disjuntor_geral_a">
-									Disjuntor geral
-								</label>
+const supabaseClient =
+window.supabase.createClient(
+SUPABASE_URL,
+SUPABASE_KEY
+);
 
 
-								<input
-									type="number"
-									id="disjuntor_geral_a"
-									placeholder="Ex.: 63"
-									min="1"
-								>
+let usuarioAtual = null;
 
+let organizacaoAtual = null;
 
-									<small style="
-										color:#64748b;
-										font-size:12px;
-										">
-										Corrente nominal em amperes (A)
-									</small>
+let equipamentoSelecionado = null;
 
-							</div>
 
-						</div>
+/* =========================================
+INICIAR
+========================================= */
 
-					</div>
+async function iniciar() {
 
+try {
 
-					<!-- =========================================
-					RESPONSÁVEL TÉCNICO
-					========================================= -->
+const {
+data,
+error
+} =
+await supabaseClient.auth.getUser();
 
-					<div class="campo">
 
-						<label>
-							Responsável Técnico
-						</label>
+if (
+error ||
+!data.user
+) {
 
+window.location.href =
+"login.html";
 
-						<select
-							id="responsavel_tecnico_id"
-						>
+return;
 
-							<option value="">
-								Nenhum RT selecionado
-							</option>
+}
 
-						</select>
 
-					</div>
+usuarioAtual =
+data.user;
 
 
-					<!-- =========================================
-					OBSERVAÇÕES
-					========================================= -->
+/* =========================================
+DESCOBRIR ORGANIZAÇÃO
+========================================= */
 
-					<div class="campo">
+const {
+data: membro,
+error: erroMembro
+} =
+await supabaseClient
+.from("organizacao_membros")
+.select("organizacao_id")
+.eq(
+"usuario_id",
+usuarioAtual.id
+)
+.eq(
+"ativo",
+true
+)
+.limit(1)
+.maybeSingle();
 
-						<label>
-							Observações
-						</label>
 
+if (erroMembro)
+throw erroMembro;
 
-						<textarea
-							id="observacoes"
-							placeholder="Observações iniciais do projeto..."
-						></textarea>
 
-					</div>
+if (!membro) {
 
+throw new Error(
+"Usuário sem organização."
+);
 
-					<!-- =========================================
-					BOTÕES
-					========================================= -->
+}
 
-					<div class="acoes">
 
-						<button
-							type="button"
-							class="btn-secundario"
-							onclick="window.location.href='dashboard.html'"
-						>
-							Cancelar
-						</button>
+organizacaoAtual =
+membro.organizacao_id;
 
 
-						<button
-							type="submit"
-							class="btn-principal"
-							id="btnSalvar"
-						>
-							Salvar rascunho
-						</button>
+await carregarClientes();
 
-					</div>
+await carregarRTs();
 
+}
 
-				</form>
+catch (erro) {
 
-			</div>
+mostrarErro(
+erro.message
+);
 
-		</div>
+}
 
+}
 
-		<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-		<script src="supabase-config.js"></script>
+/* =========================================
+CLIENTES
+========================================= */
 
+async function carregarClientes() {
 
-		<script>
+const {
+data,
+error
+} =
+await supabaseClient
+.from("clientes")
+.select(`
+id,
+nome
+`)
+.eq(
+"organizacao_id",
+organizacaoAtual
+)
+.order(
+"nome",
+{
+ascending: true
+}
+);
 
-			const supabaseClient =
-			window.supabase.createClient(
-			SUPABASE_URL,
-			SUPABASE_KEY
-			);
 
+if (error)
+throw error;
 
-			let usuarioAtual = null;
 
-			let organizacaoAtual = null;
+const select =
+document.getElementById(
+"cliente_id"
+);
 
-			let equipamentoSelecionado = null;
 
+select.innerHTML =
+`<option value="">
+Selecione um cliente
+</option>`;
 
-			/* =========================================
-			INICIAR
-			========================================= */
 
-			async function iniciar() {
+if (
+!data ||
+data.length === 0
+) {
 
-			try {
+select.innerHTML =
+`<option value="">
+Nenhum cliente cadastrado
+</option>`;
 
-			const {
-            data,
-            error
-			} =
-			await supabaseClient.auth.getUser();
+return;
 
+}
 
-			if (
-            error ||
-            !data.user
-			) {
 
-            window.location.href =
-			"login.html";
+data.forEach(cliente => {
 
-            return;
+const option =
+document.createElement(
+"option"
+);
 
-			}
+option.value =
+cliente.id;
 
+option.textContent =
+cliente.nome;
 
-			usuarioAtual =
-            data.user;
+select.appendChild(
+option
+);
 
+});
 
-			/* =====================================
-			DESCOBRIR ORGANIZAÇÃO
-			===================================== */
+}
 
-			const {
-            data: membro,
-            error: erroMembro
-			} =
-			await supabaseClient
-            .from("organizacao_membros")
-            .select("organizacao_id")
-            .eq(
-			"usuario_id",
-			usuarioAtual.id
-            )
-            .eq(
-			"ativo",
-			true
-            )
-            .limit(1)
-            .maybeSingle();
 
+/* =========================================
+CADASTRO RÁPIDO DE CLIENTE
+========================================= */
 
-			if (erroMembro)
-            throw erroMembro;
+function mostrarCadastroCliente() {
 
+document.getElementById(
+"cadastroCliente"
+).style.display = "block";
 
-			if (!membro) {
+document.getElementById(
+"novo_cliente_nome"
+).focus();
 
-            throw new Error(
-			"Usuário sem organização."
-            );
+}
 
-			}
 
+function cancelarCadastroCliente() {
 
-			organizacaoAtual =
-            membro.organizacao_id;
+document.getElementById(
+"cadastroCliente"
+).style.display = "none";
 
+document.getElementById(
+"novo_cliente_nome"
+).value = "";
 
-			await carregarClientes();
+document.getElementById(
+"novo_cliente_cpf_cnpj"
+).value = "";
 
-			await carregarRTs();
+document.getElementById(
+"novo_cliente_email"
+).value = "";
 
-			}
+document.getElementById(
+"novo_cliente_telefone"
+).value = "";
 
-			catch (erro) {
+}
 
-			mostrarErro(
-            erro.message
-			);
 
-			}
+async function salvarNovoCliente() {
 
-			}
+const botao =
+document.getElementById(
+"btnSalvarCliente"
+);
 
+const nome =
+document.getElementById(
+"novo_cliente_nome"
+).value.trim();
 
-			/* =========================================
-			CLIENTES
-			========================================= */
+const cpfCnpj =
+document.getElementById(
+"novo_cliente_cpf_cnpj"
+).value.trim();
 
-			async function carregarClientes() {
+const email =
+document.getElementById(
+"novo_cliente_email"
+).value.trim();
 
-			const {
-			data,
-			error
-			} =
-			await supabaseClient
-			.from("clientes")
-			.select(`
-            id,
-            nome
-			`)
-			.eq(
-            "organizacao_id",
-            organizacaoAtual
-			)
-			.order(
-            "nome",
-            {
-			ascending: true
-            }
-			);
+const telefone =
+document.getElementById(
+"novo_cliente_telefone"
+).value.trim();
 
 
-			if (error)
-			throw error;
+if (!nome) {
 
+mostrarErro(
+"Informe o nome do cliente."
+);
 
-			const select =
-			document.getElementById(
-            "cliente_id"
-			);
+return;
 
+}
 
-			select.innerHTML =
-			`<option value="">
-				Selecione um cliente
-			</option>`;
 
+botao.disabled = true;
 
-			if (
-			!data ||
-			data.length === 0
-			) {
+botao.textContent =
+"Salvando...";
 
-			select.innerHTML =
-            `<option value="">
-                Nenhum cliente cadastrado
-            </option>`;
 
-			return;
+try {
 
-			}
+const {
+data,
+error
+} =
+await supabaseClient
+.from("clientes")
+.insert({
 
+organizacao_id:
+organizacaoAtual,
 
-			data.forEach(
-			cliente => {
+nome:
+nome,
 
-            const option =
-			document.createElement(
-			"option"
-			);
+cpf_cnpj:
+cpfCnpj || null,
 
+email:
+email || null,
 
-            option.value =
-			cliente.id;
+telefone:
+telefone || null,
 
+criado_por:
+usuarioAtual.id
 
-            option.textContent =
-			cliente.nome;
+})
+.select()
+.single();
 
 
-            select.appendChild(
-			option
-            );
+if (error)
+throw error;
 
-			}
-			);
 
-			}
+const select =
+document.getElementById(
+"cliente_id"
+);
 
 
-			/* =========================================
-			CADASTRO RÁPIDO DE CLIENTE
-			========================================= */
+const option =
+document.createElement(
+"option"
+);
 
-			function mostrarCadastroCliente() {
 
-			document.getElementById(
-			"cadastroCliente"
-			).style.display = "block";
+option.value =
+data.id;
 
+option.textContent =
+data.nome;
 
-			document.getElementById(
-			"novo_cliente_nome"
-			).focus();
 
-			}
+select.appendChild(
+option
+);
 
 
-			function cancelarCadastroCliente() {
+select.value =
+data.id;
 
-			document.getElementById(
-			"cadastroCliente"
-			).style.display = "none";
 
+cancelarCadastroCliente();
 
-			document.getElementById(
-			"novo_cliente_nome"
-			).value = "";
 
+mostrarSucesso(
+"Cliente cadastrado com sucesso!"
+);
 
-			document.getElementById(
-			"novo_cliente_cpf_cnpj"
-			).value = "";
+}
 
+catch (erro) {
 
-			document.getElementById(
-			"novo_cliente_email"
-			).value = "";
+mostrarErro(
+erro.message
+);
 
+}
 
-			document.getElementById(
-			"novo_cliente_telefone"
-			).value = "";
+finally {
 
-			}
+botao.disabled = false;
 
+botao.textContent =
+"Salvar cliente";
 
-			async function salvarNovoCliente() {
+}
 
-			const botao =
-			document.getElementById(
-            "btnSalvarCliente"
-			);
+}
 
 
-			const nome =
-			document.getElementById(
-            "novo_cliente_nome"
-			).value.trim();
+/* =========================================
+RESPONSÁVEIS TÉCNICOS
+========================================= */
 
+async function carregarRTs() {
 
-			const cpfCnpj =
-			document.getElementById(
-            "novo_cliente_cpf_cnpj"
-			).value.trim();
+const {
+data,
+error
+} =
+await supabaseClient
+.from("responsaveis_tecnicos")
+.select(`
+id,
+nome,
+crea,
+uf_crea
+`)
+.eq(
+"organizacao_id",
+organizacaoAtual
+)
+.eq(
+"ativo",
+true
+)
+.order(
+"nome",
+{
+ascending: true
+}
+);
 
 
-			const email =
-			document.getElementById(
-            "novo_cliente_email"
-			).value.trim();
+if (error)
+throw error;
 
 
-			const telefone =
-			document.getElementById(
-            "novo_cliente_telefone"
-			).value.trim();
+const select =
+document.getElementById(
+"responsavel_tecnico_id"
+);
 
 
-			if (!nome) {
+select.innerHTML =
+`<option value="">
+Nenhum RT selecionado
+</option>`;
 
-			mostrarErro(
-            "Informe o nome do cliente."
-			);
 
-			return;
+if (!data)
+return;
 
-			}
 
+data.forEach(rt => {
 
-			botao.disabled = true;
+const option =
+document.createElement(
+"option"
+);
 
-			botao.textContent =
-			"Salvando...";
+option.value =
+rt.id;
 
+option.textContent =
+rt.nome +
+" - CREA " +
+rt.crea +
+(
+rt.uf_crea
+? "/" + rt.uf_crea
+: ""
+);
 
-			try {
+select.appendChild(
+option
+);
 
-			const {
-            data,
-            error
-			} =
-			await supabaseClient
-            .from("clientes")
-            .insert({
+});
 
-			organizacao_id:
-			organizacaoAtual,
+}
 
-			nome:
-			nome,
 
-			cpf_cnpj:
-			cpfCnpj || null,
+/* =========================================
+CARREGAR FABRICANTES
+========================================= */
 
-			email:
-			email || null,
+async function carregarFabricantesEquipamentos() {
 
-			telefone:
-			telefone || null,
+const tipo =
+document.getElementById(
+"equipamento_tipo"
+).value;
 
-			criado_por:
-			usuarioAtual.id
+const fabricante =
+document.getElementById(
+"equipamento_fabricante"
+);
 
-            })
-            .select()
-            .single();
+const modelo =
+document.getElementById(
+"equipamento_modelo"
+);
 
 
-			if (error)
-            throw error;
+fabricante.innerHTML =
+'<option value="">Carregando...</option>';
 
+fabricante.disabled = true;
 
-			const select =
-            document.getElementById(
-			"cliente_id"
-            );
+modelo.innerHTML =
+'<option value="">Selecione o fabricante</option>';
 
+modelo.disabled = true;
 
-			const option =
-            document.createElement(
-			"option"
-            );
+document.getElementById(
+"dadosEquipamento"
+).style.display = "none";
 
+equipamentoSelecionado = null;
 
-			option.value =
-            data.id;
 
+if (!tipo) {
 
-			option.textContent =
-            data.nome;
+fabricante.innerHTML =
+'<option value="">Primeiro selecione o tipo</option>';
 
+return;
 
-			select.appendChild(
-            option
-			);
+}
 
 
-			select.value =
-            data.id;
+/*
+A tabela fabricantes_equipamentos
+possui:
 
+id
+nome
+tipo_fabricante
+ativo
 
-			cancelarCadastroCliente();
+Primeiro buscamos os fabricantes
+compatíveis com o tipo.
+*/
 
+const {
+data: fabricantes,
+error: erroFabricantes
+} =
+await supabaseClient
+.from("fabricantes_equipamentos")
+.select(`
+id,
+nome,
+tipo_fabricante
+`)
+.eq(
+"tipo_fabricante",
+tipo
+)
+.eq(
+"ativo",
+true
+)
+.order(
+"nome",
+{
+ascending: true
+}
+);
 
-			mostrarSucesso(
-            "Cliente cadastrado com sucesso!"
-			);
 
-			}
+if (erroFabricantes) {
 
-			catch (erro) {
+console.error(
+"Erro ao carregar fabricantes:",
+erroFabricantes
+);
 
-			mostrarErro(
-            erro.message
-			);
+fabricante.innerHTML =
+'<option value="">Erro ao carregar</option>';
 
-			}
+return;
 
-			finally {
+}
 
-			botao.disabled = false;
 
-			botao.textContent =
-            "Salvar cliente";
+fabricante.innerHTML =
+'<option value="">Selecione o fabricante</option>';
 
-			}
 
-			}
+(fabricantes || []).forEach(
+item => {
 
+const option =
+document.createElement(
+"option"
+);
 
-			/* =========================================
-			RESPONSÁVEIS TÉCNICOS
-			========================================= */
+option.value =
+item.id;
 
-			async function carregarRTs() {
+option.textContent =
+item.nome;
 
-			const {
-			data,
-			error
-			} =
-			await supabaseClient
-			.from("responsaveis_tecnicos")
-			.select(`
-            id,
-            nome,
-            crea,
-            uf_crea
-			`)
-			.eq(
-            "organizacao_id",
-            organizacaoAtual
-			)
-			.eq(
-            "ativo",
-            true
-			)
-			.order(
-            "nome",
-            {
-			ascending: true
-            }
-			);
+fabricante.appendChild(
+option
+);
 
+}
+);
 
-			if (error)
-			throw error;
 
+fabricante.disabled =
+!fabricantes ||
+fabricantes.length === 0;
 
-			const select =
-			document.getElementById(
-            "responsavel_tecnico_id"
-			);
+}
 
 
-			select.innerHTML =
-			`<option value="">
-				Nenhum RT selecionado
-			</option>`;
+/* =========================================
+CARREGAR MODELOS
+========================================= */
 
+async function carregarModelosEquipamentos() {
 
-			if (!data)
-			return;
+const fabricanteId =
+document.getElementById(
+"equipamento_fabricante"
+).value;
 
+const modelo =
+document.getElementById(
+"equipamento_modelo"
+);
 
-			data.forEach(
-			rt => {
+modelo.innerHTML =
+'<option value="">Carregando...</option>';
 
-            const option =
-			document.createElement(
-			"option"
-			);
+modelo.disabled = true;
 
+document.getElementById(
+"dadosEquipamento"
+).style.display = "none";
 
-            option.value =
-			rt.id;
+equipamentoSelecionado = null;
 
 
-            option.textContent =
-			rt.nome +
-			" - CREA " +
-			rt.crea +
-			(
-			rt.uf_crea
-			? "/" + rt.uf_crea
-			: ""
-			);
+if (!fabricanteId) {
 
+modelo.innerHTML =
+'<option value="">Selecione o fabricante</option>';
 
-            select.appendChild(
-			option
-            );
+return;
 
-			}
-			);
+}
 
-			}
 
+const {
+data,
+error
+} =
+await supabaseClient
+.from("equipamentos_fotovoltaicos")
+.select(`
+id,
+modelo,
+tipo,
+fabricante_id
+`)
+.eq(
+"fabricante_id",
+fabricanteId
+)
+.eq(
+"ativo",
+true
+)
+.order(
+"modelo",
+{
+ascending: true
+}
+);
 
-			/* =========================================
-			FABRICANTES
-			NOVA ESTRUTURA
-			========================================= */
 
-			async function carregarFabricantesEquipamentos() {
+if (error) {
 
-			const tipo =
-			document.getElementById(
-            "equipamento_tipo"
-			).value;
+console.error(
+"Erro ao carregar modelos:",
+error
+);
 
+modelo.innerHTML =
+'<option value="">Erro ao carregar</option>';
 
-			const fabricanteSelect =
-			document.getElementById(
-            "equipamento_fabricante"
-			);
+return;
 
+}
 
-			const modeloSelect =
-			document.getElementById(
-            "equipamento_modelo"
-			);
 
+modelo.innerHTML =
+'<option value="">Selecione o modelo</option>';
 
-			equipamentoSelecionado =
-			null;
 
+(data || []).forEach(
+item => {
 
-			fabricanteSelect.innerHTML =
-			'<option value="">Carregando...</option>';
+const option =
+document.createElement(
+"option"
+);
 
-			fabricanteSelect.disabled =
-			true;
+option.value =
+item.id;
 
+option.textContent =
+item.modelo;
 
-			modeloSelect.innerHTML =
-			'<option value="">Selecione o fabricante</option>';
+modelo.appendChild(
+option
+);
 
-			modeloSelect.disabled =
-			true;
+}
+);
 
 
-			document.getElementById(
-			"dadosEquipamento"
-			).style.display =
-			"none";
+modelo.disabled =
+!data ||
+data.length === 0;
 
+}
 
-			if (!tipo) {
 
-			fabricanteSelect.innerHTML =
-            '<option value="">Primeiro selecione o tipo</option>';
+/* =========================================
+CARREGAR DADOS TÉCNICOS
+========================================= */
 
-			return;
+async function carregarDadosEquipamento() {
 
-			}
+const id =
+document.getElementById(
+"equipamento_modelo"
+).value;
 
 
-			/*
-			* Agora consultamos diretamente
-			* equipamentos_fotovoltaicos.
-			*
-			* O fabricante não está nessa tabela
-			* como texto. Ela possui fabricante_id.
-			*/
+const caixa =
+document.getElementById(
+"dadosEquipamento"
+);
 
+const texto =
+document.getElementById(
+"dadosEquipamentoTexto"
+);
 
-			const {
-			data,
-			error
-			} =
-			await supabaseClient
-			.from("equipamentos_fotovoltaicos")
-			.select(`
-            fabricante_id
-			`)
-			.eq(
-            "tipo",
-            tipo
-			)
-			.eq(
-            "ativo",
-            true
-			);
 
+caixa.style.display =
+"none";
 
-			if (error) {
 
-			console.error(
-            "Erro ao carregar fabricantes:",
-            error
-			);
+equipamentoSelecionado = null;
 
 
-			fabricanteSelect.innerHTML =
-            '<option value="">Erro ao carregar</option>';
+if (!id)
+return;
 
-			return;
 
-			}
+const {
+data,
+error
+} =
+await supabaseClient
+.from("equipamentos_fotovoltaicos")
+.select(`
+*,
+fabricante:fabricantes_equipamentos(
+id,
+nome,
+tipo_fabricante
+)
+`)
+.eq(
+"id",
+id
+)
+.maybeSingle();
 
 
-			const ids =
-			[
-            ...new Set(
-			(data || [])
-			.map(
-			item =>
-			item.fabricante_id
-			)
-			.filter(Boolean)
-            )
-			];
+if (error) {
 
+console.error(
+"Erro ao carregar equipamento:",
+error
+);
 
-			fabricanteSelect.innerHTML =
-			'<option value="">Selecione o fabricante</option>';
+mostrarErro(
+"Erro ao carregar dados técnicos do equipamento."
+);
 
+return;
 
-			if (ids.length === 0) {
+}
 
-			fabricanteSelect.innerHTML =
-            '<option value="">Nenhum fabricante encontrado</option>';
 
-			return;
+if (!data)
+return;
 
-			}
 
+equipamentoSelecionado =
+data;
 
-			/*
-			* Busca os nomes na tabela
-			* fabricantes_equipamentos.
-			*/
 
-			const {
-			data: fabricantes,
-			error: erroFabricantes
-			} =
-			await supabaseClient
-			.from("fabricantes_equipamentos")
-			.select(`
-            id,
-            nome
-			`)
-			.in(
-            "id",
-            ids
-			)
-			.eq(
-            "ativo",
-            true
-			)
-			.order(
-            "nome",
-            {
-			ascending: true
-            }
-			);
+let html = "";
 
 
-			if (erroFabricantes) {
+if (
+data.fabricante &&
+data.fabricante.nome
+) {
 
-			console.error(
-            "Erro ao carregar nomes dos fabricantes:",
-            erroFabricantes
-			);
+html +=
+"<strong>Fabricante:</strong> " +
+data.fabricante.nome +
+"<br>";
 
+}
 
-			fabricanteSelect.innerHTML =
-            '<option value="">Erro ao carregar fabricantes</option>';
 
-			return;
+if (data.modelo) {
 
-			}
+html +=
+"<strong>Modelo:</strong> " +
+data.modelo +
+"<br>";
 
+}
 
-			(fabricantes || []).forEach(
-			fabricante => {
 
-            const option =
-			document.createElement(
-			"option"
-			);
+if (data.codigo_modelo) {
 
+html +=
+"<strong>Código do modelo:</strong> " +
+data.codigo_modelo +
+"<br>";
 
-            option.value =
-			fabricante.id;
+}
 
 
-            option.textContent =
-			fabricante.nome;
+if (data.tipo) {
 
+html +=
+"<strong>Tipo:</strong> " +
+data.tipo +
+"<br>";
 
-            fabricanteSelect.appendChild(
-			option
-            );
+}
 
-			}
-			);
 
+/* =========================================
+DADOS DE MÓDULO
+========================================= */
 
-			fabricanteSelect.disabled =
-			!fabricantes ||
-			fabricantes.length === 0;
+if (
+data.potencia_w !== null &&
+data.potencia_w !== undefined
+) {
 
-			}
+html +=
+"<strong>Potência:</strong> " +
+data.potencia_w +
+" W<br>";
 
+}
 
-			/* =========================================
-			MODELOS
-			NOVA ESTRUTURA
-			========================================= */
 
-					async function carregarModelosEquipamentos() {
+if (
+data.potencia_pico_w !== null &&
+data.potencia_pico_w !== undefined
+) {
 
-			const tipo =
-			document.getElementById(
-            "equipamento_tipo"
-			).value;
+html +=
+"<strong>Potência de pico:</strong> " +
+data.potencia_pico_w +
+" W<br>";
 
+}
 
-			const fabricanteId =
-			document.getElementById(
-            "equipamento_fabricante"
-			).value;
 
+if (
+data.eficiencia_percentual !== null &&
+data.eficiencia_percentual !== undefined
+) {
 
-			const modeloSelect =
-			document.getElementById(
-            "equipamento_modelo"
-			);
+html +=
+"<strong>Eficiência:</strong> " +
+data.eficiencia_percentual +
+"%<br>";
 
+}
 
-			equipamentoSelecionado =
-			null;
 
+if (
+data.voc_v !== null &&
+data.voc_v !== undefined
+) {
 
-			modeloSelect.innerHTML =
-			'<option value="">Carregando...</option>';
+html +=
+"<strong>Voc:</strong> " +
+data.voc_v +
+" V<br>";
 
-			modeloSelect.disabled =
-			true;
+}
 
 
-			document.getElementById(
-			"dadosEquipamento"
-			).style.display =
-			"none";
+if (
+data.vmp_v !== null &&
+data.vmp_v !== undefined
+) {
 
+html +=
+"<strong>Vmp:</strong> " +
+data.vmp_v +
+" V<br>";
 
-			if (
-			!tipo ||
-			!fabricanteId
-			) {
+}
 
-			modeloSelect.innerHTML =
-            '<option value="">Selecione o fabricante</option>';
 
-			return;
+if (
+data.isc_a !== null &&
+data.isc_a !== undefined
+) {
 
-			}
+html +=
+"<strong>Isc:</strong> " +
+data.isc_a +
+" A<br>";
 
+}
 
-			const {
-			data,
-			error
-			} =
-			await supabaseClient
-			.from("equipamentos_fotovoltaicos")
-			.select(`
-            id,
-            modelo
-			`)
-			.eq(
-            "tipo",
-            tipo
-			)
-			.eq(
-            "fabricante_id",
-            fabricanteId
-			)
-			.eq(
-            "ativo",
-            true
-			)
-			.order(
-            "modelo",
-            {
-			ascending: true
-            }
-			);
 
+if (
+data.imp_a !== null &&
+data.imp_a !== undefined
+) {
 
-			if (error) {
+html +=
+"<strong>Imp:</strong> " +
+data.imp_a +
+" A<br>";
 
-			console.error(
-            "Erro ao carregar modelos:",
-            error
-			);
+}
 
 
-			modeloSelect.innerHTML =
-            '<option value="">Erro ao carregar</option>';
+/* =========================================
+DADOS DE INVERSOR
+========================================= */
 
-			return;
+if (
+data.potencia_nominal_kw !== null &&
+data.potencia_nominal_kw !== undefined
+) {
 
-			}
+html +=
+"<strong>Potência nominal:</strong> " +
+data.potencia_nominal_kw +
+" kW<br>";
 
+}
 
-			modeloSelect.innerHTML =
-			'<option value="">Selecione o modelo</option>';
 
+if (
+data.potencia_maxima_kw !== null &&
+data.potencia_maxima_kw !== undefined
+) {
 
-			(data || []).forEach(
-			item => {
+html +=
+"<strong>Potência máxima:</strong> " +
+data.potencia_maxima_kw +
+" kW<br>";
 
-            const option =
-			document.createElement(
-			"option"
-			);
+}
 
 
-            option.value =
-			item.id;
+if (
+data.tensao_cc_maxima_v !== null &&
+data.tensao_cc_maxima_v !== undefined
+) {
 
+html +=
+"<strong>Tensão CC máxima:</strong> " +
+data.tensao_cc_maxima_v +
+" V<br>";
 
-            option.textContent =
-			item.modelo;
+}
 
 
-            modeloSelect.appendChild(
-			option
-            );
+if (
+data.tensao_mppt_min_v !== null &&
+data.tensao_mppt_min_v !== undefined
+) {
 
-			}
-			);
+html +=
+"<strong>MPPT mínimo:</strong> " +
+data.tensao_mppt_min_v +
+" V<br>";
 
+}
 
-			modeloSelect.disabled =
-			!data ||
-			data.length === 0;
 
-			}
+if (
+data.tensao_mppt_max_v !== null &&
+data.tensao_mppt_max_v !== undefined
+) {
 
+html +=
+"<strong>MPPT máximo:</strong> " +
+data.tensao_mppt_max_v +
+" V<br>";
 
-			/* =========================================
-			DADOS TÉCNICOS
-			========================================= */
+}
 
-			async function carregarDadosEquipamento() {
 
-			const id =
-			document.getElementById(
-            "equipamento_modelo"
-			).value;
+if (
+data.corrente_mppt_max_a !== null &&
+data.corrente_mppt_max_a !== undefined
+) {
 
+html +=
+"<strong>Corrente máxima por MPPT:</strong> " +
+data.corrente_mppt_max_a +
+" A<br>";
 
-			const caixa =
-			document.getElementById(
-            "dadosEquipamento"
-			);
+}
 
 
-			const texto =
-			document.getElementById(
-            "dadosEquipamentoTexto"
-			);
+if (
+data.numero_mppt !== null &&
+data.numero_mppt !== undefined
+) {
 
+html +=
+"<strong>Número de MPPTs:</strong> " +
+data.numero_mppt +
+"<br>";
 
-			caixa.style.display =
-			"none";
+}
 
 
-			equipamentoSelecionado =
-			null;
+if (
+data.entradas_por_mppt !== null &&
+data.entradas_por_mppt !== undefined
+) {
 
+html +=
+"<strong>Entradas por MPPT:</strong> " +
+data.entradas_por_mppt +
+"<br>";
 
-			if (!id)
-			return;
+}
 
 
-			/*
-			* Busca todos os dados disponíveis
-			* da tabela atual.
-			*/
+if (
+data.numero_fases !== null &&
+data.numero_fases !== undefined
+) {
 
-			const {
-			data,
-			error
-			} =
-			await supabaseClient
-			.from("equipamentos_fotovoltaicos")
-			.select("*")
-			.eq(
-            "id",
-            id
-			)
-			.maybeSingle();
+html +=
+"<strong>Número de fases:</strong> " +
+data.numero_fases +
+"<br>";
 
+}
 
-			if (error) {
 
-			console.error(
-            "Erro ao carregar equipamento:",
-            error
-			);
+if (data.tipo_inversor) {
 
-			return;
+html +=
+"<strong>Tipo de inversor:</strong> " +
+data.tipo_inversor +
+"<br>";
 
-			}
+}
 
 
-			if (!data)
-			return;
+/* =========================================
+INFORMAÇÕES COMPLEMENTARES
+========================================= */
 
+if (data.tecnologia_celula) {
 
-			equipamentoSelecionado =
-			data;
+html +=
+"<strong>Tecnologia da célula:</strong> " +
+data.tecnologia_celula +
+"<br>";
 
+}
 
-			/*
-			* Busca o fabricante separadamente.
-			*/
 
-			let nomeFabricante =
-			"";
+if (
+data.numero_celulas !== null &&
+data.numero_celulas !== undefined
+) {
 
+html +=
+"<strong>Número de células:</strong> " +
+data.numero_celulas +
+"<br>";
 
-			if (data.fabricante_id) {
+}
 
-			const {
-            data: fabricante,
-            error: erroFabricante
-			} =
-			await supabaseClient
-            .from("fabricantes_equipamentos")
-            .select(`
-			nome
-            `)
-            .eq(
-			"id",
-			data.fabricante_id
-            )
-            .maybeSingle();
 
+if (
+data.bifacialidade_percentual !== null &&
+data.bifacialidade_percentual !== undefined
+) {
 
-			if (!erroFabricante &&
-            fabricante) {
+html +=
+"<strong>Bifacialidade:</strong> " +
+data.bifacialidade_percentual +
+"%<br>";
 
-            nomeFabricante =
-			fabricante.nome;
+}
 
-			}
 
-			}
+if (
+data.fusivel_maximo_a !== null &&
+data.fusivel_maximo_a !== undefined
+) {
 
+html +=
+"<strong>Fusível máximo:</strong> " +
+data.fusivel_maximo_a +
+" A<br>";
 
-			let html = "";
+}
 
 
-			if (nomeFabricante) {
+if (data.fonte_dados) {
 
-			html +=
-            "<strong>Fabricante:</strong> " +
-            nomeFabricante +
-            "<br>";
+html +=
+"<strong>Fonte dos dados:</strong> " +
+data.fonte_dados +
+"<br>";
 
-				}
+}
 
 
-				if (data.modelo) {
+if (data.data_verificacao) {
 
-				html +=
-				"<strong>Modelo:</strong> " +
-				data.modelo +
-				"<br>";
+html +=
+"<strong>Dados verificados em:</strong> " +
+data.data_verificacao +
+"<br>";
 
-					}
+}
 
 
-					if (data.tipo) {
+if (data.observacoes) {
 
-					html +=
-					"<strong>Tipo:</strong> " +
-					data.tipo +
-					"<br>";
+html +=
+"<strong>Observações:</strong> " +
+data.observacoes +
+"<br>";
 
-						}
+}
 
 
-						if (
-						data.potencia_w !== null &&
-						data.potencia_w !== undefined
-						) {
+if (!html) {
 
-						html +=
-						"<strong>Potência:</strong> " +
-						data.potencia_w +
-						" W<br>";
+html =
+"Nenhum dado técnico disponível.";
 
-							}
+}
 
 
-							if (
-							data.potencia_pico_w !== null &&
-							data.potencia_pico_w !== undefined
-							) {
+texto.innerHTML =
+html;
 
-							html +=
-							"<strong>Potência de pico:</strong> " +
-							data.potencia_pico_w +
-							" W<br>";
+caixa.style.display =
+"block";
 
-								}
+}
 
 
-								if (
-								data.potencia_nominal_kw !== null &&
-								data.potencia_nominal_kw !== undefined
-								) {
+/* =========================================
+SALVAR PROJETO
+========================================= */
 
-								html +=
-								"<strong>Potência nominal:</strong> " +
-								data.potencia_nominal_kw +
-								" kW<br>";
+document
+.getElementById("formProjeto")
+.addEventListener(
+"submit",
+async function(event) {
 
-									}
+event.preventDefault();
 
 
-									if (
-									data.potencia_maxima_kw !== null &&
-									data.potencia_maxima_kw !== undefined
-									) {
+const botao =
+document.getElementById(
+"btnSalvar"
+);
 
-									html +=
-									"<strong>Potência máxima:</strong> " +
-									data.potencia_maxima_kw +
-									" kW<br>";
 
-										}
+botao.disabled = true;
 
+botao.textContent =
+"Salvando...";
 
-										if (
-										data.eficiencia_percentual !== null &&
-										data.eficiencia_percentual !== undefined
-										) {
 
-										html +=
-										"<strong>Eficiência:</strong> " +
-										data.eficiencia_percentual +
-										"%<br>";
+try {
 
-											}
+const clienteId =
+document
+.getElementById("cliente_id")
+.value;
 
 
-											if (
-											data.voc_v !== null &&
-											data.voc_v !== undefined
-											) {
+const nome =
+document
+.getElementById("nome")
+.value
+.trim();
 
-											html +=
-											"<strong>Voc:</strong> " +
-											data.voc_v +
-											" V<br>";
 
-												}
+const rtId =
+document
+.getElementById(
+"responsavel_tecnico_id"
+)
+.value;
 
 
-												if (
-												data.vmp_v !== null &&
-												data.vmp_v !== undefined
-												) {
+const observacoes =
+document
+.getElementById(
+"observacoes"
+)
+.value
+.trim();
 
-												html +=
-												"<strong>Vmp:</strong> " +
-												data.vmp_v +
-												" V<br>";
 
-													}
+if (!clienteId) {
 
+throw new Error(
+"Selecione um cliente."
+);
 
-													if (
-													data.isc_a !== null &&
-													data.isc_a !== undefined
-													) {
+}
 
-													html +=
-													"<strong>Isc:</strong> " +
-													data.isc_a +
-													" A<br>";
 
-														}
+if (!nome) {
 
+throw new Error(
+"Informe o nome do projeto."
+);
 
-														if (
-														data.imp_a !== null &&
-														data.imp_a !== undefined
-														) {
+}
 
-														html +=
-														"<strong>Imp:</strong> " +
-														data.imp_a +
-														" A<br>";
 
-															}
+/* =========================================
+CRIAR PROJETO
+========================================= */
 
+const {
+data,
+error
+} =
+await supabaseClient
+.from("projetos")
+.insert({
 
-															if (
-															data.tensao_maxima_v !== null &&
-															data.tensao_maxima_v !== undefined
-															) {
+organizacao_id:
+organizacaoAtual,
 
-															html +=
-															"<strong>Tensão máxima:</strong> " +
-															data.tensao_maxima_v +
-															" V<br>";
+cliente_id:
+clienteId,
 
-																}
+nome:
+nome,
 
+status:
+"rascunho",
 
-																if (
-																data.tensao_cc_maxima_v !== null &&
-																data.tensao_cc_maxima_v !== undefined
-																) {
+observacoes:
+observacoes || null,
 
-																html +=
-																"<strong>Tensão CC máxima:</strong> " +
-																data.tensao_cc_maxima_v +
-																" V<br>";
+criado_por:
+usuarioAtual.id,
 
-																	}
+responsavel_tecnico_id:
+rtId || null
 
+})
+.select()
+.single();
 
-																	if (
-																	data.tensao_mppt_min_v !== null &&
-																	data.tensao_mppt_min_v !== undefined
-																	) {
 
-																	html +=
-																	"<strong>MPPT mínimo:</strong> " +
-																	data.tensao_mppt_min_v +
-																	" V<br>";
+if (error)
+throw error;
 
-																		}
 
+/* =========================================
+VINCULAR EQUIPAMENTO
+========================================= */
 
-																		if (
-																		data.tensao_mppt_max_v !== null &&
-																		data.tensao_mppt_max_v !== undefined
-																		) {
+if (equipamentoSelecionado) {
 
-																		html +=
-																		"<strong>MPPT máximo:</strong> " +
-																		data.tensao_mppt_max_v +
-																		" V<br>";
+const {
+error: erroEquipamento
+} =
+await supabaseClient
+.from("projeto_equipamentos")
+.insert({
 
-																			}
+projeto_id:
+data.id,
 
+equipamento_id:
+equipamentoSelecionado.id,
 
-																			if (
-																			data.corrente_maxima_a !== null &&
-																			data.corrente_maxima_a !== undefined
-																			) {
+organizacao_id:
+organizacaoAtual
 
-																			html +=
-																			"<strong>Corrente máxima:</strong> " +
-																			data.corrente_maxima_a +
-																			" A<br>";
+});
 
-																				}
 
+if (erroEquipamento) {
 
-																				if (
-																				data.corrente_mppt_max_a !== null &&
-																				data.corrente_mppt_max_a !== undefined
-																				) {
+console.error(
+"Erro ao vincular equipamento:",
+erroEquipamento
+);
 
-																				html +=
-																				"<strong>Corrente máxima por MPPT:</strong> " +
-																				data.corrente_mppt_max_a +
-																				" A<br>";
+throw erroEquipamento;
 
-																					}
+}
 
+}
 
-																					if (
-																					data.numero_mppt !== null &&
-																					data.numero_mppt !== undefined
-																					) {
 
-																					html +=
-																					"<strong>Número de MPPT:</strong> " +
-																					data.numero_mppt +
-																					"<br>";
+mostrarSucesso(
+"Projeto criado com sucesso!"
+);
 
-																						}
 
+setTimeout(() => {
 
-																						if (
-																						data.entradas_por_mppt !== null &&
-																						data.entradas_por_mppt !== undefined
-																						) {
+window.location.href =
+"projeto-detalhes.html?id=" +
+data.id;
 
-																						html +=
-																						"<strong>Entradas por MPPT:</strong> " +
-																						data.entradas_por_mppt +
-																						"<br>";
+}, 1200);
 
-																							}
+}
 
+catch (erro) {
 
-																							if (
-																							data.numero_fases !== null &&
-																							data.numero_fases !== undefined
-																							) {
+mostrarErro(
+erro.message
+);
 
-																							html +=
-																							"<strong>Número de fases:</strong> " +
-																							data.numero_fases +
-																							"<br>";
+}
 
-																								}
+finally {
 
+botao.disabled = false;
 
-																								if (data.tipo_inversor) {
+botao.textContent =
+"Salvar rascunho";
 
-																								html +=
-																								"<strong>Tipo de inversor:</strong> " +
-																								data.tipo_inversor +
-																								"<br>";
+}
 
-																									}
+}
+);
 
 
-																									if (data.codigo_modelo) {
+/* =========================================
+MENSAGENS
+========================================= */
 
-																									html +=
-																									"<strong>Código do modelo:</strong> " +
-																									data.codigo_modelo +
-																									"<br>";
+function mostrarErro(mensagem) {
 
-																										}
+const sucesso =
+document.getElementById(
+"sucesso"
+);
 
+sucesso.style.display =
+"none";
 
-																										if (data.tecnologia_celula) {
 
-																										html +=
-																										"<strong>Tecnologia da célula:</strong> " +
-																										data.tecnologia_celula +
-																										"<br>";
+const elemento =
+document.getElementById(
+"erro"
+);
 
-																											}
+elemento.textContent =
+"ERRO: " + mensagem;
 
+elemento.style.display =
+"block";
 
-																											if (
-																											data.numero_celulas !== null &&
-																											data.numero_celulas !== undefined
-																											) {
+}
 
-																											html +=
-																											"<strong>Número de células:</strong> " +
-																											data.numero_celulas +
-																											"<br>";
 
-																												}
+function mostrarSucesso(mensagem) {
 
+const erro =
+document.getElementById(
+"erro"
+);
 
-																												if (
-																												data.bifacialidade_percentual !== null &&
-																												data.bifacialidade_percentual !== undefined
-																												) {
+erro.style.display =
+"none";
 
-																												html +=
-																												"<strong>Bifacialidade:</strong> " +
-																												data.bifacialidade_percentual +
-																												"%<br>";
 
-																													}
+const elemento =
+document.getElementById(
+"sucesso"
+);
 
+elemento.textContent =
+mensagem;
 
-																													if (
-																													data.temperatura_operacao_min_c !== null &&
-																													data.temperatura_operacao_min_c !== undefined
-																													) {
+elemento.style.display =
+"block";
 
-																													html +=
-																													"<strong>Temperatura mínima:</strong> " +
-																													data.temperatura_operacao_min_c +
-																													" °C<br>";
+}
 
-																														}
 
+iniciar();
 
-																														if (
-																														data.temperatura_operacao_max_c !== null &&
-																														data.temperatura_operacao_max_c !== undefined
-																														) {
+</script>
 
-																														html +=
-																														"<strong>Temperatura máxima:</strong> " +
-																														data.temperatura_operacao_max_c +
-																														" °C<br>";
 
-																															}
+<script>
 
+if ("serviceWorker" in navigator) {
 
-																															if (
-																															data.temperatura_noct_c !== null &&
-																															data.temperatura_noct_c !== undefined
-																															) {
+window.addEventListener(
+"load",
+function() {
 
-																															html +=
-																															"<strong>NOCT:</strong> " +
-																															data.temperatura_noct_c +
-																															" °C<br>";
+navigator.serviceWorker.register(
+"./service-worker.js"
+);
 
-																																}
+});
 
+}
 
-																																if (
-																																data.noct_c !== null &&
-																																data.noct_c !== undefined
-																																) {
+</script>
 
-																																html +=
-																																"<strong>NOCT:</strong> " +
-																																data.noct_c +
-																																" °C<br>";
-
-																																	}
-
-
-																																	if (
-																																	data.fusivel_maximo_a !== null &&
-																																	data.fusivel_maximo_a !== undefined
-																																	) {
-
-																																	html +=
-																																	"<strong>Fusível máximo:</strong> " +
-																																	data.fusivel_maximo_a +
-																																	" A<br>";
-
-																																		}
-
-
-																																		if (
-																																		data.peso_kg !== null &&
-																																		data.peso_kg !== undefined
-																																		) {
-
-																																		html +=
-																																		"<strong>Peso:</strong> " +
-																																		data.peso_kg +
-																																		" kg<br>";
-
-																																			}
-
-
-																																			if (data.observacoes) {
-
-																																			html +=
-																																			"<strong>Observações:</strong> " +
-																																			data.observacoes +
-																																			"<br>";
-
-																																				}
-
-
-																																				if (data.fonte_dados) {
-
-																																				html +=
-																																				"<strong>Fonte dos dados:</strong> " +
-																																				data.fonte_dados +
-																																				"<br>";
-
-																																					}
-
-
-																																					if (data.data_verificacao) {
-
-																																					html +=
-																																					"<strong>Data de verificação:</strong> " +
-																																					data.data_verificacao +
-																																					"<br>";
-
-																																						}
-
-
-																																						if (!html) {
-
-																																						html =
-																																						"Nenhum dado técnico disponível.";
-
-																																						}
-
-
-																																						texto.innerHTML =
-																																						html;
-
-
-																																						caixa.style.display =
-																																						"block";
-
-																																						}
-
-
-																																						/* =========================================
-																																						SALVAR PROJETO
-																																						========================================= */
-
-																																						document
-																																						.getElementById("formProjeto")
-																																						.addEventListener(
-																																						"submit",
-																																						async function(event) {
-
-																																						event.preventDefault();
-
-
-																																						const botao =
-																																						document.getElementById(
-																																						"btnSalvar"
-																																						);
-
-
-																																						botao.disabled =
-																																						true;
-
-
-																																						botao.textContent =
-																																						"Salvando...";
-
-
-																																						try {
-
-																																						const clienteId =
-																																						document
-																																						.getElementById(
-																																						"cliente_id"
-																																						)
-																																						.value;
-
-
-																																						const nome =
-																																						document
-																																						.getElementById(
-																																						"nome"
-																																						)
-																																						.value
-																																						.trim();
-
-
-																																						const rtId =
-																																						document
-																																						.getElementById(
-																																						"responsavel_tecnico_id"
-																																						)
-																																						.value;
-
-
-																																						const observacoes =
-																																						document
-																																						.getElementById(
-																																						"observacoes"
-																																						)
-																																						.value
-																																						.trim();
-
-
-																																						if (!clienteId) {
-
-																																						throw new Error(
-																																						"Selecione um cliente."
-																																						);
-
-																																						}
-
-
-																																						if (!nome) {
-
-																																						throw new Error(
-																																						"Informe o nome do projeto."
-																																						);
-
-																																						}
-
-
-																																						/* =====================================
-																																						SALVAR PROJETO
-																																						===================================== */
-
-																																						const {
-																																						data,
-																																						error
-																																						} =
-																																						await supabaseClient
-																																						.from("projetos")
-																																						.insert({
-
-																																						organizacao_id:
-																																						organizacaoAtual,
-
-																																						cliente_id:
-																																						clienteId,
-
-																																						nome:
-																																						nome,
-
-																																						status:
-																																						"rascunho",
-
-																																						observacoes:
-																																						observacoes || null,
-
-																																						criado_por:
-																																						usuarioAtual.id,
-
-																																						responsavel_tecnico_id:
-																																						rtId || null
-
-																																						})
-																																						.select()
-																																						.single();
-
-
-																																						if (error)
-																																						throw error;
-
-
-																																						/* =====================================
-																																						VINCULAR EQUIPAMENTO
-																																						===================================== */
-
-																																						if (equipamentoSelecionado) {
-
-																																						const {
-																																						error: erroEquipamento
-																																						} =
-																																						await supabaseClient
-																																						.from("projeto_equipamentos")
-																																						.insert({
-
-																																						projeto_id:
-																																						data.id,
-
-																																						equipamento_id:
-																																						equipamentoSelecionado.id,
-
-																																						organizacao_id:
-																																						organizacaoAtual
-
-																																						});
-
-
-																																						if (erroEquipamento) {
-																																							
-																																						console.error(
-																																						"Erro ao vincular equipamento:",
-																																						erroEquipamento
-																																						);
-
-
-																																						throw erroEquipamento;
-
-																																						}
-
-																																						}
-
-
-																																						/* =====================================
-																																						SUCESSO
-																																						===================================== */
-
-																																						mostrarSucesso(
-																																						"Projeto criado com sucesso!"
-																																						);
-
-
-																																						setTimeout(
-																																						() => {
-
-																																						window.location.href =
-																																						"projeto-detalhes.html?id=" +
-																																						data.id;
-
-																																						},
-																																						1200
-																																						);
-
-																																						}
-
-																																						catch (erro) {
-
-																																						console.error(
-																																						"Erro ao salvar projeto:",
-																																						erro
-																																						);
-
-
-																																						mostrarErro(
-																																						erro.message
-																																						);
-
-																																						}
-
-																																						finally {
-
-																																						botao.disabled =
-																																						false;
-
-
-																																						botao.textContent =
-																																						"Salvar rascunho";
-
-																																						}
-
-																																						}
-																																						);
-
-
-																																						/* =========================================
-																																						MENSAGENS
-																																						========================================= */
-
-																																						function mostrarErro(mensagem) {
-
-																																						const sucesso =
-																																						document.getElementById(
-																																						"sucesso"
-																																						);
-
-
-																																						sucesso.style.display =
-																																						"none";
-
-
-																																						const elemento =
-																																						document.getElementById(
-																																						"erro"
-																																						);
-
-
-																																						elemento.textContent =
-																																						"ERRO: " + mensagem;
-
-
-																																						elemento.style.display =
-																																						"block";
-
-																																						}
-
-
-																																						function mostrarSucesso(mensagem) {
-
-																																						const erro =
-																																						document.getElementById(
-																																						"erro"
-																																						);
-
-
-																																						erro.style.display =
-																																						"none";
-
-
-																																						const elemento =
-																																						document.getElementById(
-																																						"sucesso"
-																																						);
-
-
-																																						elemento.textContent =
-																																						mensagem;
-
-
-																																						elemento.style.display =
-																																						"block";
-
-																																						}
-
-
-																																						/* =========================================
-																																						INICIAR SISTEMA
-																																						========================================= */
-
-																																						iniciar();
-
-		</script>
-
-
-		<script>
-
-			if ("serviceWorker" in navigator) {
-
-			window.addEventListener(
-			"load",
-			function() {
-
-            navigator.serviceWorker.register(
-			"./service-worker.js"
-            );
-
-			}
-			);
-
-			}
-
-		</script>
-
-
-	</body>
+</body>
 
 </html>
-																						
