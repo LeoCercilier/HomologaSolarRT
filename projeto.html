@@ -311,6 +311,10 @@ required
 EQUIPAMENTOS DO SISTEMA FV
 ========================================= -->
 
+<!-- =========================================
+EQUIPAMENTOS DO SISTEMA FV
+========================================= -->
+
 <div class="campo">
 
 <label>
@@ -324,48 +328,30 @@ border-radius:12px;
 padding:15px;
 ">
 
-<div class="campo">
+<!-- ================================
+MÓDULO
+================================ -->
 
-<label for="equipamento_tipo">
-Tipo de equipamento
-</label>
-
-<select
-id="equipamento_tipo"
-onchange="carregarFabricantesEquipamentos()"
->
-
-<option value="">
-Selecione o tipo
-</option>
-
-<option value="modulo">
-Módulo fotovoltaico
-</option>
-
-<option value="inversor">
-Inversor
-</option>
-
-</select>
-
-</div>
-
+<h3 style="
+margin-top:0;
+color:#0f766e;
+">
+☀️ Módulo fotovoltaico
+</h3>
 
 <div class="campo">
 
-<label for="equipamento_fabricante">
+<label for="modulo_fabricante">
 Fabricante
 </label>
 
 <select
-id="equipamento_fabricante"
-onchange="carregarModelosEquipamentos()"
-disabled
+id="modulo_fabricante"
+onchange="carregarModelosModulo()"
 >
 
 <option value="">
-Primeiro selecione o tipo
+Selecione o fabricante
 </option>
 
 </select>
@@ -375,27 +361,44 @@ Primeiro selecione o tipo
 
 <div class="campo">
 
-<label for="equipamento_modelo">
+<label for="modulo_modelo">
 Modelo
 </label>
 
 <select
-id="equipamento_modelo"
-onchange="carregarDadosEquipamento()"
+id="modulo_modelo"
+onchange="carregarDadosModulo()"
 disabled
 >
 
 <option value="">
-Primeiro selecione o fabricante
+Selecione o fabricante
 </option>
 
 </select>
+
+</div>
+
+
+<div class="campo">
+
+<label for="quantidade_modulos">
+Quantidade de módulos
+</label>
+
+<input
+type="number"
+id="quantidade_modulos"
+value="1"
+min="1"
+step="1"
+>
 
 </div>
 
 
 <div
-id="dadosEquipamento"
+id="dadosModulo"
 style="
 display:none;
 margin-top:15px;
@@ -407,11 +410,116 @@ padding:14px;
 >
 
 <strong>
-📋 Dados técnicos
+📋 Dados técnicos do módulo
 </strong>
 
 <div
-id="dadosEquipamentoTexto"
+id="dadosModuloTexto"
+style="
+margin-top:10px;
+font-size:14px;
+line-height:1.7;
+color:#475569;
+"
+></div>
+
+</div>
+
+
+<hr style="
+border:none;
+border-top:1px solid #e2e8f0;
+margin:25px 0;
+">
+
+
+<!-- ================================
+INVERSOR
+================================ -->
+
+<h3 style="
+margin-top:0;
+color:#0f766e;
+">
+⚡ Inversor
+</h3>
+
+<div class="campo">
+
+<label for="inversor_fabricante">
+Fabricante
+</label>
+
+<select
+id="inversor_fabricante"
+onchange="carregarModelosInversor()"
+>
+
+<option value="">
+Selecione o fabricante
+</option>
+
+</select>
+
+</div>
+
+
+<div class="campo">
+
+<label for="inversor_modelo">
+Modelo
+</label>
+
+<select
+id="inversor_modelo"
+onchange="carregarDadosInversor()"
+disabled
+>
+
+<option value="">
+Selecione o fabricante
+</option>
+
+</select>
+
+</div>
+
+
+<div class="campo">
+
+<label for="quantidade_inversores">
+Quantidade de inversores
+</label>
+
+<input
+type="number"
+id="quantidade_inversores"
+value="1"
+min="1"
+step="1"
+>
+
+</div>
+
+
+<div
+id="dadosInversor"
+style="
+display:none;
+margin-top:15px;
+background:white;
+border:1px solid #dbeafe;
+border-radius:10px;
+padding:14px;
+"
+>
+
+<strong>
+📋 Dados técnicos do inversor
+</strong>
+
+<div
+id="dadosInversorTexto"
 style="
 margin-top:10px;
 font-size:14px;
@@ -607,7 +715,8 @@ let usuarioAtual = null;
 
 let organizacaoAtual = null;
 
-let equipamentoSelecionado = null;
+let moduloSelecionado = null;
+let inversorSelecionado = null;
 
 
 /* =========================================
@@ -1299,39 +1408,274 @@ async function carregarModelosEquipamentos() {
 }
 
 /* =========================================
-CARREGAR DADOS TÉCNICOS
+CARREGAR FABRICANTES
 ========================================= */
 
-async function carregarDadosEquipamento() {
+async function buscarFabricantes(tipoFabricante) {
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+        .from("fabricantes_equipamentos")
+
+        .select(`
+            id,
+            nome,
+            tipo_fabricante
+        `)
+
+        .eq(
+            "tipo_fabricante",
+            tipoFabricante
+        )
+
+        .eq(
+            "ativo",
+            true
+        )
+
+        .order(
+            "nome",
+            {
+                ascending: true
+            }
+        );
+
+
+    if (error)
+        throw error;
+
+
+    return data || [];
+}
+
+
+/* =========================================
+MÓDULO - FABRICANTES
+========================================= */
+
+async function carregarFabricantesModulo() {
+
+    const select =
+        document.getElementById(
+            "modulo_fabricante"
+        );
+
+    select.innerHTML =
+        '<option value="">Carregando...</option>';
+
+    try {
+
+        const fabricantes =
+            await buscarFabricantes(
+                "fabricante de módulos fotovoltaicos"
+            );
+
+
+        select.innerHTML =
+            '<option value="">Selecione o fabricante</option>';
+
+
+        fabricantes.forEach(
+            fabricante => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    fabricante.id;
+
+                option.textContent =
+                    fabricante.nome;
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro ao carregar fabricantes de módulos:",
+            erro
+        );
+
+        select.innerHTML =
+            '<option value="">Erro ao carregar</option>';
+
+    }
+
+}
+
+
+/* =========================================
+MÓDULO - MODELOS
+========================================= */
+
+async function carregarModelosModulo() {
+
+    const fabricanteId =
+        document.getElementById(
+            "modulo_fabricante"
+        ).value;
+
+    const modelo =
+        document.getElementById(
+            "modulo_modelo"
+        );
+
+
+    modelo.innerHTML =
+        '<option value="">Carregando...</option>';
+
+    modelo.disabled = true;
+
+    moduloSelecionado = null;
+
+
+    document.getElementById(
+        "dadosModulo"
+    ).style.display = "none";
+
+
+    if (!fabricanteId) {
+
+        modelo.innerHTML =
+            '<option value="">Selecione o fabricante</option>';
+
+        return;
+
+    }
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+        .from("equipamentos_fotovoltaicos")
+
+        .select(`
+            id,
+            modelo,
+            fabricante_id,
+            tipo
+        `)
+
+        .eq(
+            "tipo",
+            "modulo"
+        )
+
+        .eq(
+            "fabricante_id",
+            fabricanteId
+        )
+
+        .eq(
+            "ativo",
+            true
+        )
+
+        .order(
+            "modelo",
+            {
+                ascending: true
+            }
+        );
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao carregar modelos de módulos:",
+            error
+        );
+
+        modelo.innerHTML =
+            '<option value="">Erro ao carregar</option>';
+
+        return;
+
+    }
+
+
+    modelo.innerHTML =
+        '<option value="">Selecione o modelo</option>';
+
+
+    (data || []).forEach(
+        item => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                item.id;
+
+            option.textContent =
+                item.modelo;
+
+            modelo.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    modelo.disabled =
+        !data ||
+        data.length === 0;
+
+}
+
+
+/* =========================================
+MÓDULO - DADOS
+========================================= */
+
+async function carregarDadosModulo() {
 
     const id =
         document.getElementById(
-            "equipamento_modelo"
+            "modulo_modelo"
         ).value;
+
 
     const caixa =
         document.getElementById(
-            "dadosEquipamento"
+            "dadosModulo"
         );
 
     const texto =
         document.getElementById(
-            "dadosEquipamentoTexto"
+            "dadosModuloTexto"
         );
 
-    caixa.style.display = "none";
 
-    equipamentoSelecionado = null;
+    caixa.style.display =
+        "none";
 
-    if (!id) {
+    moduloSelecionado =
+        null;
+
+
+    if (!id)
         return;
-    }
+
 
     try {
-
-        /* =========================================
-        BUSCAR EQUIPAMENTO
-        ========================================= */
 
         const {
             data,
@@ -1350,9 +1694,6 @@ async function carregarDadosEquipamento() {
                 vmp_v,
                 isc_a,
                 imp_a,
-                potencia_nominal_kw,
-                tensao_cc_maxima_v,
-                numero_fases,
                 tecnologia_celula,
                 numero_celulas,
                 bifacialidade_percentual,
@@ -1370,29 +1711,15 @@ async function carregarDadosEquipamento() {
             .maybeSingle();
 
 
-        if (error) {
-
-            console.error(
-                "Erro ao carregar equipamento:",
-                error
-            );
-
+        if (error)
             throw error;
-        }
 
 
-        if (!data) {
-
+        if (!data)
             throw new Error(
-                "Equipamento não encontrado."
+                "Módulo não encontrado."
             );
 
-        }
-
-
-        /* =========================================
-        BUSCAR FABRICANTE
-        ========================================= */
 
         const {
             data: fabricante,
@@ -1414,266 +1741,78 @@ async function carregarDadosEquipamento() {
             .maybeSingle();
 
 
-        if (erroFabricante) {
-
-            console.error(
-                "Erro ao carregar fabricante:",
-                erroFabricante
-            );
-
+        if (erroFabricante)
             throw erroFabricante;
-        }
 
 
-        if (!fabricante) {
-
+        if (!fabricante)
             throw new Error(
-                "Fabricante não encontrado."
+                "Fabricante do módulo não encontrado."
             );
 
-        }
 
+        moduloSelecionado = {
 
-        /* =========================================
-GUARDAR EQUIPAMENTO SELECIONADO
-========================================= */
+            ...data,
 
-equipamentoSelecionado = {
+            fabricante_nome:
+                fabricante.nome,
 
-    ...data,
+            fabricante:
+                fabricante.nome
 
-    fabricante_nome:
-        fabricante.nome,
+        };
 
-    fabricante:
-        fabricante.nome
-
-};
-
-
-        /* =========================================
-        EXIBIR DADOS TÉCNICOS
-        ========================================= */
 
         let html = "";
-
 
         html +=
             "<strong>Fabricante:</strong> " +
             fabricante.nome +
             "<br>";
 
+        html +=
+            "<strong>Modelo:</strong> " +
+            data.modelo +
+            "<br>";
 
-        if (data.modelo) {
+        html +=
+            "<strong>Potência:</strong> " +
+            data.potencia_w +
+            " W<br>";
 
-            html +=
-                "<strong>Modelo:</strong> " +
-                data.modelo +
-                "<br>";
+        html +=
+            "<strong>Eficiência:</strong> " +
+            data.eficiencia_percentual +
+            "%<br>";
 
-        }
+        html +=
+            "<strong>Voc:</strong> " +
+            data.voc_v +
+            " V<br>";
 
+        html +=
+            "<strong>Vmp:</strong> " +
+            data.vmp_v +
+            " V<br>";
 
-        if (data.tipo) {
+        html +=
+            "<strong>Isc:</strong> " +
+            data.isc_a +
+            " A<br>";
 
-            html +=
-                "<strong>Tipo:</strong> " +
-                data.tipo +
-                "<br>";
-
-        }
-
-
-        if (
-            data.potencia_w !== null &&
-            data.potencia_w !== undefined
-        ) {
-
-            html +=
-                "<strong>Potência:</strong> " +
-                data.potencia_w +
-                " W<br>";
-
-        }
-
-
-        if (
-            data.potencia_nominal_kw !== null &&
-            data.potencia_nominal_kw !== undefined
-        ) {
-
-            html +=
-                "<strong>Potência nominal:</strong> " +
-                data.potencia_nominal_kw +
-                " kW<br>";
-
-        }
-
-
-        if (
-            data.eficiencia_percentual !== null &&
-            data.eficiencia_percentual !== undefined
-        ) {
-
-            html +=
-                "<strong>Eficiência:</strong> " +
-                data.eficiencia_percentual +
-                "%<br>";
-
-        }
-
-
-        if (
-            data.voc_v !== null &&
-            data.voc_v !== undefined
-        ) {
-
-            html +=
-                "<strong>Voc:</strong> " +
-                data.voc_v +
-                " V<br>";
-
-        }
-
-
-        if (
-            data.vmp_v !== null &&
-            data.vmp_v !== undefined
-        ) {
-
-            html +=
-                "<strong>Vmp:</strong> " +
-                data.vmp_v +
-                " V<br>";
-
-        }
-
-
-        if (
-            data.isc_a !== null &&
-            data.isc_a !== undefined
-        ) {
-
-            html +=
-                "<strong>Isc:</strong> " +
-                data.isc_a +
-                " A<br>";
-
-        }
-
-
-        if (
-            data.imp_a !== null &&
-            data.imp_a !== undefined
-        ) {
-
-            html +=
-                "<strong>Imp:</strong> " +
-                data.imp_a +
-                " A<br>";
-
-        }
-
-
-        if (
-            data.tensao_cc_maxima_v !== null &&
-            data.tensao_cc_maxima_v !== undefined
-        ) {
-
-            html +=
-                "<strong>Tensão CC máxima:</strong> " +
-                data.tensao_cc_maxima_v +
-                " V<br>";
-
-        }
-
-
-        if (
-            data.numero_fases !== null &&
-            data.numero_fases !== undefined
-        ) {
-
-            html +=
-                "<strong>Número de fases:</strong> " +
-                data.numero_fases +
-                "<br>";
-
-        }
+        html +=
+            "<strong>Imp:</strong> " +
+            data.imp_a +
+            " A<br>";
 
 
         if (data.tecnologia_celula) {
 
             html +=
-                "<strong>Tecnologia da célula:</strong> " +
+                "<strong>Tecnologia:</strong> " +
                 data.tecnologia_celula +
                 "<br>";
-
-        }
-
-
-        if (
-            data.numero_celulas !== null &&
-            data.numero_celulas !== undefined
-        ) {
-
-            html +=
-                "<strong>Número de células:</strong> " +
-                data.numero_celulas +
-                "<br>";
-
-        }
-
-
-        if (
-            data.bifacialidade_percentual !== null &&
-            data.bifacialidade_percentual !== undefined
-        ) {
-
-            html +=
-                "<strong>Bifacialidade:</strong> " +
-                data.bifacialidade_percentual +
-                "%<br>";
-
-        }
-
-
-        if (
-            data.fusivel_maximo_a !== null &&
-            data.fusivel_maximo_a !== undefined
-        ) {
-
-            html +=
-                "<strong>Fusível máximo:</strong> " +
-                data.fusivel_maximo_a +
-                " A<br>";
-
-        }
-
-
-        if (data.fonte_dados) {
-
-            html +=
-                "<strong>Fonte dos dados:</strong> " +
-                data.fonte_dados +
-                "<br>";
-
-        }
-
-
-        if (data.data_verificacao) {
-
-            html +=
-                "<strong>Dados verificados em:</strong> " +
-                data.data_verificacao +
-                "<br>";
-
-        }
-
-
-        if (!html) {
-
-            html =
-                "Nenhum dado técnico disponível.";
 
         }
 
@@ -1689,7 +1828,7 @@ equipamentoSelecionado = {
     catch (erro) {
 
         console.error(
-            "Erro ao carregar dados técnicos:",
+            "Erro ao carregar dados do módulo:",
             erro
         );
 
@@ -1699,7 +1838,373 @@ equipamentoSelecionado = {
 
     }
 
+}
+
+
+/* =========================================
+INVERSOR - FABRICANTES
+========================================= */
+
+async function carregarFabricantesInversor() {
+
+    const select =
+        document.getElementById(
+            "inversor_fabricante"
+        );
+
+    select.innerHTML =
+        '<option value="">Carregando...</option>';
+
+    try {
+
+        const fabricantes =
+            await buscarFabricantes(
+                "fabricante de inversores"
+            );
+
+
+        select.innerHTML =
+            '<option value="">Selecione o fabricante</option>';
+
+
+        fabricantes.forEach(
+            fabricante => {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+                option.value =
+                    fabricante.id;
+
+                option.textContent =
+                    fabricante.nome;
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
     }
+
+    catch (erro) {
+
+        console.error(
+            "Erro ao carregar fabricantes de inversores:",
+            erro
+        );
+
+        select.innerHTML =
+            '<option value="">Erro ao carregar</option>';
+
+    }
+
+}
+
+
+/* =========================================
+INVERSOR - MODELOS
+========================================= */
+
+async function carregarModelosInversor() {
+
+    const fabricanteId =
+        document.getElementById(
+            "inversor_fabricante"
+        ).value;
+
+    const modelo =
+        document.getElementById(
+            "inversor_modelo"
+        );
+
+
+    modelo.innerHTML =
+        '<option value="">Carregando...</option>';
+
+    modelo.disabled = true;
+
+    inversorSelecionado = null;
+
+
+    document.getElementById(
+        "dadosInversor"
+    ).style.display = "none";
+
+
+    if (!fabricanteId) {
+
+        modelo.innerHTML =
+            '<option value="">Selecione o fabricante</option>';
+
+        return;
+
+    }
+
+
+    const {
+        data,
+        error
+    } = await supabaseClient
+
+        .from("equipamentos_fotovoltaicos")
+
+        .select(`
+            id,
+            modelo,
+            fabricante_id,
+            tipo
+        `)
+
+        .eq(
+            "tipo",
+            "inversor"
+        )
+
+        .eq(
+            "fabricante_id",
+            fabricanteId
+        )
+
+        .eq(
+            "ativo",
+            true
+        )
+
+        .order(
+            "modelo",
+            {
+                ascending: true
+            }
+        );
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao carregar modelos de inversores:",
+            error
+        );
+
+        modelo.innerHTML =
+            '<option value="">Erro ao carregar</option>';
+
+        return;
+
+    }
+
+
+    modelo.innerHTML =
+        '<option value="">Selecione o modelo</option>';
+
+
+    (data || []).forEach(
+        item => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                item.id;
+
+            option.textContent =
+                item.modelo;
+
+            modelo.appendChild(
+                option
+            );
+
+        }
+    );
+
+
+    modelo.disabled =
+        !data ||
+        data.length === 0;
+
+}
+
+
+/* =========================================
+INVERSOR - DADOS
+========================================= */
+
+async function carregarDadosInversor() {
+
+    const id =
+        document.getElementById(
+            "inversor_modelo"
+        ).value;
+
+
+    const caixa =
+        document.getElementById(
+            "dadosInversor"
+        );
+
+    const texto =
+        document.getElementById(
+            "dadosInversorTexto"
+        );
+
+
+    caixa.style.display =
+        "none";
+
+    inversorSelecionado =
+        null;
+
+
+    if (!id)
+        return;
+
+
+    try {
+
+        const {
+            data,
+            error
+        } = await supabaseClient
+
+            .from("equipamentos_fotovoltaicos")
+
+            .select(`
+                id,
+                tipo,
+                modelo,
+                potencia_nominal_kw,
+                tensao_cc_maxima_v,
+                numero_fases,
+                fabricante_id
+            `)
+
+            .eq(
+                "id",
+                id
+            )
+
+            .maybeSingle();
+
+
+        if (error)
+            throw error;
+
+
+        if (!data)
+            throw new Error(
+                "Inversor não encontrado."
+            );
+
+
+        const {
+            data: fabricante,
+            error: erroFabricante
+        } = await supabaseClient
+
+            .from("fabricantes_equipamentos")
+
+            .select(`
+                id,
+                nome
+            `)
+
+            .eq(
+                "id",
+                data.fabricante_id
+            )
+
+            .maybeSingle();
+
+
+        if (erroFabricante)
+            throw erroFabricante;
+
+
+        if (!fabricante)
+            throw new Error(
+                "Fabricante do inversor não encontrado."
+            );
+
+
+        inversorSelecionado = {
+
+            ...data,
+
+            fabricante_nome:
+                fabricante.nome,
+
+            fabricante:
+                fabricante.nome
+
+        };
+
+
+        let html = "";
+
+        html +=
+            "<strong>Fabricante:</strong> " +
+            fabricante.nome +
+            "<br>";
+
+        html +=
+            "<strong>Modelo:</strong> " +
+            data.modelo +
+            "<br>";
+
+        html +=
+            "<strong>Potência nominal:</strong> " +
+            data.potencia_nominal_kw +
+            " kW<br>";
+
+        html +=
+            "<strong>Tensão CC máxima:</strong> " +
+            data.tensao_cc_maxima_v +
+            " V<br>";
+
+        html +=
+            "<strong>Número de fases:</strong> " +
+            data.numero_fases +
+            "<br>";
+
+
+        texto.innerHTML =
+            html;
+
+        caixa.style.display =
+            "block";
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro ao carregar dados do inversor:",
+            erro
+        );
+
+        mostrarErro(
+            erro.message
+        );
+
+    }
+
+}
+
+
+/* =========================================
+INICIAR EQUIPAMENTOS
+========================================= */
+
+carregarFabricantesModulo();
+carregarFabricantesInversor();
+
+
+
 
 
 /* =========================================
@@ -1874,133 +2379,166 @@ document
 
 
         /* =========================================
-        VINCULAR EQUIPAMENTO
-        ========================================= */
+VINCULAR EQUIPAMENTOS
+========================================= */
 
-        if (equipamentoSelecionado) {
+if (
+    moduloSelecionado ||
+    inversorSelecionado
+) {
 
-            let dadosVinculo = {
+    let dadosVinculo = {
 
-                projeto_id:
-                    data.id,
+        projeto_id:
+            data.id,
 
-                organizacao_id:
-                    organizacaoAtual,
+        organizacao_id:
+            organizacaoAtual,
 
-                quantidade_modulos:
-                    0,
+        modulo_id:
+            null,
 
-                quantidade_inversores:
-                    0
+        inversor_id:
+            null,
 
-            };
+        quantidade_modulos:
+            0,
 
+        quantidade_inversores:
+            0
 
-            /* MÓDULO */
-
-            if (
-                equipamentoSelecionado.tipo ===
-                "modulo"
-            ) {
-
-                const {
-                    data: modulo,
-                    error: erroModulo
-                } = await supabaseClient
-                    .from("modulos")
-                    .select("id")
-                    .eq(
-                        "modelo",
-                        equipamentoSelecionado.modelo
-                    )
-                    .eq(
-                        "fabricante",
-                        equipamentoSelecionado.fabricante
-                    )
-                    .maybeSingle();
+    };
 
 
-                if (erroModulo)
-                    throw erroModulo;
+    /* =========================================
+    MÓDULO
+    ========================================= */
+
+    if (moduloSelecionado) {
+
+        const {
+            data: modulo,
+            error: erroModulo
+        } = await supabaseClient
+
+            .from("modulos")
+
+            .select("id")
+
+            .eq(
+                "modelo",
+                moduloSelecionado.modelo
+            )
+
+            .eq(
+                "fabricante",
+                moduloSelecionado.fabricante
+            )
+
+            .maybeSingle();
 
 
-                if (!modulo) {
-
-                    throw new Error(
-                        "Módulo não encontrado no catálogo de módulos."
-                    );
-
-                }
+        if (erroModulo)
+            throw erroModulo;
 
 
-                dadosVinculo.modulo_id =
-                    modulo.id;
+        if (!modulo) {
 
-                dadosVinculo.quantidade_modulos =
-                    1;
-
-            }
-
-
-            /* INVERSOR */
-
-            if (
-                equipamentoSelecionado.tipo ===
-                "inversor"
-            ) {
-
-                const {
-                    data: inversor,
-                    error: erroInversor
-                } = await supabaseClient
-                    .from("inversores")
-                    .select("id")
-                    .eq(
-                        "modelo",
-                        equipamentoSelecionado.modelo
-                    )
-                    .eq(
-                        "fabricante",
-                        equipamentoSelecionado.fabricante
-                    )
-                    .maybeSingle();
-
-
-                if (erroInversor)
-                    throw erroInversor;
-
-
-                if (!inversor) {
-
-                    throw new Error(
-                        "Inversor não encontrado no catálogo de inversores."
-                    );
-
-                }
-
-
-                dadosVinculo.inversor_id =
-                    inversor.id;
-
-                dadosVinculo.quantidade_inversores =
-                    1;
-
-            }
-
-
-            const {
-                error: erroEquipamento
-            } = await supabaseClient
-                .from("projeto_equipamentos")
-                .insert(
-                    dadosVinculo
-                );
-
-
-            if (erroEquipamento)
-                throw erroEquipamento;
+            throw new Error(
+                "Módulo não encontrado no catálogo de módulos."
+            );
 
         }
+
+
+        dadosVinculo.modulo_id =
+            modulo.id;
+
+
+        dadosVinculo.quantidade_modulos =
+            Number(
+                document.getElementById(
+                    "quantidade_modulos"
+                ).value
+            ) || 1;
+
+    }
+
+
+    /* =========================================
+    INVERSOR
+    ========================================= */
+
+    if (inversorSelecionado) {
+
+        const {
+            data: inversor,
+            error: erroInversor
+        } = await supabaseClient
+
+            .from("inversores")
+
+            .select("id")
+
+            .eq(
+                "modelo",
+                inversorSelecionado.modelo
+            )
+
+            .eq(
+                "fabricante",
+                inversorSelecionado.fabricante
+            )
+
+            .maybeSingle();
+
+
+        if (erroInversor)
+            throw erroInversor;
+
+
+        if (!inversor) {
+
+            throw new Error(
+                "Inversor não encontrado no catálogo de inversores."
+            );
+
+        }
+
+
+        dadosVinculo.inversor_id =
+            inversor.id;
+
+
+        dadosVinculo.quantidade_inversores =
+            Number(
+                document.getElementById(
+                    "quantidade_inversores"
+                ).value
+            ) || 1;
+
+    }
+
+
+    /* =========================================
+    SALVAR OS DOIS NA MESMA RELAÇÃO
+    ========================================= */
+
+    const {
+        error: erroEquipamento
+    } = await supabaseClient
+
+        .from("projeto_equipamentos")
+
+        .insert(
+            dadosVinculo
+        );
+
+
+    if (erroEquipamento)
+        throw erroEquipamento;
+
+    }
 
 
         /* =========================================
