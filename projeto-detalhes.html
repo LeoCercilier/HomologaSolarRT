@@ -3286,6 +3286,49 @@ if (
 
   const problemasTecnicos = [];
 
+	  // Dados técnicos dos equipamentos selecionados no catálogo
+  const dadosModulo = moduloSelecionadoCatalogo || {};
+  const dadosInversor = inversorSelecionadoCatalogo || {};
+
+	  /* ================================
+     COMPATIBILIDADE DO LIMITE DE TENSÃO
+     MÓDULO × INVERSOR
+  ================================= */
+
+  if (
+    moduloSelecionadoCatalogo &&
+    inversorSelecionadoCatalogo
+  ) {
+
+    const tensaoMaxModulo =
+      parseFloat(
+        moduloSelecionadoCatalogo.tensao_maxima_v
+      ) || 0;
+
+    const tensaoMaxInversor =
+      parseFloat(
+        inversorSelecionadoCatalogo.tensao_cc_maxima_v ||
+        inversorSelecionadoCatalogo.tensao_maxima_v
+      ) || 0;
+
+    if (
+      tensaoMaxModulo > 0 &&
+      tensaoMaxInversor > 0 &&
+      tensaoMaxInversor > tensaoMaxModulo
+    ) {
+
+      problemasTecnicos.push(
+        "A tensão máxima do inversor (" +
+        tensaoMaxInversor.toFixed(0) +
+        " V) excede a tensão máxima do módulo (" +
+        tensaoMaxModulo.toFixed(0) +
+        " V)."
+      );
+
+    }
+
+  }
+
   if (
     quantidadeModulos > 0 &&
     quantidadeStrings > 0 &&
