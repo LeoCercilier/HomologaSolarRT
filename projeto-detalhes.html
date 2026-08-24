@@ -1766,7 +1766,39 @@ if (inversor) {
   ).value =
     inversor.tensao_max_dc_v || "";
 
+  document.getElementById(
+    "mppt_min_v"
+  ).value =
+    inversor.faixa_mppt_min_v || "";
+
+  document.getElementById(
+    "mppt_max_v"
+  ).value =
+    inversor.faixa_mppt_max_v || "";
+
+  document.getElementById(
+    "corrente_max_mppt_a"
+  ).value =
+    inversor.corrente_max_dc_a || "";
+
+  document.getElementById(
+    "numero_mppt"
+  ).value =
+    inversor.numero_mppt || "";
+
+  document.getElementById(
+    "strings_por_mppt"
+  ).value =
+    inversor.strings_por_mppt || "";
+
+  document.getElementById(
+    "numero_fases"
+  ).value =
+    inversor.numero_fases || "";
+
   calcularSistema();
+
+}
 
 }
     
