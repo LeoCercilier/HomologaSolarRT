@@ -5189,7 +5189,188 @@ async function salvarSistema() {
 
   try {
 
-    const dados = {
+    /*
+    =========================================
+    EQUIPAMENTOS SELECIONADOS
+    =========================================
+    */
+
+    const moduloId =
+      document.getElementById(
+        "selecao_modulo"
+      ).value || null;
+
+
+    const inversorId =
+      document.getElementById(
+        "selecao_inversor"
+      ).value || null;
+
+
+    if (!moduloId) {
+
+      throw new Error(
+        "Selecione um módulo do catálogo."
+      );
+
+    }
+
+
+    if (!inversorId) {
+
+      throw new Error(
+        "Selecione um inversor do catálogo."
+      );
+
+    }
+
+
+    /*
+    =========================================
+    QUANTIDADES
+    =========================================
+    */
+
+    const quantidadeModulos =
+      parseInt(
+        document.getElementById(
+          "quantidade_modulos"
+        ).value
+      ) || 0;
+
+
+    const quantidadeInversores =
+      parseInt(
+        document.getElementById(
+          "quantidade_inversores"
+        ).value
+      ) || 0;
+
+
+    if (quantidadeModulos <= 0)
+      throw new Error(
+        "Informe a quantidade de módulos."
+      );
+
+
+    if (quantidadeInversores <= 0)
+      throw new Error(
+        "Informe a quantidade de inversores."
+      );
+
+
+    /*
+    =========================================
+    SALVAR VÍNCULO DO PROJETO COM O CATÁLOGO
+    =========================================
+    */
+
+    const {
+      data: equipamentoExistente,
+      error: erroBusca
+    } = await supabaseClient
+      .from("projeto_equipamentos")
+      .select("id")
+      .eq(
+        "projeto_id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      )
+      .limit(1)
+      .maybeSingle();
+
+
+    if (erroBusca)
+      throw erroBusca;
+
+
+    const dadosEquipamento = {
+
+      projeto_id:
+        projetoId,
+
+      organizacao_id:
+        organizacaoAtual,
+
+      modulo_id:
+        moduloId,
+
+      inversor_id:
+        inversorId,
+
+      quantidade_modulos:
+        quantidadeModulos,
+
+      quantidade_inversores:
+        quantidadeInversores
+
+    };
+
+
+    let equipamentoSalvo;
+
+
+    if (equipamentoExistente) {
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from("projeto_equipamentos")
+        .update(
+          dadosEquipamento
+        )
+        .eq(
+          "id",
+          equipamentoExistente.id
+        )
+        .select()
+        .single();
+
+
+      if (error)
+        throw error;
+
+
+      equipamentoSalvo =
+        data;
+
+    }
+
+    else {
+
+      const {
+        data,
+        error
+      } = await supabaseClient
+        .from("projeto_equipamentos")
+        .insert(
+          dadosEquipamento
+        )
+        .select()
+        .single();
+
+
+      if (error)
+        throw error;
+
+
+      equipamentoSalvo =
+        data;
+
+    }
+
+
+    /*
+    =========================================
+    SALVAR DADOS COMPLEMENTARES
+    =========================================
+    */
+
+    const dadosSistema = {
 
       organizacao_id:
         organizacaoAtual,
@@ -5215,68 +5396,64 @@ async function salvarSistema() {
         ) || null,
 
       quantidade_modulos:
-        parseInt(
+        quantidadeModulos,
+
+      voc_modulo:
+        parseFloat(
           document.getElementById(
-            "quantidade_modulos"
+            "voc_modulo"
           ).value
         ) || null,
 
-      voc_modulo:
-  parseFloat(
-    document.getElementById(
-      "voc_modulo"
-    ).value
-  ) || null,
+      vmp_modulo:
+        parseFloat(
+          document.getElementById(
+            "vmp_modulo"
+          ).value
+        ) || null,
 
-vmp_modulo:
-  parseFloat(
-    document.getElementById(
-      "vmp_modulo"
-    ).value
-  ) || null,
+      isc_modulo:
+        parseFloat(
+          document.getElementById(
+            "isc_modulo"
+          ).value
+        ) || null,
 
-isc_modulo:
-  parseFloat(
-    document.getElementById(
-      "isc_modulo"
-    ).value
-  ) || null,
+      imp_modulo:
+        parseFloat(
+          document.getElementById(
+            "imp_modulo"
+          ).value
+        ) || null,
 
-imp_modulo:
-  parseFloat(
-    document.getElementById(
-      "imp_modulo"
-    ).value
-  ) || null,
+      quantidade_strings:
+        parseInt(
+          document.getElementById(
+            "quantidade_strings"
+          ).value
+        ) || null,
 
-quantidade_strings:
-  parseInt(
-    document.getElementById(
-      "quantidade_strings"
-    ).value
-  ) || null,
+      modulos_por_string:
+        parseInt(
+          document.getElementById(
+            "modulos_por_string"
+          ).value
+        ) || null,
 
-modulos_por_string:
-  parseInt(
-    document.getElementById(
-      "modulos_por_string"
-    ).value
-  ) || null,
+      quantidade_mppt:
+        parseInt(
+          document.getElementById(
+            "quantidade_mppt"
+          ).value
+        ) || null,
 
-quantidade_mppt:
-  parseInt(
-    document.getElementById(
-      "quantidade_mppt"
-    ).value
-  ) || null,
+      strings_por_mppt:
+        parseInt(
+          document.getElementById(
+            "strings_por_mppt"
+          ).value
+        ) || null,
 
-strings_por_mppt:
-  parseInt(
-    document.getElementById(
-      "strings_por_mppt"
-    ).value
-  ) || null,
-      
       fabricante_inversor:
         document.getElementById(
           "fabricante_inversor"
@@ -5295,40 +5472,36 @@ strings_por_mppt:
         ) || null,
 
       quantidade_inversores:
-        parseInt(
+        quantidadeInversores,
+
+      tensao_max_entrada_v:
+        parseFloat(
           document.getElementById(
-            "quantidade_inversores"
+            "tensao_max_entrada_v"
           ).value
         ) || null,
 
-      tensao_max_entrada_v:
-  parseFloat(
-    document.getElementById(
-      "tensao_max_entrada_v"
-    ).value
-  ) || null,
+      tensao_mppt_min_v:
+        parseFloat(
+          document.getElementById(
+            "tensao_mppt_min_v"
+          ).value
+        ) || null,
 
-tensao_mppt_min_v:
-  parseFloat(
-    document.getElementById(
-      "tensao_mppt_min_v"
-    ).value
-  ) || null,
+      tensao_mppt_max_v:
+        parseFloat(
+          document.getElementById(
+            "tensao_mppt_max_v"
+          ).value
+        ) || null,
 
-tensao_mppt_max_v:
-  parseFloat(
-    document.getElementById(
-      "tensao_mppt_max_v"
-    ).value
-  ) || null,
+      corrente_max_mppt_a:
+        parseFloat(
+          document.getElementById(
+            "corrente_max_mppt_a"
+          ).value
+        ) || null,
 
-corrente_max_mppt_a:
-  parseFloat(
-    document.getElementById(
-      "corrente_max_mppt_a"
-    ).value
-  ) || null,
-      
       distribuidora:
         document.getElementById(
           "distribuidora"
@@ -5364,20 +5537,50 @@ corrente_max_mppt_a:
     };
 
 
-    let resultado;
+    /*
+    =========================================
+    SALVAR SISTEMA FOTOVOLTAICO
+    =========================================
+    */
+
+    const {
+      data: sistemaExistente,
+      error: erroSistema
+    } = await supabaseClient
+      .from("sistemas_fotovoltaicos")
+      .select("id")
+      .eq(
+        "projeto_id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      )
+      .limit(1)
+      .maybeSingle();
 
 
-    if (sistemaAtual) {
+    if (erroSistema)
+      throw erroSistema;
 
-      resultado =
+
+    let resultadoSistema;
+
+
+    if (sistemaExistente) {
+
+      resultadoSistema =
         await supabaseClient
           .from(
             "sistemas_fotovoltaicos"
           )
-          .update(dados)
+          .update(
+            dadosSistema
+          )
           .eq(
             "id",
-            sistemaAtual.id
+            sistemaExistente.id
           )
           .eq(
             "organizacao_id",
@@ -5390,24 +5593,32 @@ corrente_max_mppt_a:
 
     else {
 
-      resultado =
+      resultadoSistema =
         await supabaseClient
           .from(
             "sistemas_fotovoltaicos"
           )
-          .insert(dados)
+          .insert(
+            dadosSistema
+          )
           .select()
           .single();
 
     }
 
 
-    if (resultado.error)
-      throw resultado.error;
+    if (resultadoSistema.error)
+      throw resultadoSistema.error;
 
+
+    /*
+    =========================================
+    ATUALIZAR ESTADO
+    =========================================
+    */
 
     sistemaAtual =
-      resultado.data;
+      equipamentoSalvo;
 
 
     mostrarMensagemSistema(
@@ -5418,18 +5629,28 @@ corrente_max_mppt_a:
 
     calcularSistema();
 
+
   }
 
   catch (erro) {
 
+    console.error(
+      "Erro ao salvar sistema:",
+      erro
+    );
+
+
     mostrarMensagemSistema(
-      "ERRO: " + erro.message,
+      "ERRO: " +
+      erro.message,
       false
     );
 
   }
 
-}
+	}
+
+  
 
 
 /* =========================================
