@@ -3559,226 +3559,151 @@ if (
 
 async function carregarSistema() {
 
+  try {
+
+    /* 1) Vínculo projeto ↔ equipamentos (sem depender de join relacional) */
     const {
-    data: equipamento,
-    error: erroEquipamento
-  } = await supabaseClient
-    .from("projeto_equipamentos")
-    .select(`
-      quantidade_modulos,
-      quantidade_inversores,
-
-      modulo:modulos (
+      data: equipamento,
+      error: erroEquipamento
+    } = await supabaseClient
+      .from("projeto_equipamentos")
+      .select(`
         id,
-        fabricante,
-        modelo,
-        potencia_w,
-        voc_v,
-        vmpp_v,
-        isc_a,
-        impp_a
-      ),
+        modulo_id,
+        inversor_id,
+        quantidade_modulos,
+        quantidade_inversores
+      `)
+      .eq("projeto_id", projetoId)
+      .limit(1)
+      .maybeSingle();
 
-      inversor:inversores (
-        id,
-        fabricante,
-        modelo,
-        potencia_ac_kw,
-        tensao_max_dc_v,
-        corrente_max_dc_a,
-        numero_mppt,
-        strings_por_mppt,
-        faixa_mppt_min_v,
-        faixa_mppt_max_v
-      )
-    `)
-    .eq(
-      "projeto_id",
-      projetoId
-    )
-    .eq(
-      "organizacao_id",
-      organizacaoAtual
-    )
-    .maybeSingle();
+    if (erroEquipamento) {
+      console.error("Erro ao carregar projeto_equipamentos:", erroEquipamento);
+      return;
+    }
 
+    if (!equipamento) {
+      return;
+    }
 
-	  if (erroEquipamento)
-    throw erroEquipamento;
+    sistemaAtual = equipamento;
 
+    /* 2) Módulo (consulta separada) */
+    if (equipamento.modulo_id) {
 
-  if (!equipamento)
-    return;
+      try {
 
+        const {
+          data: modulo,
+          error: erroModulo
+        } = await supabaseClient
+          .from("modulos")
+          .select(`
+            fabricante,
+            modelo,
+            potencia_w,
+            voc_v,
+            vmpp_v,
+            isc_a,
+            impp_a
+          `)
+          .eq("id", equipamento.modulo_id)
+          .maybeSingle();
 
-  sistemaAtual = equipamento;
-	
-alert(
-  "CARREGARSISTEMA EXECUTOU!\n\n" +
-  "Equipamento encontrado: " +
-  (equipamento ? "SIM" : "NÃO") +
-  "\n\nMódulo: " +
-  (equipamento?.modulo?.modelo || "NÃO") +
-  "\n\nInversor: " +
-  (equipamento?.inversor?.modelo || "NÃO")
-);
+        if (erroModulo) {
+          console.error("Erro ao carregar módulo:", erroModulo);
+        } else if (modulo) {
 
-  /* =========================================
-     MÓDULO
-  ========================================= */
+          const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.value = val ?? "";
+          };
 
-  if (equipamento.modulo) {
+          setVal("fabricante_modulo", modulo.fabricante);
+          setVal("modelo_modulo", modulo.modelo);
+          setVal("potencia_modulo_w", modulo.potencia_w);
+          setVal("quantidade_modulos", equipamento.quantidade_modulos || 1);
+          setVal("voc_modulo", modulo.voc_v);
+          setVal("vmp_modulo", modulo.vmpp_v);
+          setVal("isc_modulo", modulo.isc_a);
+          setVal("imp_modulo", modulo.impp_a);
 
-    document.getElementById(
-      "fabricante_modulo"
-    ).value =
-      equipamento.modulo.fabricante || "";
+        }
 
+      } catch (e) {
+        console.error("Falha no carregamento do módulo:", e);
+      }
 
-    document.getElementById(
-      "modelo_modulo"
-    ).value =
-      equipamento.modulo.modelo || "";
+    }
 
+    /* 3) Inversor (consulta separada) */
+    if (equipamento.inversor_id) {
 
-    document.getElementById(
-      "potencia_modulo_w"
-    ).value =
-      equipamento.modulo.potencia_w || "";
+      try {
 
+        const {
+          data: inversor,
+          error: erroInversor
+        } = await supabaseClient
+          .from("inversores")
+          .select(`
+            fabricante,
+            modelo,
+            potencia_ac_kw,
+            tensao_max_dc_v,
+            faixa_mppt_min_v,
+            faixa_mppt_max_v,
+            corrente_max_dc_a,
+            numero_mppt,
+            strings_por_mppt
+          `)
+          .eq("id", equipamento.inversor_id)
+          .maybeSingle();
 
-    document.getElementById(
-      "quantidade_modulos"
-    ).value =
-      equipamento.quantidade_modulos || 1;
+        if (erroInversor) {
+          console.error("Erro ao carregar inversor:", erroInversor);
+        } else if (inversor) {
 
+          const setVal = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.value = val ?? "";
+          };
 
-    document.getElementById(
-      "voc_modulo"
-    ).value =
-      equipamento.modulo.voc_v || "";
+          setVal("fabricante_inversor", inversor.fabricante);
+          setVal("modelo_inversor", inversor.modelo);
+          setVal("potencia_inversor_kw", inversor.potencia_ac_kw);
+          setVal("quantidade_inversores", equipamento.quantidade_inversores || 1);
+          setVal("tensao_max_entrada_v", inversor.tensao_max_dc_v);
+          setVal("tensao_mppt_min_v", inversor.faixa_mppt_min_v);
+          setVal("tensao_mppt_max_v", inversor.faixa_mppt_max_v);
+          setVal("corrente_max_mppt_a", inversor.corrente_max_dc_a);
+          setVal("quantidade_mppt", inversor.numero_mppt);
+          setVal("strings_por_mppt", inversor.strings_por_mppt);
 
+        }
 
-    document.getElementById(
-      "vmp_modulo"
-    ).value =
-      equipamento.modulo.vmpp_v || "";
+      } catch (e) {
+        console.error("Falha no carregamento do inversor:", e);
+      }
 
+    }
 
-    document.getElementById(
-      "isc_modulo"
-    ).value =
-      equipamento.modulo.isc_a || "";
+    /* 4) Recalcular dimensionamento com os campos preenchidos */
+    if (typeof calcularSistema === "function") {
+      calcularSistema();
+    }
 
+  } catch (erro) {
 
-    document.getElementById(
-      "imp_modulo"
-    ).value =
-      equipamento.modulo.impp_a || "";
+    /* Não interrompe cliente/RT/projeto */
+    console.error("Erro em carregarSistema (não bloqueante):", erro);
 
   }
-
-
-  /* =========================================
-     INVERSOR
-  ========================================= */
-
-  if (equipamento.inversor) {
-
-    document.getElementById(
-      "fabricante_inversor"
-    ).value =
-      equipamento.inversor.fabricante || "";
-
-
-    document.getElementById(
-      "modelo_inversor"
-    ).value =
-      equipamento.inversor.modelo || "";
-
-
-    document.getElementById(
-      "potencia_inversor_kw"
-    ).value =
-      equipamento.inversor.potencia_ac_kw || "";
-
-
-    document.getElementById(
-      "quantidade_inversores"
-    ).value =
-      equipamento.quantidade_inversores || 1;
-
-
-    document.getElementById(
-      "tensao_max_entrada_v"
-    ).value =
-      equipamento.inversor.tensao_max_dc_v || "";
-
-
-    document.getElementById(
-      "tensao_mppt_min_v"
-    ).value =
-      equipamento.inversor.faixa_mppt_min_v || "";
-
-
-    document.getElementById(
-      "tensao_mppt_max_v"
-    ).value =
-      equipamento.inversor.faixa_mppt_max_v || "";
-
-
-    document.getElementById(
-      "corrente_max_mppt_a"
-    ).value =
-      equipamento.inversor.corrente_max_dc_a || "";
-
-
-    document.getElementById(
-      "quantidade_mppt"
-    ).value =
-      equipamento.inversor.numero_mppt || "";
-
-
-    document.getElementById(
-      "strings_por_mppt"
-    ).value =
-      equipamento.inversor.strings_por_mppt || "";
-
-  }
-
-
-  /* =========================================
-     DADOS DA UNIDADE CONSUMIDORA
-  ========================================= */
-
-  document.getElementById(
-    "distribuidora"
-  ).value = "";
-
-
-  document.getElementById(
-    "tipo_ligacao"
-  ).value = "";
-
-
-  document.getElementById(
-    "numero_fases"
-  ).value = "";
-
-
-  document.getElementById(
-    "tensao_nominal"
-  ).value = "";
-
-
-  document.getElementById(
-    "observacoes_sistema"
-  ).value = "";
-
-
-  calcularSistema();
 
 }
+
+
   
 
   async function criarChecklistDocumentos() {
