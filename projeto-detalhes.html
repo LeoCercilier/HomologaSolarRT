@@ -3612,7 +3612,16 @@ async function carregarSistema() {
 
 
   sistemaAtual = equipamento;
-
+	
+alert(
+  "CARREGARSISTEMA EXECUTOU!\n\n" +
+  "Equipamento encontrado: " +
+  (equipamento ? "SIM" : "NÃO") +
+  "\n\nMódulo: " +
+  (equipamento?.modulo?.modelo || "NÃO") +
+  "\n\nInversor: " +
+  (equipamento?.inversor?.modelo || "NÃO")
+);
 
   /* =========================================
      MÓDULO
