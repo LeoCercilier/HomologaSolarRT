@@ -2937,6 +2937,45 @@ function calcularSistema() {
     vocModulo *
     modulosPorString;
 
+	// Voc corrigido para a temperatura mínima de operação
+let vocStringCorrigido = vocString;
+
+if (
+  moduloSelecionadoCatalogo &&
+  moduloSelecionadoCatalogo.coeficiente_voc_percentual_c != null &&
+  moduloSelecionadoCatalogo.temperatura_operacao_min_c != null
+) {
+
+  const coefVoc =
+    parseFloat(
+      moduloSelecionadoCatalogo.coeficiente_voc_percentual_c
+    );
+
+  const temperaturaMin =
+    parseFloat(
+      moduloSelecionadoCatalogo.temperatura_operacao_min_c
+    );
+
+  const temperaturaReferencia = 25;
+
+  const variacaoTemperatura =
+    temperaturaMin -
+    temperaturaReferencia;
+
+  const fatorTemperatura =
+    1 +
+    (coefVoc / 100) *
+    variacaoTemperatura;
+
+  const vocModuloCorrigido =
+    vocModulo *
+    fatorTemperatura;
+
+  vocStringCorrigido =
+    vocModuloCorrigido *
+    modulosPorString;
+}
+
     /* ================================
      ANÁLISE DE TENSÃO DA STRING
   ================================= */
@@ -3017,12 +3056,12 @@ function calcularSistema() {
   ) {
 
     if (
-      vocString > tensaoMaxEntrada
-    ) {
+  vocStringCorrigido > tensaoMaxEntrada
+) {
 
       alertaTensao.textContent =
         "❌ ERRO: Voc da string (" +
-        vocString.toFixed(2).replace(".", ",") +
+        vocStringCorrigido.toFixed(2).replace(".", ",") +
         " V) ultrapassa a tensão máxima de entrada do inversor (" +
         tensaoMaxEntrada.toFixed(2).replace(".", ",") +
         " V).";
