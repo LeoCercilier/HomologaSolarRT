@@ -1723,12 +1723,17 @@ if (modulo) {
       error: erroInversor
     } = await supabaseClient
       .from("inversores")
-      .select(`
-        fabricante,
-        modelo,
-        potencia_ac_kw,
-        tensao_max_dc_v
-      `)
+.select(`
+  fabricante,
+  modelo,
+  potencia_ac_kw,
+  tensao_max_dc_v,
+  faixa_mppt_min_v,
+  faixa_mppt_max_v,
+  corrente_max_dc_a,
+  numero_mppt,
+  strings_por_mppt
+`)
       .eq(
         "id",
         equipamento.inversor_id
@@ -1795,6 +1800,31 @@ if (inversor) {
     "numero_fases"
   ).value =
     inversor.numero_fases || "";
+
+	  document.getElementById(
+    "tensao_mppt_min_v"
+  ).value =
+    inversor.faixa_mppt_min_v || "";
+
+  document.getElementById(
+    "tensao_mppt_max_v"
+  ).value =
+    inversor.faixa_mppt_max_v || "";
+
+  document.getElementById(
+    "corrente_max_mppt_a"
+  ).value =
+    inversor.corrente_max_dc_a || "";
+
+  document.getElementById(
+    "quantidade_mppt"
+  ).value =
+    inversor.numero_mppt || "";
+
+  document.getElementById(
+    "strings_por_mppt"
+  ).value =
+    inversor.strings_por_mppt || "";
 
   calcularSistema();
 
