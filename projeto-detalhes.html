@@ -573,11 +573,25 @@ Carregando projeto...
 <div class="grid">
 
 <div class="campo">
+<strong>Módulo do catálogo INMETRO</strong>
+
+<select
+  id="selecao_modulo"
+  onchange="selecionarModuloCatalogo()"
+>
+  <option value="">
+    Selecione um módulo
+  </option>
+</select>
+
+</div>
+
+<div class="campo">
 <strong>Fabricante</strong>
 <input
   type="text"
   id="fabricante_modulo"
-  placeholder="Ex.: Jinko"
+  readonly
 >
 </div>
 
@@ -586,7 +600,7 @@ Carregando projeto...
 <input
   type="text"
   id="modelo_modulo"
-  placeholder="Ex.: Tiger Neo"
+  readonly
 >
 </div>
 
@@ -720,11 +734,25 @@ Carregando projeto...
 <div class="grid">
 
 <div class="campo">
+<strong>Inversor do catálogo INMETRO</strong>
+
+<select
+  id="selecao_inversor"
+  onchange="selecionarInversorCatalogo()"
+>
+  <option value="">
+    Selecione um inversor
+  </option>
+</select>
+
+</div>
+
+<div class="campo">
 <strong>Fabricante</strong>
 <input
   type="text"
   id="fabricante_inversor"
-  placeholder="Ex.: Growatt"
+  readonly
 >
 </div>
 
@@ -733,7 +761,7 @@ Carregando projeto...
 <input
   type="text"
   id="modelo_inversor"
-  placeholder="Ex.: MIN 8000TL-X"
+  readonly
 >
 </div>
 
@@ -1431,6 +1459,8 @@ if (botaoProjeto) {
 await carregarProjeto();
 
 await carregarSistema();
+	  
+await carregarCatalogoEquipamentos();
 
 await criarChecklistDocumentos();
 
@@ -3494,7 +3524,449 @@ async function carregarSistema() {
 
 }
 
+/* =========================================
+   CATÁLOGO DE EQUIPAMENTOS INMETRO
+========================================= */
 
+let catalogoModulos = [];
+let catalogoInversores = [];
+
+
+/* =========================================
+   CARREGAR CATÁLOGO
+========================================= */
+
+async function carregarCatalogoEquipamentos() {
+
+  try {
+
+    const {
+      data: equipamentos,
+      error: erroEquipamentos
+    } = await supabaseClient
+      .from("equipamentos_fotovoltaicos")
+      .select(`
+        id,
+        tipo,
+        fabricante_id,
+        modelo,
+        potencia_w,
+        eficiencia_percentual,
+        voc_v,
+        vmp_v,
+        isc_a,
+        imp_a,
+        potencia_nominal_kw,
+        tensao_maxima_v,
+        tensao_cc_maxima_v,
+        tensao_mppt_min_v,
+        tensao_mppt_max_v,
+        corrente_maxima_a,
+        corrente_mppt_max_a,
+        numero_mppt,
+        entradas_por_mppt,
+        numero_fases
+      `)
+      .eq("ativo", true)
+      .order("fabricante_id")
+      .order("modelo");
+
+
+    if (erroEquipamentos)
+      throw erroEquipamentos;
+
+
+    if (!equipamentos)
+      return;
+
+
+    /*
+    =========================================
+    FABRICANTES
+    =========================================
+    */
+
+    const {
+      data: fabricantes,
+      error: erroFabricantes
+    } = await supabaseClient
+      .from("fabricantes_equipamentos")
+      .select("id,nome")
+      .eq("ativo", true);
+
+
+    if (erroFabricantes)
+      throw erroFabricantes;
+
+
+    /*
+    =========================================
+    REGISTROS INMETRO
+    =========================================
+    */
+
+    const {
+      data: registros,
+      error: erroRegistros
+    } = await supabaseClient
+      .from("registros_inmetro_equipamentos")
+      .select(`
+        equipamento_id,
+        numero_registro,
+        situacao,
+        ativo
+      `)
+      .eq("ativo", true);
+
+
+    if (erroRegistros)
+      throw erroRegistros;
+
+
+    const mapaFabricantes = {};
+
+    (fabricantes || []).forEach(
+      fabricante => {
+
+        mapaFabricantes[
+          fabricante.id
+        ] = fabricante.nome;
+
+      }
+    );
+
+
+    const mapaRegistros = {};
+
+    (registros || []).forEach(
+      registro => {
+
+        mapaRegistros[
+          registro.equipamento_id
+        ] = registro;
+
+      }
+    );
+
+
+    /*
+    =========================================
+    MONTAR CATÁLOGO
+    =========================================
+    */
+
+    const equipamentosCompletos =
+      equipamentos.map(equipamento => ({
+
+        ...equipamento,
+
+        fabricante:
+          mapaFabricantes[
+            equipamento.fabricante_id
+          ] || "",
+
+        registro_inmetro:
+          mapaRegistros[
+            equipamento.id
+          ] || null
+
+      }));
+
+
+    catalogoModulos =
+      equipamentosCompletos.filter(
+        equipamento =>
+          equipamento.tipo === "modulo"
+      );
+
+
+    catalogoInversores =
+      equipamentosCompletos.filter(
+        equipamento =>
+          equipamento.tipo === "inversor"
+      );
+
+
+    preencherListaModulos();
+
+    preencherListaInversores();
+
+
+  } catch (erro) {
+
+    console.error(
+      "Erro ao carregar catálogo:",
+      erro
+    );
+
+  }
+
+}
+
+
+/* =========================================
+   PREENCHER LISTA DE MÓDULOS
+========================================= */
+
+function preencherListaModulos() {
+
+  const select =
+    document.getElementById(
+      "selecao_modulo"
+    );
+
+
+  if (!select)
+    return;
+
+
+  select.innerHTML =
+    `<option value="">
+       Selecione um módulo
+     </option>`;
+
+
+  catalogoModulos.forEach(
+    modulo => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      option.value =
+        modulo.id;
+
+
+      option.textContent =
+        `${modulo.fabricante} — ` +
+        `${modulo.modelo} — ` +
+        `${modulo.potencia_w || ""} W`;
+
+
+      select.appendChild(
+        option
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================
+   PREENCHER LISTA DE INVERSORES
+========================================= */
+
+function preencherListaInversores() {
+
+  const select =
+    document.getElementById(
+      "selecao_inversor"
+    );
+
+
+  if (!select)
+    return;
+
+
+  select.innerHTML =
+    `<option value="">
+       Selecione um inversor
+     </option>`;
+
+
+  catalogoInversores.forEach(
+    inversor => {
+
+      const option =
+        document.createElement(
+          "option"
+        );
+
+
+      option.value =
+        inversor.id;
+
+
+      option.textContent =
+        `${inversor.fabricante} — ` +
+        `${inversor.modelo} — ` +
+        `${inversor.potencia_nominal_kw || ""} kW`;
+
+
+      select.appendChild(
+        option
+      );
+
+    }
+  );
+
+}
+
+
+/* =========================================
+   SELECIONAR MÓDULO
+========================================= */
+
+function selecionarModuloCatalogo() {
+
+  const select =
+    document.getElementById(
+      "selecao_modulo"
+    );
+
+
+  const modulo =
+    catalogoModulos.find(
+      equipamento =>
+        equipamento.id ===
+        select.value
+    );
+
+
+  if (!modulo)
+    return;
+
+
+  document.getElementById(
+    "fabricante_modulo"
+  ).value =
+    modulo.fabricante || "";
+
+
+  document.getElementById(
+    "modelo_modulo"
+  ).value =
+    modulo.modelo || "";
+
+
+  document.getElementById(
+    "potencia_modulo_w"
+  ).value =
+    modulo.potencia_w || "";
+
+
+  document.getElementById(
+    "voc_modulo"
+  ).value =
+    modulo.voc_v || "";
+
+
+  document.getElementById(
+    "vmp_modulo"
+  ).value =
+    modulo.vmp_v || "";
+
+
+  document.getElementById(
+    "isc_modulo"
+  ).value =
+    modulo.isc_a || "";
+
+
+  document.getElementById(
+    "imp_modulo"
+  ).value =
+    modulo.imp_a || "";
+
+
+  calcularSistema();
+
+}
+
+
+/* =========================================
+   SELECIONAR INVERSOR
+========================================= */
+
+function selecionarInversorCatalogo() {
+
+  const select =
+    document.getElementById(
+      "selecao_inversor"
+    );
+
+
+  const inversor =
+    catalogoInversores.find(
+      equipamento =>
+        equipamento.id ===
+        select.value
+    );
+
+
+  if (!inversor)
+    return;
+
+
+  document.getElementById(
+    "fabricante_inversor"
+  ).value =
+    inversor.fabricante || "";
+
+
+  document.getElementById(
+    "modelo_inversor"
+  ).value =
+    inversor.modelo || "";
+
+
+  document.getElementById(
+    "potencia_inversor_kw"
+  ).value =
+    inversor.potencia_nominal_kw || "";
+
+
+  document.getElementById(
+    "tensao_max_entrada_v"
+  ).value =
+    inversor.tensao_cc_maxima_v ||
+    inversor.tensao_maxima_v ||
+    "";
+
+
+  document.getElementById(
+    "tensao_mppt_min_v"
+  ).value =
+    inversor.tensao_mppt_min_v || "";
+
+
+  document.getElementById(
+    "tensao_mppt_max_v"
+  ).value =
+    inversor.tensao_mppt_max_v || "";
+
+
+  document.getElementById(
+    "corrente_max_mppt_a"
+  ).value =
+    inversor.corrente_mppt_max_a ||
+    inversor.corrente_maxima_a ||
+    "";
+
+
+  document.getElementById(
+    "quantidade_mppt"
+  ).value =
+    inversor.numero_mppt || "";
+
+
+  document.getElementById(
+    "strings_por_mppt"
+  ).value =
+    inversor.entradas_por_mppt || "";
+
+
+  calcularSistema();
+
+}
+
+
+/* =========================================
+   CARREGAR CATÁLOGO AO ABRIR A PÁGINA
+========================================= */
   
 
   async function criarChecklistDocumentos() {
