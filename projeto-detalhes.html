@@ -3559,13 +3559,39 @@ if (
 
 async function carregarSistema() {
 
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("sistemas_fotovoltaicos")
-    .select("*")
+    const {
+    data: equipamento,
+    error: erroEquipamento
+  } = await supabaseClient
+    .from("projeto_equipamentos")
+    .select(`
+      quantidade_modulos,
+      quantidade_inversores,
+
+      modulo:modulos (
+        id,
+        fabricante,
+        modelo,
+        potencia_w,
+        voc_v,
+        vmpp_v,
+        isc_a,
+        impp_a
+      ),
+
+      inversor:inversores (
+        id,
+        fabricante,
+        modelo,
+        potencia_ac_kw,
+        tensao_max_dc_v,
+        corrente_max_dc_a,
+        numero_mppt,
+        strings_por_mppt,
+        faixa_mppt_min_v,
+        faixa_mppt_max_v
+      )
+    `)
     .eq(
       "projeto_id",
       projetoId
@@ -3577,156 +3603,174 @@ async function carregarSistema() {
     .maybeSingle();
 
 
-  if (error)
-    throw error;
+	  if (erroEquipamento)
+    throw erroEquipamento;
 
 
-  sistemaAtual = data;
-
-
-  if (!data)
+  if (!equipamento)
     return;
 
 
-  document.getElementById(
-    "fabricante_modulo"
-  ).value =
-    data.fabricante_modulo || "";
+  sistemaAtual = equipamento;
 
 
-  document.getElementById(
-    "modelo_modulo"
-  ).value =
-    data.modelo_modulo || "";
+  /* =========================================
+     MÓDULO
+  ========================================= */
+
+  if (equipamento.modulo) {
+
+    document.getElementById(
+      "fabricante_modulo"
+    ).value =
+      equipamento.modulo.fabricante || "";
 
 
-  document.getElementById(
-    "potencia_modulo_w"
-  ).value =
-    data.potencia_modulo_w || "";
+    document.getElementById(
+      "modelo_modulo"
+    ).value =
+      equipamento.modulo.modelo || "";
 
 
-  document.getElementById(
-    "quantidade_modulos"
-  ).value =
-    data.quantidade_modulos || "";
-
-  document.getElementById(
-  "voc_modulo"
-).value =
-  data.voc_modulo || "";
-
-document.getElementById(
-  "vmp_modulo"
-).value =
-  data.vmp_modulo || "";
-
-document.getElementById(
-  "isc_modulo"
-).value =
-  data.isc_modulo || "";
-
-document.getElementById(
-  "imp_modulo"
-).value =
-  data.imp_modulo || "";
-
-document.getElementById(
-  "quantidade_strings"
-).value =
-  data.quantidade_strings || "";
-
-document.getElementById(
-  "modulos_por_string"
-).value =
-  data.modulos_por_string || "";
-
-document.getElementById(
-  "quantidade_mppt"
-).value =
-  data.quantidade_mppt || "";
-
-document.getElementById(
-  "strings_por_mppt"
-).value =
-  data.strings_por_mppt || "";
-
-  document.getElementById(
-    "fabricante_inversor"
-  ).value =
-    data.fabricante_inversor || "";
+    document.getElementById(
+      "potencia_modulo_w"
+    ).value =
+      equipamento.modulo.potencia_w || "";
 
 
-  document.getElementById(
-    "modelo_inversor"
-  ).value =
-    data.modelo_inversor || "";
+    document.getElementById(
+      "quantidade_modulos"
+    ).value =
+      equipamento.quantidade_modulos || 1;
 
 
-  document.getElementById(
-    "potencia_inversor_kw"
-  ).value =
-    data.potencia_inversor_kw || "";
+    document.getElementById(
+      "voc_modulo"
+    ).value =
+      equipamento.modulo.voc_v || "";
 
 
-  document.getElementById(
-    "quantidade_inversores"
-  ).value =
-    data.quantidade_inversores || "";
+    document.getElementById(
+      "vmp_modulo"
+    ).value =
+      equipamento.modulo.vmpp_v || "";
 
-  document.getElementById(
-  "tensao_max_entrada_v"
-).value =
-  data.tensao_max_entrada_v || "";
 
-document.getElementById(
-  "tensao_mppt_min_v"
-).value =
-  data.tensao_mppt_min_v || "";
+    document.getElementById(
+      "isc_modulo"
+    ).value =
+      equipamento.modulo.isc_a || "";
 
-document.getElementById(
-  "tensao_mppt_max_v"
-).value =
-  data.tensao_mppt_max_v || "";
 
-document.getElementById(
-  "corrente_max_mppt_a"
-).value =
-  data.corrente_max_mppt_a || "";
+    document.getElementById(
+      "imp_modulo"
+    ).value =
+      equipamento.modulo.impp_a || "";
+
+  }
+
+
+  /* =========================================
+     INVERSOR
+  ========================================= */
+
+  if (equipamento.inversor) {
+
+    document.getElementById(
+      "fabricante_inversor"
+    ).value =
+      equipamento.inversor.fabricante || "";
+
+
+    document.getElementById(
+      "modelo_inversor"
+    ).value =
+      equipamento.inversor.modelo || "";
+
+
+    document.getElementById(
+      "potencia_inversor_kw"
+    ).value =
+      equipamento.inversor.potencia_ac_kw || "";
+
+
+    document.getElementById(
+      "quantidade_inversores"
+    ).value =
+      equipamento.quantidade_inversores || 1;
+
+
+    document.getElementById(
+      "tensao_max_entrada_v"
+    ).value =
+      equipamento.inversor.tensao_max_dc_v || "";
+
+
+    document.getElementById(
+      "tensao_mppt_min_v"
+    ).value =
+      equipamento.inversor.faixa_mppt_min_v || "";
+
+
+    document.getElementById(
+      "tensao_mppt_max_v"
+    ).value =
+      equipamento.inversor.faixa_mppt_max_v || "";
+
+
+    document.getElementById(
+      "corrente_max_mppt_a"
+    ).value =
+      equipamento.inversor.corrente_max_dc_a || "";
+
+
+    document.getElementById(
+      "quantidade_mppt"
+    ).value =
+      equipamento.inversor.numero_mppt || "";
+
+
+    document.getElementById(
+      "strings_por_mppt"
+    ).value =
+      equipamento.inversor.strings_por_mppt || "";
+
+  }
+
+
+  /* =========================================
+     DADOS DA UNIDADE CONSUMIDORA
+  ========================================= */
 
   document.getElementById(
     "distribuidora"
-  ).value =
-    data.distribuidora || "";
+  ).value = "";
 
 
   document.getElementById(
     "tipo_ligacao"
-  ).value =
-    data.tipo_ligacao || "";
+  ).value = "";
 
 
   document.getElementById(
     "numero_fases"
-  ).value =
-    data.numero_fases || "";
+  ).value = "";
 
 
   document.getElementById(
     "tensao_nominal"
-  ).value =
-    data.tensao_nominal || "";
+  ).value = "";
 
 
   document.getElementById(
     "observacoes_sistema"
-  ).value =
-    data.observacoes || "";
+  ).value = "";
 
 
   calcularSistema();
 
 }
+  
 
   async function criarChecklistDocumentos() {
 
