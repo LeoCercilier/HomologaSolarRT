@@ -1431,8 +1431,18 @@ await carregarDocumentos();
 
 await carregarDocumentosUpload();
 	  
-	}
+	  }
   catch (erro) {
+
+    console.error(
+      "ERRO COMPLETO AO CARREGAR PROJETO:",
+      erro
+    );
+
+    alert(
+      "ERRO AO CARREGAR: " +
+      (erro?.message || erro)
+    );
 
     mostrarErro(
       erro.message
@@ -1440,7 +1450,7 @@ await carregarDocumentosUpload();
 
   }
 
-}
+	}
 
 
 /* =========================================
