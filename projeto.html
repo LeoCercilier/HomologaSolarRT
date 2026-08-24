@@ -2383,8 +2383,8 @@ VINCULAR EQUIPAMENTOS
 ========================================= */
 
 if (
-    moduloSelecionado ||
-    inversorSelecionado
+    document.getElementById("modulo_modelo").value ||
+    document.getElementById("inversor_modelo").value
 ) {
 
     let dadosVinculo = {
@@ -2414,109 +2414,141 @@ if (
     MÓDULO
     ========================================= */
 
-    if (moduloSelecionado) {
+    if (
+    document.getElementById("modulo_modelo").value
+) {
 
-        const {
-            data: modulo,
-            error: erroModulo
-        } = await supabaseClient
+    const modeloSelecionado =
+        document.getElementById(
+            "modulo_modelo"
+        ).value;
 
-            .from("modulos")
+    const {
+        data: moduloCatalogo,
+        error: erroModulo
+    } = await supabaseClient
+        .from("equipamentos_fotovoltaicos")
+        .select(`
+            id,
+            modelo,
+            fabricante_id
+        `)
+        .eq(
+            "id",
+            modeloSelecionado
+        )
+        .maybeSingle();
 
-            .select("id")
+    if (erroModulo)
+        throw erroModulo;
 
-            .eq(
-                "modelo",
-                moduloSelecionado.modelo
-            )
-
-            .eq(
-                "fabricante",
-                moduloSelecionado.fabricante
-            )
-
-            .maybeSingle();
-
-
-        if (erroModulo)
-            throw erroModulo;
-
-
-        if (!modulo) {
-
-            throw new Error(
-                "Módulo não encontrado no catálogo de módulos."
-            );
-
-        }
-
-
-        dadosVinculo.modulo_id =
-            modulo.id;
-
-
-        dadosVinculo.quantidade_modulos =
-            Number(
-                document.getElementById(
-                    "quantidade_modulos"
-                ).value
-            ) || 1;
-
+    if (!moduloCatalogo) {
+        throw new Error(
+            "Módulo selecionado não encontrado no catálogo."
+        );
     }
+
+    const {
+        data: modulo,
+        error: erroModuloFinal
+    } = await supabaseClient
+        .from("modulos")
+        .select("id")
+        .eq(
+            "modelo",
+            moduloCatalogo.modelo
+        )
+        .maybeSingle();
+
+    if (erroModuloFinal)
+        throw erroModuloFinal;
+
+    if (!modulo) {
+        throw new Error(
+            "Módulo não encontrado no catálogo de módulos."
+        );
+    }
+
+    dadosVinculo.modulo_id =
+        modulo.id;
+
+    dadosVinculo.quantidade_modulos =
+        Number(
+            document.getElementById(
+                "quantidade_modulos"
+            ).value
+        ) || 1;
+        }
 
 
     /* =========================================
     INVERSOR
     ========================================= */
 
-    if (inversorSelecionado) {
+    if (
+    document.getElementById("inversor_modelo").value
+) {
 
-        const {
-            data: inversor,
-            error: erroInversor
-        } = await supabaseClient
+    const modeloSelecionado =
+        document.getElementById(
+            "inversor_modelo"
+        ).value;
 
-            .from("inversores")
+    const {
+        data: inversorCatalogo,
+        error: erroInversor
+    } = await supabaseClient
+        .from("equipamentos_fotovoltaicos")
+        .select(`
+            id,
+            modelo,
+            fabricante_id
+        `)
+        .eq(
+            "id",
+            modeloSelecionado
+        )
+        .maybeSingle();
 
-            .select("id")
+    if (erroInversor)
+        throw erroInversor;
 
-            .eq(
-                "modelo",
-                inversorSelecionado.modelo
-            )
+    if (!inversorCatalogo) {
+        throw new Error(
+            "Inversor selecionado não encontrado no catálogo."
+        );
+    }
 
-            .eq(
-                "fabricante",
-                inversorSelecionado.fabricante
-            )
+    const {
+        data: inversor,
+        error: erroInversorFinal
+    } = await supabaseClient
+        .from("inversores")
+        .select("id")
+        .eq(
+            "modelo",
+            inversorCatalogo.modelo
+        )
+        .maybeSingle();
 
-            .maybeSingle();
+    if (erroInversorFinal)
+        throw erroInversorFinal;
 
+    if (!inversor) {
+        throw new Error(
+            "Inversor não encontrado no catálogo de inversores."
+        );
+    }
 
-        if (erroInversor)
-            throw erroInversor;
+    dadosVinculo.inversor_id =
+        inversor.id;
 
-
-        if (!inversor) {
-
-            throw new Error(
-                "Inversor não encontrado no catálogo de inversores."
-            );
-
-        }
-
-
-        dadosVinculo.inversor_id =
-            inversor.id;
-
-
-        dadosVinculo.quantidade_inversores =
-            Number(
-                document.getElementById(
-                    "quantidade_inversores"
-                ).value
-            ) || 1;
-
+    dadosVinculo.quantidade_inversores =
+        Number(
+            document.getElementById(
+                "quantidade_inversores"
+            ).value
+        ) || 1;
     }
 
 
