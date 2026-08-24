@@ -1097,7 +1097,14 @@ function obterProjetoId() {
       window.location.search
     );
 
-  return parametros.get("id");
+  let id = parametros.get("id");
+
+  /* Remove cache-buster acidental: ?id=uuid?v2 */
+  if (id && id.includes("?")) {
+    id = id.split("?")[0];
+  }
+
+  return id;
 
 }
 	const parametrosURL =
@@ -1604,228 +1611,12 @@ async function carregarProjeto() {
   ).textContent =
     data.observacoes || "Nenhuma observação.";
 
-	/* =========================================
-   EQUIPAMENTOS DO PROJETO
-========================================= */
+  /* Equipamentos: responsabilidade de carregarSistema().
+     Sempre exibe o conteúdo, mesmo sem equipamentos. */
+  document.getElementById("carregando").style.display = "none";
+  document.getElementById("conteudo").style.display = "block";
 
-const {
-  data: equipamentosProjeto,
-  error: erroEquipamentos
-} = await supabaseClient
-  .from("projeto_equipamentos")
-  .select(`
-    id,
-    modulo_id,
-    inversor_id,
-    quantidade_modulos,
-    quantidade_inversores
-  `)
-  .eq(
-    "projeto_id",
-    projetoId
-  )
-  .eq(
-    "organizacao_id",
-    organizacaoAtual
-  );
-
-if (erroEquipamentos)
-  throw erroEquipamentos;
-
-
-/* =========================================
-   CARREGAR MÓDULO
-========================================= */
-
-if (
-  equipamentosProjeto &&
-  equipamentosProjeto.length > 0
-) {
-
-  const equipamento =
-    equipamentosProjeto[0];
-
-
-  if (equipamento.modulo_id) {
-
-    const {
-      data: modulo,
-      error: erroModulo
-    } = await supabaseClient
-      .from("modulos")
-      .select(`
-        fabricante,
-        modelo,
-        potencia_w,
-        eficiencia,
-        voc_v,
-        isc_a,
-        vmpp_v,
-        impp_a
-      `)
-      .eq(
-        "id",
-        equipamento.modulo_id
-      )
-      .maybeSingle();
-
-
-    if (erroModulo)
-      throw erroModulo;
-
-if (modulo) {
-
-  document.getElementById(
-    "fabricante_modulo"
-  ).value =
-    modulo.fabricante || "";
-
-  document.getElementById(
-    "modelo_modulo"
-  ).value =
-    modulo.modelo || "";
-
-  document.getElementById(
-    "potencia_modulo_w"
-  ).value =
-    modulo.potencia_w || "";
-
-  document.getElementById(
-    "voc_modulo"
-  ).value =
-    modulo.voc_v || "";
-
-  document.getElementById(
-    "vmp_modulo"
-  ).value =
-    modulo.vmpp_v || "";
-
-  document.getElementById(
-    "isc_modulo"
-  ).value =
-    modulo.isc_a || "";
-
-  document.getElementById(
-    "imp_modulo"
-  ).value =
-    modulo.impp_a || "";
-
-  document.getElementById(
-    "quantidade_modulos"
-  ).value =
-    equipamento.quantidade_modulos || 1;
-	
-	calcularSistema();
-
-	}
-
-  }
-
-
-  /* =========================================
-     CARREGAR INVERSOR
-  ========================================= */
-
-  if (equipamento.inversor_id) {
-
-    const {
-      data: inversor,
-      error: erroInversor
-    } = await supabaseClient
-      .from("inversores")
-.select(`
-  fabricante,
-  modelo,
-  potencia_ac_kw,
-  tensao_max_dc_v,
-  faixa_mppt_min_v,
-  faixa_mppt_max_v,
-  corrente_max_dc_a,
-  numero_mppt,
-  strings_por_mppt
-`)
-      .eq(
-        "id",
-        equipamento.inversor_id
-      )
-      .maybeSingle();
-
-
-    if (erroInversor)
-      throw erroInversor;
-
-if (inversor) {
-
-  document.getElementById(
-    "fabricante_inversor"
-  ).value =
-    inversor.fabricante || "";
-
-  document.getElementById(
-    "modelo_inversor"
-  ).value =
-    inversor.modelo || "";
-
-  document.getElementById(
-    "potencia_inversor_kw"
-  ).value =
-    inversor.potencia_ac_kw || "";
-
-  document.getElementById(
-    "quantidade_inversores"
-  ).value =
-    equipamento.quantidade_inversores || 1;
-
-  document.getElementById(
-    "tensao_max_entrada_v"
-  ).value =
-    inversor.tensao_max_dc_v || "";
-
-  document.getElementById(
-    "tensao_mppt_min_v"
-  ).value =
-    inversor.faixa_mppt_min_v || "";
-
-  document.getElementById(
-    "tensao_mppt_max_v"
-  ).value =
-    inversor.faixa_mppt_max_v || "";
-
-  document.getElementById(
-    "corrente_max_mppt_a"
-  ).value =
-    inversor.corrente_max_dc_a || "";
-
-  document.getElementById(
-    "quantidade_mppt"
-  ).value =
-    inversor.numero_mppt || "";
-
-  document.getElementById(
-    "strings_por_mppt"
-  ).value =
-    inversor.strings_por_mppt || "";
-
-  calcularSistema();
-
-}
-
-
-    
-
-
-  document.getElementById(
-    "carregando"
-  ).style.display =
-    "none";
-
-
-  document.getElementById(
-    "conteudo"
-  ).style.display =
-    "block";
-
-}
+} /* fim carregarProjeto */
 
 	/* =========================================
    AÇÃO DO BOTÃO DE PROJETO
