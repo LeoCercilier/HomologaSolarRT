@@ -3694,6 +3694,9 @@ async function carregarSistema() {
 let catalogoModulos = [];
 let catalogoInversores = [];
 
+let moduloSelecionadoCatalogo = null;
+let inversorSelecionadoCatalogo = null;
+
 
 /* =========================================
    CARREGAR CATÁLOGO
@@ -4034,6 +4037,8 @@ function selecionarModuloCatalogo() {
   ).value =
     modulo.imp_a || "";
 
+	  // Dados técnicos adicionais do catálogo
+  moduloSelecionadoCatalogo = modulo;
 
   calcularSistema();
 
@@ -4116,16 +4121,17 @@ function selecionarInversorCatalogo() {
     inversor.numero_mppt || "";
 
 
-  document.getElementById(
+    document.getElementById(
     "strings_por_mppt"
   ).value =
     inversor.entradas_por_mppt || "";
 
+  // Dados técnicos adicionais do catálogo
+  inversorSelecionadoCatalogo = inversor;
 
   calcularSistema();
 
 }
-
 
 /* =========================================
    CARREGAR CATÁLOGO AO ABRIR A PÁGINA
