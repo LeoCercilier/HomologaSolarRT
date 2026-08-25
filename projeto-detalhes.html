@@ -3394,11 +3394,12 @@ if (
   );
   }
 
-  if (
-    vocString > 0 &&
-    tensaoMaxEntrada > 0 &&
-    vocString > tensaoMaxEntrada
-  ) {
+if (
+  vocStringCorrigido > 0 &&
+  tensaoMaxEntrada > 0 &&
+  vocStringCorrigido > tensaoMaxEntrada
+) {
+	
     problemasTecnicos.push(
       "Voc da string ultrapassa a tensão máxima do inversor."
     );
@@ -3509,16 +3510,18 @@ async function carregarSistema() {
       } = await supabaseClient
         .from("equipamentos_fotovoltaicos")
         .select(`
-          id,
-          tipo,
-          fabricante_id,
-          modelo,
-          potencia_w,
-          voc_v,
-          vmp_v,
-          isc_a,
-          imp_a
-        `)
+  id,
+  tipo,
+  fabricante_id,
+  modelo,
+  potencia_w,
+  voc_v,
+  vmp_v,
+  isc_a,
+  imp_a,
+  coeficiente_voc_percentual_c,
+  temperatura_operacao_min_c
+`)
         .eq("id", equipamento.modulo_id)
         .eq("tipo", "modulo")
         .maybeSingle();
@@ -3529,6 +3532,8 @@ async function carregarSistema() {
 
       if (modulo) {
 
+		  moduloSelecionadoCatalogo = modulo;
+		  
         const {
           data: fabricante,
           error: erroFabricante
@@ -3651,7 +3656,9 @@ async function carregarSistema() {
 
       if (inversor) {
 
-        const {
+  inversorSelecionadoCatalogo = inversor;
+
+          const {
           data: fabricante,
           error: erroFabricante
         } = await supabaseClient
