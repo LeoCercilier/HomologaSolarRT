@@ -2998,7 +2998,9 @@ if (
   modulosPorString +
   " módulos: Vmp " +
   vmpString.toFixed(2).replace(".", ",") +
-  " V | Voc " +
+  " V | Voc nominal " +
+  vocString.toFixed(2).replace(".", ",") +
+  " V | Voc corrigido " +
   vocStringCorrigido.toFixed(2).replace(".", ",") +
   " V.";
 
@@ -3186,11 +3188,18 @@ const correnteMppt =
 
 
   document.getElementById(
-    "vmpString"
-  ).textContent =
-    vmpString.toFixed(2)
-    .replace(".", ",")
-    + " V";
+  "vocString"
+).textContent =
+  vocString.toFixed(2)
+  .replace(".", ",")
+  + " V";
+
+document.getElementById(
+  "vocString"
+).parentElement.setAttribute(
+  "title",
+  "Voc nominal da string. A validação de segurança utiliza o Voc corrigido para a temperatura mínima de operação."
+);
 
 
   document.getElementById(
