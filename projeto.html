@@ -2448,29 +2448,8 @@ if (
         );
     }
 
-    const {
-        data: modulo,
-        error: erroModuloFinal
-    } = await supabaseClient
-        .from("modulos")
-        .select("id")
-        .eq(
-            "modelo",
-            moduloCatalogo.modelo
-        )
-        .maybeSingle();
-
-    if (erroModuloFinal)
-        throw erroModuloFinal;
-
-    if (!modulo) {
-        throw new Error(
-            "Módulo não encontrado no catálogo de módulos."
-        );
-    }
-
     dadosVinculo.modulo_id =
-        modulo.id;
+        moduloCatalogo.id;
 
     dadosVinculo.quantidade_modulos =
         Number(
@@ -2478,7 +2457,7 @@ if (
                 "quantidade_modulos"
             ).value
         ) || 1;
-        }
+    }
 
 
     /* =========================================
@@ -2519,29 +2498,8 @@ if (
         );
     }
 
-    const {
-        data: inversor,
-        error: erroInversorFinal
-    } = await supabaseClient
-        .from("inversores")
-        .select("id")
-        .eq(
-            "modelo",
-            inversorCatalogo.modelo
-        )
-        .maybeSingle();
-
-    if (erroInversorFinal)
-        throw erroInversorFinal;
-
-    if (!inversor) {
-        throw new Error(
-            "Inversor não encontrado no catálogo de inversores."
-        );
-    }
-
     dadosVinculo.inversor_id =
-        inversor.id;
+        inversorCatalogo.id;
 
     dadosVinculo.quantidade_inversores =
         Number(
