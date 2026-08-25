@@ -3128,8 +3128,11 @@ if (
     ) || 0;
 
   const correnteMppt =
-    impModulo *
-    stringsPorMppt;
+  impModulo *
+  Math.min(
+    quantidadeStrings,
+    stringsPorMppt
+  );
 
   /* ================================
      RESULTADO DA CORRENTE DO MPPT
