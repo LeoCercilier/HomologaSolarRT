@@ -3127,12 +3127,15 @@ if (
       ).value
     ) || 0;
 
-  const correnteMppt =
-  impModulo *
-  Math.min(
-    quantidadeStrings,
-    stringsPorMppt
+  const stringsNoMpptMaisCarregado =
+  Math.ceil(
+    quantidadeStrings /
+    quantidadeMppt
   );
+
+const correnteMppt =
+  impModulo *
+  stringsNoMpptMaisCarregado;
 
   /* ================================
      RESULTADO DA CORRENTE DO MPPT
