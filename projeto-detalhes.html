@@ -3495,6 +3495,118 @@ async function carregarSistema() {
     if (!equipamento)
       return;
 
+	/* =========================================
+   CARREGAR DADOS DO SISTEMA FOTOVOLTAICO
+========================================= */
+
+const {
+  data: sistema,
+  error: erroSistema
+} = await supabaseClient
+  .from("sistemas_fotovoltaicos")
+  .select(`
+    quantidade_strings,
+    modulos_por_string,
+    quantidade_mppt,
+    strings_por_mppt,
+    voc_modulo,
+    vmp_modulo,
+    isc_modulo,
+    imp_modulo,
+    distribuidora,
+    tipo_ligacao,
+    numero_fases,
+    tensao_nominal,
+    observacoes
+  `)
+  .eq("projeto_id", projetoId)
+  .eq("organizacao_id", organizacaoAtual)
+  .maybeSingle();
+
+if (erroSistema)
+  throw erroSistema;
+
+
+if (sistema) {
+
+  const setVal = (id, valor) => {
+
+    const campo =
+      document.getElementById(id);
+
+    if (campo)
+      campo.value =
+        valor ?? "";
+
+  };
+
+  setVal(
+    "quantidade_strings",
+    sistema.quantidade_strings
+  );
+
+  setVal(
+    "modulos_por_string",
+    sistema.modulos_por_string
+  );
+
+  setVal(
+    "quantidade_mppt",
+    sistema.quantidade_mppt
+  );
+
+  setVal(
+    "strings_por_mppt",
+    sistema.strings_por_mppt
+  );
+
+  setVal(
+    "voc_modulo",
+    sistema.voc_modulo
+  );
+
+  setVal(
+    "vmp_modulo",
+    sistema.vmp_modulo
+  );
+
+  setVal(
+    "isc_modulo",
+    sistema.isc_modulo
+  );
+
+  setVal(
+    "imp_modulo",
+    sistema.imp_modulo
+  );
+
+  setVal(
+    "distribuidora",
+    sistema.distribuidora
+  );
+
+  setVal(
+    "tipo_ligacao",
+    sistema.tipo_ligacao
+  );
+
+  setVal(
+    "numero_fases",
+    sistema.numero_fases
+  );
+
+  setVal(
+    "tensao_nominal",
+    sistema.tensao_nominal
+  );
+
+  setVal(
+    "observacoes",
+    sistema.observacoes
+  );
+
+	}
+
 
     /*
     =========================================
