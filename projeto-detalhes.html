@@ -2781,6 +2781,8 @@ function mostrarErro(mensagem) {
 
 function calcularSistema() {
 
+const problemasTecnicos = [];
+	
   const potenciaModulo =
     parseFloat(
       document.getElementById(
@@ -3325,8 +3327,6 @@ if (
     document.getElementById(
       "resultadoTecnico"
     );
-
-  const problemasTecnicos = [];
 
 	  // Dados técnicos dos equipamentos selecionados no catálogo
   const dadosModulo = moduloSelecionadoCatalogo || {};
