@@ -1,6 +1,6 @@
 /* =========================================
    HOMOLOGASOLAR RT
-   MOTOR DE DOCUMENTOS (jsPDF)
+   MOTOR DE DOCUMENTOS (jsPDF - Resiliente)
    ========================================= */
 
 /* =========================================
@@ -40,7 +40,7 @@ function documentoValor(valor, padrao = "—") {
 }
 
 /* =========================================
-   OBTER DADOS DO PROJETO (MANTIDO INTACTO)
+   OBTER DADOS DO PROJETO (INTACTO)
 ========================================= */
 
 function obterDadosDocumento() {
@@ -124,20 +124,18 @@ async function gerarMemorialDescritivoPDF() {
   try {
     const dados = obterDadosDocumento();
 
-    if (typeof window.jspdf === "undefined") {
-      throw new Error("Biblioteca PDF não carregada.");
+    // Identifica o jsPDF independente de como foi importado no HTML
+    const jsPDFClass = window.jsPDF || (window.jspdf && window.jspdf.jsPDF);
+
+    if (!jsPDFClass) {
+      throw new Error("A biblioteca jsPDF não foi identificada no projeto.");
     }
 
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF("p", "mm", "a4");
+    const pdf = new jsPDFClass("p", "mm", "a4");
 
     const margem = 20;
     const largura = 170;
     let y = 20;
-
-    /* =================================
-       FUNÇÕES DO DOCUMENTO E ESTILOS
-    ================================= */
 
     function verificarPagina(altura = 10) {
       if (y + altura > 270) {
@@ -150,7 +148,7 @@ async function gerarMemorialDescritivoPDF() {
       verificarPagina(15);
       pdf.setFontSize(16);
       pdf.setFont(undefined, "bold");
-      pdf.setTextColor(26, 82, 118); // Azul Corporativo Engenharia
+      pdf.setTextColor(26, 82, 118); // Azul Corporativo
       pdf.text(sanitizarTexto(texto), margem, y);
       y += 8;
     }
@@ -159,7 +157,7 @@ async function gerarMemorialDescritivoPDF() {
       verificarPagina(12);
       pdf.setFontSize(11);
       pdf.setFont(undefined, "bold");
-      pdf.setTextColor(41, 128, 185); // Azul Secundário
+      pdf.setTextColor(41, 128, 185);
       pdf.text(sanitizarTexto(texto), margem, y);
       y += 6;
     }
@@ -182,13 +180,11 @@ async function gerarMemorialDescritivoPDF() {
     }
 
     /* =================================
-       CAPA / CABEÇALHO TÉCNICO
+       CABEÇALHO TÉCNICO
     ================================= */
-
     titulo("HOMOLOGASOLAR RT");
     subtitulo("MEMORIAL DESCRITIVO DE MICROGERAÇÃO FOTOVOLTAICA");
 
-    // Linha divisória do cabeçalho
     pdf.setDrawColor(200, 200, 200);
     pdf.setLineWidth(0.4);
     pdf.line(margem, y, margem + largura, y);
@@ -198,9 +194,8 @@ async function gerarMemorialDescritivoPDF() {
     linha("Status: " + dados.status);
 
     /* =================================
-       1. IDENTIFICAÇÃO DO CLIENTE
+       SEÇÕES DO MEMORIAL
     ================================= */
-
     espaco(4);
     subtitulo("1. IDENTIFICAÇÃO DO CLIENTE");
     linha("Nome: " + dados.cliente.nome);
@@ -208,20 +203,12 @@ async function gerarMemorialDescritivoPDF() {
     linha("Telefone: " + dados.cliente.telefone);
     linha("E-mail: " + dados.cliente.email);
 
-    /* =================================
-       2. RESPONSÁVEL TÉCNICO
-    ================================= */
-
     espaco(4);
     subtitulo("2. RESPONSÁVEL TÉCNICO");
     linha("Nome: " + dados.rt.nome);
     linha("CREA / CFT: " + dados.rt.crea);
     linha("UF CREA: " + dados.rt.uf);
     linha("Registro profissional: " + dados.rt.registro);
-
-    /* =================================
-       3. CARACTERÍSTICAS DO SISTEMA
-    ================================= */
 
     espaco(4);
     subtitulo("3. CARACTERÍSTICAS DO SISTEMA FOTOVOLTAICO");
@@ -231,20 +218,12 @@ async function gerarMemorialDescritivoPDF() {
     linha("Quantidade de módulos: " + dados.sistema.quantidadeModulos);
     linha("Potência DC instalada: " + dados.calculos.potenciaDC);
 
-    /* =================================
-       4. DADOS ELÉTRICOS DOS MÓDULOS
-    ================================= */
-
     espaco(4);
     subtitulo("4. DADOS ELÉTRICOS DOS MÓDULOS");
     linha("Voc: " + dados.sistema.vocModulo + " V");
     linha("Vmp: " + dados.sistema.vmpModulo + " V");
     linha("Isc: " + dados.sistema.iscModulo + " A");
     linha("Imp: " + dados.sistema.impModulo + " A");
-
-    /* =================================
-       5. CONFIGURAÇÃO DAS STRINGS
-    ================================= */
 
     espaco(4);
     subtitulo("5. CONFIGURAÇÃO DAS STRINGS E MPPT");
@@ -257,10 +236,6 @@ async function gerarMemorialDescritivoPDF() {
     linha("Voc da string: " + dados.calculos.vocString);
     linha("Corrente por string: " + dados.calculos.correnteString);
 
-    /* =================================
-       6. INVERSOR
-    ================================= */
-
     espaco(4);
     subtitulo("6. INVERSOR");
     linha("Fabricante: " + dados.sistema.fabricanteInversor);
@@ -270,19 +245,11 @@ async function gerarMemorialDescritivoPDF() {
     linha("Potência AC: " + dados.calculos.potenciaAC);
     linha("Ratio DC/AC: " + dados.calculos.ratioDCAC);
 
-    /* =================================
-       7. LIMITES ELÉTRICOS
-    ================================= */
-
     espaco(4);
     subtitulo("7. LIMITES ELÉTRICOS DO INVERSOR");
     linha("Tensão máxima de entrada: " + dados.sistema.tensaoMaxEntrada + " V");
     linha("Faixa MPPT: " + dados.sistema.mpptMin + " a " + dados.sistema.mpptMax + " V");
     linha("Corrente máxima por MPPT: " + dados.sistema.correnteMaxMppt + " A");
-
-    /* =================================
-       8. CONEXÃO ELÉTRICA
-    ================================= */
 
     espaco(4);
     subtitulo("8. CONEXÃO ELÉTRICA");
@@ -291,31 +258,12 @@ async function gerarMemorialDescritivoPDF() {
     linha("Número de fases: " + dados.sistema.numeroFases);
     linha("Tensão nominal: " + dados.sistema.tensaoNominal + " V");
 
-    /* =================================
-       9. ANÁLISE TÉCNICA
-    ================================= */
-
     espaco(4);
     subtitulo("9. ANÁLISE TÉCNICA E VALIDAÇÃO");
     linha("Validação estrutural: " + dados.validacao);
 
-    // Destacar o resultado técnico em bloco visual
     const resultadoSanitizado = sanitizarTexto(dados.resultadoTecnico);
-    const possuiErro = resultadoSanitizado.toUpperCase().includes("ATENÇÃO") || resultadoSanitizado.toUpperCase().includes("INCONSISTÊNCIAS") || resultadoSanitizado.toUpperCase().includes("INCOMPATÍVEL");
-
-    pdf.setFontSize(9.5);
-    pdf.setFont(undefined, "bold");
-    if (possuiErro) {
-      pdf.setTextColor(192, 57, 43); // Vermelho para Erro
-    } else {
-      pdf.setTextColor(39, 174, 96); // Verde para Aprovado
-    }
-    
     linha("Resultado técnico: " + resultadoSanitizado, true);
-
-    /* =================================
-       10. OBSERVAÇÕES
-    ================================= */
 
     espaco(4);
     subtitulo("10. OBSERVAÇÕES TÉCNICAS");
@@ -324,18 +272,15 @@ async function gerarMemorialDescritivoPDF() {
     /* =================================
        RODAPÉ E MOLDURA DE PÁGINAS
     ================================= */
-
     const totalPaginas = pdf.internal.getNumberOfPages();
 
     for (let pagina = 1; pagina <= totalPaginas; pagina++) {
       pdf.setPage(pagina);
 
-      // Moldura técnica de borda em todas as páginas
       pdf.setDrawColor(210, 210, 210);
       pdf.setLineWidth(0.3);
       pdf.rect(10, 10, 190, 277);
 
-      // Rodapé
       pdf.setFontSize(8);
       pdf.setFont(undefined, "normal");
       pdf.setTextColor(120, 120, 120);
@@ -346,7 +291,6 @@ async function gerarMemorialDescritivoPDF() {
     /* =================================
        SALVAR
     ================================= */
-
     const nomeArquivo =
       "Memorial_Descritivo_" +
       dados.projeto
@@ -363,5 +307,4 @@ async function gerarMemorialDescritivoPDF() {
       "❌ Não foi possível gerar o Memorial Descritivo.\n\n" + erro.message
     );
   }
-      }
-      
+}
