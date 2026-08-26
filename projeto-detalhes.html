@@ -2934,6 +2934,9 @@ const problemasTecnicos = [];
   vmpModulo *
   modulosPorString;
 
+document.getElementById("vmpString").textContent =
+  vmpString.toFixed(2).replace(".", ",") + " V";
+
 console.log("DEBUG VMP:", {
   vmpModulo,
   modulosPorString,
