@@ -767,3 +767,142 @@ async function gerarProcuracaoPDF() {
     alert("❌ Não foi possível gerar a Procuração de Homologação.\n\n" + erro.message);
   }
 }
+
+
+
+/* =========================================
+   4. GERADOR: DECLARAÇÃO DE RESPONSABILIDADE TÉCNICA
+========================================= */
+
+async function gerarTermoResponsabilidadePDF() {
+  try {
+    const dados = obterDadosDocumento();
+    const jsPDFClass = window.jsPDF || (window.jspdf && window.jspdf.jsPDF);
+
+    if (!jsPDFClass) {
+      throw new Error("A biblioteca jsPDF não foi identificada no projeto.");
+    }
+
+    const pdf = new jsPDFClass("p", "mm", "a4");
+    const margem = 20;
+    const largura = 170;
+    let y = 25;
+
+    function espaco(tamanho = 5) {
+      y += tamanho;
+    }
+
+    function titulo(texto) {
+      pdf.setFontSize(13);
+      pdf.setFont(undefined, "bold");
+      pdf.setTextColor(26, 82, 118);
+      pdf.text(sanitizarTexto(texto), 105, y, { align: "center" });
+      y += 7;
+    }
+
+    function subtitulo(texto) {
+      pdf.setFontSize(10);
+      pdf.setFont(undefined, "bold");
+      pdf.setTextColor(41, 128, 185);
+      pdf.text(sanitizarTexto(texto), 105, y, { align: "center" });
+      y += 6;
+    }
+
+    function blocoTexto(texto, alinhamento = "justify", tamanhoFonte = 9.5, negrito = false) {
+      pdf.setFontSize(tamanhoFonte);
+      pdf.setFont(undefined, negrito ? "bold" : "normal");
+      pdf.setTextColor(40, 40, 40);
+
+      const textoTratado = sanitizarTexto(texto);
+      const linhas = pdf.splitTextToSize(textoTratado, largura);
+
+      pdf.text(linhas, margem, y, { align: alinhamento });
+      y += linhas.length * (tamanhoFonte * 0.45) + 3;
+    }
+
+    /* Cabeçalho */
+    titulo("DECLARAÇÃO DE RESPONSABILIDADE TÉCNICA E CONFORMIDADE");
+    subtitulo("SISTEMA DE MICROGERAÇÃO FOTOVOLTAICA CONECTADO À REDE");
+
+    pdf.setDrawColor(200, 200, 200);
+    pdf.setLineWidth(0.4);
+    pdf.line(margem, y, margem + largura, y);
+    espaco(8);
+
+    /* Dados do RT */
+    blocoTexto("1. IDENTIFICAÇÃO DO RESPONSÁVEL TÉCNICO (DECLARANTE):", "left", 10, true);
+    blocoTexto(`Nome do Profesional: ${dados.rt.nome}\nConselho de Classe / Registro: ${dados.rt.crea} (${dados.rt.uf}) — ${dados.rt.registro}\nContato Técnico: ${dados.cliente.email}`, "left", 9);
+
+    espaco(4);
+
+    /* Dados da Unidade e Projeto */
+    blocoTexto("2. DADOS DA UNIDADE CONSUMIDORA E PROJETO:", "left", 10, true);
+    blocoTexto(`Titular / Cliente: ${dados.cliente.nome} | CPF/CNPJ: ${dados.cliente.documento}\nProjeto: ${dados.projeto}\nDistribuidora de Energia: ${dados.sistema.distribuidora}\nCapacidade Instalada: ${dados.calculos.potenciaDC} kWp (CC) / ${dados.calculos.potenciaAC} kW (CA)`, "left", 9);
+
+    espaco(6);
+
+    /* Termos da Declaração */
+    blocoTexto("3. TERMO DE DECLARAÇÃO E COMPROMISSO TÉCNICO:", "left", 10, true);
+
+    const textoDeclaracao = `Eu, ${dados.rt.nome}, devidamente habilitado(a) e registrado(a) no conselho profissional competente sob o nº ${dados.rt.registro}, na qualidade de Responsável Técnico pelo projeto e dimensionamento elétrico da unidade geradora acima identificada, DECLARO para os devidos fins de direito e junto à concessionária ${dados.sistema.distribuidora} que:\n\n` +
+      `1. O projeto eletrotécnico foi elaborado em estrita observância às normas técnicas brasileiras vigentes, em especial a ABNT NBR 5410 (Instalações Elétricas de Baixa Tensão), ABNT NBR 16690 (Instalações Elétricas Fotovoltaicas - Requisitos de Projeto) e ABNT NBR IEC 62116 (Sistemas de Conversão de Energia Fotovoltaica - Procedimento de Teste Anti-ilhamento).\n\n` +
+      `2. Os equipamentos especificados (${dados.sistema.quantidadeInversores} inversor(es) ${dados.sistema.fabricanteInversor} ${dados.sistema.modeloInversor} e ${dados.sistema.quantidadeModulos} módulos ${dados.sistema.fabricanteModulo}) possuem certificação e registro compulsório e atendem aos requisitos de segurança e qualidade exigidos pela ANEEL e INMETRO.\n\n` +
+      `3. O sistema de proteção contra surtos (DPS), aterramento, seccionamento e proteção anti-ilhamento foi dimensionado para garantir a integridade da rede de distribuição e a segurança das pessoas e instalações.`;
+
+    blocoTexto(textoDeclaracao, "justify", 9);
+
+    espaco(6);
+
+    /* Responsabilidade e Anotação */
+    blocoTexto("4. ANOTAÇÃO DE RESPONSABILIDADE TÉCNICA (ART/TRT):", "left", 10, true);
+    const textoART = `Atesto ainda que a respectiva Anotação/Termo de Responsabilidade Técnica (ART/TRT) correspondente a este projeto foi devidamente emitida e recolhida junto ao conselho profissional de classe, assumindo integral responsabilidade legal e técnica pelas informações prestadas neste documento.`;
+    blocoTexto(textoART, "justify", 9);
+
+    espaco(10);
+
+    /* Local e Data */
+    const dataAtual = new Date();
+    const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    const dataFormatada = `Brasil, ${dataAtual.getDate()} de ${meses[dataAtual.getMonth()]} de ${dataAtual.getFullYear()}.`;
+    blocoTexto(dataFormatada, "center", 9.5);
+
+    espaco(22);
+
+    /* Campo de Assinatura do RT */
+    pdf.setDrawColor(100, 100, 100);
+    pdf.setLineWidth(0.5);
+    pdf.line(45, y, 165, y);
+    y += 5;
+
+    pdf.setFontSize(10);
+    pdf.setFont(undefined, "bold");
+    pdf.setTextColor(40, 40, 40);
+    pdf.text(sanitizarTexto(dados.rt.nome), 105, y, { align: "center" });
+    y += 4.5;
+
+    pdf.setFontSize(8.5);
+    pdf.setFont(undefined, "normal");
+    pdf.setTextColor(100, 100, 100);
+    pdf.text(`Responsável Técnico — ${sanitizarTexto(dados.rt.crea)} (${sanitizarTexto(dados.rt.uf)}) nº ${sanitizarTexto(dados.rt.registro)}`, 105, y, { align: "center" });
+    y += 4;
+    pdf.text("Assinatura do Engenheiro / Técnico", 105, y, { align: "center" });
+
+    /* Moldura */
+    pdf.setDrawColor(210, 210, 210);
+    pdf.setLineWidth(0.3);
+    pdf.rect(10, 10, 190, 277);
+
+    pdf.setFontSize(8);
+    pdf.setTextColor(120, 120, 120);
+    pdf.text("HomologaSolar RT — Declaração de Responsabilidade Técnica", margem, 283);
+    pdf.text("Página 1 de 1", 165, 283);
+
+    /* Salvar */
+    const nomeArquivo = "Declaracao_Responsabilidade_Tecnica_" + dados.projeto.replace(/[^a-zA-Z0-9À-ÿ _-]/g, "").replace(/\s+/g, "_").substring(0, 60) + ".pdf";
+    pdf.save(nomeArquivo);
+
+  } catch (erro) {
+    console.error("Erro ao gerar Declaração de Responsabilidade:", erro);
+    alert("❌ Não foi possível gerar a Declaração de Responsabilidade Técnica.\n\n" + erro.message);
+  }
+}
