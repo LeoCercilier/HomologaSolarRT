@@ -1035,3 +1035,193 @@ async function gerarFormularioAcessoPDF() {
     alert("❌ Não foi possível gerar a Ficha de Solicitação de Acesso.\n\n" + erro.message);
   }
   }
+
+
+
+/* =========================================
+   6. GERADOR: RELATÓRIO DE VISTORIA E COMISSIONAMENTO
+========================================= */
+
+async function gerarRelatorioVistoriaPDF() {
+  try {
+    const dados = obterDadosDocumento();
+    const jsPDFClass = window.jsPDF || (window.jspdf && window.jspdf.jsPDF);
+
+    if (!jsPDFClass) {
+      throw new Error("A biblioteca jsPDF não foi identificada no projeto.");
+    }
+
+    const pdf = new jsPDFClass("p", "mm", "a4");
+    const margem = 20;
+    const largura = 170;
+    let y = 20;
+
+    function espaco(tamanho = 4) {
+      y += tamanho;
+    }
+
+    function verificarPagina(altura = 10) {
+      if (y + altura > 270) {
+        pdf.addPage();
+        y = 20;
+      }
+    }
+
+    function titulo(texto) {
+      pdf.setFontSize(13);
+      pdf.setFont(undefined, "bold");
+      pdf.setTextColor(26, 82, 118);
+      pdf.text(sanitizarTexto(texto), 105, y, { align: "center" });
+      y += 7;
+    }
+
+    function secao(texto) {
+      verificarPagina(12);
+      pdf.setFontSize(10);
+      pdf.setFont(undefined, "bold");
+      pdf.setTextColor(41, 128, 185);
+      pdf.text(sanitizarTexto(texto), margem, y);
+      y += 5;
+    }
+
+    function itemTabela(rotulo, valor, xColuna = margem, larguraColuna = 80) {
+      pdf.setFontSize(8.5);
+      pdf.setFont(undefined, "bold");
+      pdf.setTextColor(50, 50, 50);
+      pdf.text(sanitizarTexto(rotulo) + ":", xColuna, y);
+
+      pdf.setFont(undefined, "normal");
+      pdf.setTextColor(80, 80, 80);
+      pdf.text(sanitizarTexto(valor), xColuna + larguraColuna, y);
+    }
+
+    function itemChecklist(item, statusPadrao = "[  ] OK   [  ] N/A") {
+      verificarPagina(6);
+      pdf.setFontSize(8.5);
+      pdf.setFont(undefined, "normal");
+      pdf.setTextColor(40, 40, 40);
+      pdf.text("• " + sanitizarTexto(item), margem + 2, y);
+
+      pdf.setFont(undefined, "bold");
+      pdf.setTextColor(80, 80, 80);
+      pdf.text(statusPadrao, 155, y);
+      y += 5;
+    }
+
+    /* Cabeçalho */
+    titulo("RELATÓRIO DE VISTORIA E CHECKLIST DE COMISSIONAMENTO");
+    pdf.setDrawColor(200, 200, 200);
+    pdf.setLineWidth(0.4);
+    pdf.line(margem, y, margem + largura, y);
+    espaco(6);
+
+    /* 1. DADOS DO PROJETO */
+    secao("1. IDENTIFICAÇÃO GERAL DA INSTALAÇÃO");
+    itemTabela("Projeto", dados.projeto, margem, 45);
+    itemTabela("Distribuidora", dados.sistema.distribuidora, 105, 30); y += 4.5;
+    itemTabela("Titular / Cliente", dados.cliente.nome, margem, 45); y += 4.5;
+    itemTabela("Responsável Técnico", dados.rt.nome, margem, 45);
+    itemTabela("Registro RT", dados.rt.crea + " / " + dados.rt.registro, 105, 30); y += 6;
+
+    /* 2. EQUIPAMENTOS INSTALADOS */
+    secao("2. RESUMO DOS EQUIPAMENTOS COMISSIONADOS");
+    itemTabela("Módulos Fotovoltaicos", dados.sistema.quantidadeModulos + "x " + dados.sistema.fabricanteModulo + " " + dados.sistema.potenciaModulo + "Wp", margem, 45); y += 4.5;
+    itemTabela("Inversor(es) CA", dados.sistema.quantidadeInversores + "x " + dados.sistema.fabricanteInversor + " " + dados.sistema.modeloInversor + " (" + dados.calculos.potenciaAC + " kW)", margem, 45); y += 4.5;
+    itemTabela("Configuração de Strings", dados.sistema.quantidadeStrings + " string(s) contendo " + dados.sistema.modulosPorString + " módulos cada", margem, 45); y += 6;
+
+    /* 3. ENSAIOS E MEDIÇÕES ELÉTRICAS DE CAMPO */
+    secao("3. COMPARAÇÃO DE PARÂMETROS: TEÓRICO CALCULADO VS. MEDIDO EM CAMPO");
+    
+    // Tabela Header
+    pdf.setFillColor(240, 240, 240);
+    pdf.rect(margem, y, largura, 6, "F");
+    pdf.setFontSize(8);
+    pdf.setFont(undefined, "bold");
+    pdf.setTextColor(40, 40, 40);
+    pdf.text("Grandeza Eletrotécnica", margem + 3, y + 4.2);
+    pdf.text("Valor Teórico Calculado", margem + 70, y + 4.2);
+    pdf.text("Valor Medido na Vistoria", margem + 122, y + 4.2);
+    y += 8;
+
+    // Linhas de medição
+    pdf.setFont(undefined, "normal");
+    itemTabela("Tensão de Circuito Aberto (Voc String)", dados.calculos.vocString, margem + 3, 67);
+    pdf.text("[ ______________ ] V", margem + 122, y); y += 5.5;
+
+    itemTabela("Tensão de Operação Nominal (Vmp String)", dados.calculos.vmpString, margem + 3, 67);
+    pdf.text("[ ______________ ] V", margem + 122, y); y += 5.5;
+
+    itemTabela("Corrente Operacional / Curtos (Imp/Isc)", dados.sistema.impModulo + " A / " + dados.sistema.iscModulo + " A", margem + 3, 67);
+    pdf.text("[ ______________ ] A", margem + 122, y); y += 5.5;
+
+    itemTabela("Tensão da Rede CA (Fase-Fase / Fase-N)", dados.sistema.tensaoNominal + " V (" + formatarTipoConexao(dados.sistema.tipoLigacao) + ")", margem + 3, 67);
+    pdf.text("[ ______________ ] V", margem + 122, y); y += 7;
+
+    /* 4. CHECKLIST DE INSPEÇÃO FÍSICA E SEGURANÇA */
+    secao("4. CHECKLIST DE INSPEÇÃO FÍSICA E CONFORMIDADE NORMATIVA");
+    itemChecklist("Fixação mecânica das estruturas e estanqueidade do telhado/solo");
+    itemChecklist("Polaridade das strings CC conferida antes da conexão ao inversor");
+    itemChecklist("Conexão do sistema de aterramento na estrutura e carcaça do inversor");
+    itemChecklist("Aperto dos bornes de conexão e prensa-cabos devidamente vedados");
+    itemChecklist("Identificação visual/etiquetas de advertência de Geração Distribuída");
+    itemChecklist("Teste de anti-ilhamento (desconexão da rede CA) operando com sucesso");
+    espaco(4);
+
+    /* 5. TERMO DE ACEITE E ASSINATURA */
+    secao("5. PARECER DA VISTORIA E LIBERAÇÃO PARA OPERAÇÃO");
+    pdf.setFontSize(8.5);
+    pdf.setFont(undefined, "normal");
+    pdf.setTextColor(60, 60, 60);
+    const textoParecer = "Atesto que o sistema de microgeração fotovoltaica descrito neste relatório foi inspecionado, testado e comissionado de acordo com as especificações do projeto eletrotécnico e normativas técnicas aplicáveis, encontrando-se em condições adequadas para operação em teste / conexão à rede da concessionária.";
+    const linhasParecer = pdf.splitTextToSize(textoParecer, largura);
+    pdf.text(linhasParecer, margem, y);
+    y += linhasParecer.length * 3.8 + 12;
+
+    /* Assinaturas */
+    verificarPagina(30);
+    pdf.setDrawColor(100, 100, 100);
+    pdf.setLineWidth(0.4);
+    
+    // Linha RT
+    pdf.line(margem + 5, y, margem + 75, y);
+    // Linha Cliente / Técnico Instalação
+    pdf.line(margem + 95, y, margem + 165, y);
+    y += 4;
+
+    pdf.setFontSize(8.5);
+    pdf.setFont(undefined, "bold");
+    pdf.setTextColor(40, 40, 40);
+    pdf.text(sanitizarTexto(dados.rt.nome), margem + 40, y, { align: "center" });
+    pdf.text("Técnico Responsável / Cliente", margem + 130, y, { align: "center" });
+    y += 3.5;
+
+    pdf.setFont(undefined, "normal");
+    pdf.setFontSize(7.5);
+    pdf.setTextColor(100, 100, 100);
+    pdf.text(`RT — ${sanitizarTexto(dados.rt.crea)} ${sanitizarTexto(dados.rt.registro)}`, margem + 40, y, { align: "center" });
+    pdf.text("Assinatura de Recebimento de Campo", margem + 130, y, { align: "center" });
+
+    /* Moldura */
+    const totalPaginas = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPaginas; i++) {
+      pdf.setPage(i);
+      pdf.setDrawColor(210, 210, 210);
+      pdf.setLineWidth(0.3);
+      pdf.rect(10, 10, 190, 277);
+
+      pdf.setFontSize(8);
+      pdf.setTextColor(120, 120, 120);
+      pdf.text("HomologaSolar RT — Checklist de Comissionamento e Vistoria", margem, 283);
+      pdf.text("Página " + i + " de " + totalPaginas, 165, 283);
+    }
+
+    /* Salvar */
+    const nomeArquivo = "Relatorio_Vistoria_Comissionamento_" + dados.projeto.replace(/[^a-zA-Z0-9À-ÿ _-]/g, "").replace(/\s+/g, "_").substring(0, 60) + ".pdf";
+    pdf.save(nomeArquivo);
+
+  } catch (erro) {
+    console.error("Erro ao gerar Relatório de Vistoria:", erro);
+    alert("❌ Não foi possível gerar o Relatório de Vistoria.\n\n" + erro.message);
+  }
+  }
+       
