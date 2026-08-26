@@ -1,9 +1,11 @@
-// 1. Funções Auxiliares de Tratamento de Texto
+// ==========================================
+// 1. FUNÇÕES AUXILIARES DE FORMATAÇÃO E TEXTO
+// ==========================================
 function sanitizarTextoPDF(texto) {
   if (!texto) return '';
   return texto
     .toString()
-    .replace(/&p|⚠️|❌|✔/g, '') // Remove ícones/resíduos
+    .replace(/&p|⚠️|❌|✔/g, '') // Remove artefatos de ícones
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "") // Remove acentos para compatibilidade com WinAnsiEncoding
     .trim();
@@ -18,23 +20,25 @@ function formatarTipoConexao(valor) {
   return mapa[valor?.toLowerCase()] || valor || 'Nao informado';
 }
 
-// 2. Função Principal de Geração do PDF
+// ==========================================
+// 2. FUNÇÃO PRINCIPAL DE GERAÇÃO DO PDF
+// ==========================================
 async function gerarMemorialPDF(dadosProjeto) {
   const { PDFDocument, StandardFonts, rgb } = PDFLib;
 
   const pdfDoc = await PDFDocument.create();
-  let page = pdfDoc.addPage([595.28, 841.89]); // Tamanho A4
+  let page = pdfDoc.addPage([595.28, 841.89]); // A4
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-  let y = 800;
+  let y = 780;
   const margin = 40;
   const lineSpacing = 14;
 
   const desenharTexto = (texto, fontSize = 10, isBold = false, color = rgb(0, 0, 0)) => {
-    if (y < 50) {
+    if (y < 60) {
       page = pdfDoc.addPage([595.28, 841.89]);
-      y = 800;
+      y = 780;
     }
     const txtSanitizado = sanitizarTextoPDF(texto);
     page.drawText(txtSanitizado, {
@@ -94,8 +98,6 @@ async function gerarMemorialPDF(dadosProjeto) {
 
   if (dadosProjeto.analise.inconsistencias && dadosProjeto.analise.inconsistencias.length > 0) {
     desenharTexto("Inconsistencias encontradas no dimensionamento:", 10, true);
-    
-    // Exibe detalhadamente o Voc corrigido por temperatura e os limites
     dadosProjeto.analise.inconsistencias.forEach(item => {
       desenharTexto(`- ${item}`);
     });
@@ -103,7 +105,90 @@ async function gerarMemorialPDF(dadosProjeto) {
     desenharTexto("Sistema dimensionado em conformidade com os limites eletricos dos equipamentos.");
   }
 
-  // --- Rodapé com Paginação ---
-  const pdfBytes = await pdfDoc.save();
-  return pdfBytes;
+  // --- MOLDURA E RODAPÉ ---
+  const totalPaginas = pdfDoc.getPageCount();
+  pdfDoc.getPages().forEach((p, index) => {
+    p.drawRectangle({
+      x: 20, y: 20,
+      width: 555.28, height: 801.89,
+      borderWidth: 0.5,
+      borderColor: rgb(0.7, 0.7, 0.7)
+    });
+    p.drawText(`HomologaSolar RT  |  Pagina ${index + 1} de ${totalPaginas}`, {
+      x: 40, y: 28,
+      size: 8,
+      font: font,
+      color: rgb(0.5, 0.5, 0.5)
+    });
+  });
+
+  return await pdfDoc.save();
 }
+
+// ==========================================
+// 3. EXECUÇÃO NO CLIQUE DO BOTÃO
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+  const btnGerar = document.getElementById('btnGerarPDF') || document.querySelector('.btn-gerar-pdf');
+
+  if (btnGerar) {
+    btnGerar.addEventListener('click', async (e) => {
+      e.preventDefault();
+
+      try {
+        // Coleta/Mapeamento dos dados do formulário/sistema
+        const dadosProjeto = {
+          nomeProjeto: document.getElementById('nomeProjeto')?.value || 'Teste de Homologacao',
+          cliente: {
+            nome: document.getElementById('clienteNome')?.value || 'Leonardo Cercilier da Cruz',
+            cpfCnpj: document.getElementById('clienteCpf')?.value || ''
+          },
+          rt: {
+            nome: document.getElementById('rtNome')?.value || '',
+            crea: document.getElementById('rtCrea')?.value || '',
+            uf: document.getElementById('rtUf')?.value || ''
+          },
+          sistema: {
+            fabricanteModulo: document.getElementById('fabModulo')?.value || 'JA Solar',
+            modeloModulo: document.getElementById('modModulo')?.value || 'JAM 72D30-595/GB',
+            potenciaModulo: 595,
+            qtdModulos: 14,
+            potenciaDC: '8.33',
+            fabricanteInversor: document.getElementById('fabInversor')?.value || 'GROWATT',
+            modeloInversor: document.getElementById('modInversor')?.value || 'MIN 9000TL-X',
+            potenciaInversor: 9,
+            qtdInversor: 1,
+            potenciaAC: '9.00',
+            ratioDcAc: '0.926',
+            qtdStrings: 1,
+            vmpString: '589.54',
+            vocString: '700.28'
+          },
+          conexao: {
+            tipoConexao: document.getElementById('tipoConexao')?.value || 'monofasica',
+            tensaoNominal: 220
+          },
+          analise: {
+            status: 'ATENCAO / INCONSISTENTE',
+            inconsistencias: [
+              `Voc corrigido pela temp. minima (-10C): 825.46V (Excede limite max. do inversor: 600V).`,
+              `Vmp da String (589.54V) esta fora da faixa MPPT do inversor (60V a 550V).`
+            ]
+          }
+        };
+
+        // Gera o PDF e dispara o download
+        const pdfBytes = await gerarMemorialPDF(dadosProjeto);
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `Memorial_Descritivo_${dadosProjeto.nomeProjeto.replace(/\s+/g, '_')}.pdf`;
+        link.click();
+
+      } catch (erro) {
+        alert('Erro ao gerar o PDF: ' + erro.message);
+        console.error(erro);
+      }
+    });
+  }
+});
