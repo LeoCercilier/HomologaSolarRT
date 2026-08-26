@@ -3226,38 +3226,6 @@ document.getElementById(
 ================================= */
 
 if (
-  vocStringCorrigido > tensaoMaxEntrada &&
-  !problemasTecnicos.includes(
-    "Voc da string ultrapassa a tensão máxima do inversor."
-  )
-) {
-
-  problemasTecnicos.push(
-    "Voc da string ultrapassa a tensão máxima do inversor."
-  );
-
-}
-
-if (
-  vmpString < tensaoMpptMin ||
-  vmpString > tensaoMpptMax
-) {
-
-  if (
-    !problemasTecnicos.includes(
-      "Vmp da string está fora da faixa de MPPT."
-    )
-  ) {
-
-    problemasTecnicos.push(
-      "Vmp da string está fora da faixa de MPPT."
-    );
-
-  }
-
-}
-
-if (
   correnteMppt > correnteMaxMppt &&
   !problemasTecnicos.includes(
     "Corrente do MPPT ultrapassa o limite informado."
