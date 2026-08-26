@@ -906,3 +906,132 @@ async function gerarTermoResponsabilidadePDF() {
     alert("❌ Não foi possível gerar a Declaração de Responsabilidade Técnica.\n\n" + erro.message);
   }
 }
+
+
+
+/* =========================================
+   5. GERADOR: FICHA DE DADOS E FORMULÁRIO DE ACESSO
+========================================= */
+
+async function gerarFormularioAcessoPDF() {
+  try {
+    const dados = obterDadosDocumento();
+    const jsPDFClass = window.jsPDF || (window.jspdf && window.jspdf.jsPDF);
+
+    if (!jsPDFClass) {
+      throw new Error("A biblioteca jsPDF não foi identificada no projeto.");
+    }
+
+    const pdf = new jsPDFClass("p", "mm", "a4");
+    const margem = 20;
+    const largura = 170;
+    let y = 20;
+
+    function espaco(tamanho = 4) {
+      y += tamanho;
+    }
+
+    function titulo(texto) {
+      pdf.setFontSize(13);
+      pdf.setFont(undefined, "bold");
+      pdf.setTextColor(26, 82, 118);
+      pdf.text(sanitizarTexto(texto), 105, y, { align: "center" });
+      y += 7;
+    }
+
+    function secao(texto) {
+      pdf.setFontSize(10);
+      pdf.setFont(undefined, "bold");
+      pdf.setTextColor(41, 128, 185);
+      pdf.text(sanitizarTexto(texto), margem, y);
+      y += 5;
+    }
+
+    function itemTabela(rotulo, valor, xColuna = margem, larguraColuna = 80) {
+      pdf.setFontSize(8.5);
+      pdf.setFont(undefined, "bold");
+      pdf.setTextColor(50, 50, 50);
+      pdf.text(sanitizarTexto(rotulo) + ":", xColuna, y);
+
+      pdf.setFont(undefined, "normal");
+      pdf.setTextColor(80, 80, 80);
+      pdf.text(sanitizarTexto(valor), xColuna + larguraColuna, y);
+    }
+
+    /* Cabeçalho */
+    titulo("FICHA DE DADOS PARA SOLICITAÇÃO DE ACESSO");
+    pdf.setDrawColor(200, 200, 200);
+    pdf.setLineWidth(0.4);
+    pdf.line(margem, y, margem + largura, y);
+    espaco(6);
+
+    /* 1. DADOS CADASTRAIS */
+    secao("1. DADOS DO TITULAR E DA UNIDADE CONSUMIDORA");
+    itemTabela("Nome / Razão Social", dados.cliente.nome, margem, 45); y += 4.5;
+    itemTabela("CPF / CNPJ", dados.cliente.documento, margem, 45); y += 4.5;
+    itemTabela("Telefone", dados.cliente.telefone, margem, 45);
+    itemTabela("E-mail", dados.cliente.email, 105, 20); y += 6;
+
+    /* 2. RESPONSÁVEL TÉCNICO */
+    secao("2. DADOS DO RESPONSÁVEL TÉCNICO (RT)");
+    itemTabela("Engenheiro / Técnico", dados.rt.nome, margem, 45); y += 4.5;
+    itemTabela("Conselho de Classe", dados.rt.crea + " (" + dados.rt.uf + ")", margem, 45);
+    itemTabela("Nº Registro", dados.rt.registro, 105, 25); y += 6;
+
+    /* 3. PARÂMETROS DA REDE */
+    secao("3. PARÂMETROS DA CONEXÃO E DISTRIBUIDORA");
+    itemTabela("Concessionária", dados.sistema.distribuidora, margem, 45);
+    itemTabela("Tipo de Conexão", formatarTipoConexao(dados.sistema.tipoLigacao), 105, 30); y += 4.5;
+    itemTabela("Nº de Fases", dados.sistema.numeroFases, margem, 45);
+    itemTabela("Tensão Nominal", dados.sistema.tensaoNominal + " V", 105, 30); y += 6;
+
+    /* 4. GERADOR CC */
+    secao("4. DADOS DO GERADOR FOTOVOLTAICO (CC)");
+    itemTabela("Fabricante dos Módulos", dados.sistema.fabricanteModulo, margem, 45); y += 4.5;
+    itemTabela("Modelo dos Módulos", dados.sistema.modeloModulo, margem, 45); y += 4.5;
+    itemTabela("Potência Unitária", dados.sistema.potenciaModulo + " Wp", margem, 45);
+    itemTabela("Qtd. Total Módulos", dados.sistema.quantidadeModulos + " un.", 105, 35); y += 4.5;
+    itemTabela("Potência Total CC", dados.calculos.potenciaDC + " kWp", margem, 45);
+    itemTabela("Arranjo Físico", dados.sistema.quantidadeStrings + " string(s) x " + dados.sistema.modulosPorString + " mod.", 105, 35); y += 4.5;
+    itemTabela("Tensão Open Circuit (Voc)", dados.calculos.vocString, margem, 45);
+    itemTabela("Tensão Operacional (Vmp)", dados.calculos.vmpString, 105, 35); y += 6;
+
+    /* 5. INVERSOR CA */
+    secao("5. DADOS DO SISTEMA DE CONVERSÃO (CA)");
+    itemTabela("Fabricante Inversor", dados.sistema.fabricanteInversor, margem, 45); y += 4.5;
+    itemTabela("Modelo Inversor", dados.sistema.modeloInversor, margem, 45); y += 4.5;
+    itemTabela("Potência Nominal CA", dados.calculos.potenciaAC + " kW", margem, 45);
+    itemTabela("Qtd. Inversores", dados.sistema.quantidadeInversores + " un.", 105, 30); y += 4.5;
+    itemTabela("Razão DC/AC (FDR)", dados.calculos.ratioDCAC, margem, 45);
+    itemTabela("Janela MPPT", dados.sistema.mpptMin + "V a " + dados.sistema.mpptMax + "V", 105, 30); y += 6;
+
+    /* 6. DIAGNÓSTICO DO ROTEADOR */
+    secao("6. PARECER AUTOMÁTICO DO SISTEMA");
+    itemTabela("Validação Elétrica", dados.validacao, margem, 45); y += 4.5;
+    
+    pdf.setFontSize(8);
+    pdf.setFont(undefined, "normal");
+    pdf.setTextColor(60, 60, 60);
+    const textoRes = pdf.splitTextToSize(sanitizarTexto(dados.resultadoTecnico), largura);
+    pdf.text(textoRes, margem, y);
+    y += textoRes.length * 3.8 + 6;
+
+    /* Moldura */
+    pdf.setDrawColor(210, 210, 210);
+    pdf.setLineWidth(0.3);
+    pdf.rect(10, 10, 190, 277);
+
+    pdf.setFontSize(8);
+    pdf.setTextColor(120, 120, 120);
+    pdf.text("HomologaSolar RT — Ficha Resumo de Acesso", margem, 283);
+    pdf.text("Página 1 de 1", 165, 283);
+
+    /* Salvar */
+    const nomeArquivo = "Ficha_Solicitacao_Acesso_" + dados.projeto.replace(/[^a-zA-Z0-9À-ÿ _-]/g, "").replace(/\s+/g, "_").substring(0, 60) + ".pdf";
+    pdf.save(nomeArquivo);
+
+  } catch (erro) {
+    console.error("Erro ao gerar Ficha de Acesso:", erro);
+    alert("❌ Não foi possível gerar a Ficha de Solicitação de Acesso.\n\n" + erro.message);
+  }
+  }
