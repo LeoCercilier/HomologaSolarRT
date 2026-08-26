@@ -2,6 +2,37 @@
    HOMOLOGASOLAR RT
    MOTOR DE DOCUMENTOS (jsPDF - Com Narrativas Avançadas e Detalhamento Técnico)
    ========================================= */
+/**
+ * Gerenciador unificado de visualização e download
+ * @param {Object} pdf Instância do jsPDF
+ * @param {String} nomeArquivo Nome do arquivo com .pdf
+ * @param {String} modo 'visualizar' | 'baixar' | 'perguntar'
+ */
+function finalizarPDF(pdf, nomeArquivo, modo = 'perguntar') {
+  let acao = modo;
+
+  if (modo === 'perguntar') {
+    const querVisualizar = confirm(
+      "Deseja VISUALIZAR o documento antes de baixar?\n\n" +
+      "• Clique em OK para Visualizar em nova aba\n" +
+      "• Clique em Cancelar para Baixar Direto"
+    );
+    acao = querVisualizar ? 'visualizar' : 'baixar';
+  }
+
+  if (acao === 'visualizar') {
+    const pdfBlobUrl = pdf.output('bloburl');
+    const novaAba = window.open(pdfBlobUrl, '_blank');
+    if (!novaAba) {
+      alert("⚠️ O navegador bloqueou a abertura da nova aba. Por favor, permita pop-ups para este site ou utilize o download direto.");
+      pdf.save(nomeArquivo);
+    }
+  } else {
+    pdf.save(nomeArquivo);
+  }
+}
+
+
 
 /* =========================================
    FUNÇÕES AUXILIARES DE TRATAMENTO DE TEXTO
@@ -120,7 +151,8 @@ function obterDadosDocumento() {
    GERAR MEMORIAL DESCRITIVO
 ========================================= */
 
-async function gerarMemorialDescritivoPDF() {
+async function gerarMemorialDescritivoPDF(modo = 'perguntar') {
+
   try {
     const dados = obterDadosDocumento();
 
@@ -331,7 +363,7 @@ async function gerarMemorialDescritivoPDF() {
         .substring(0, 60) +
       ".pdf";
 
-    pdf.save(nomeArquivo);
+    finalizarPDF(pdf, nomeArquivo, modo);
 
   } catch (erro) {
     console.error("Erro ao gerar Memorial Descritivo:", erro);
