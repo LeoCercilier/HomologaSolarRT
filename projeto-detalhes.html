@@ -3454,16 +3454,6 @@ if (
     );
   }
 
-  if (
-    correnteMppt > 0 &&
-    correnteMaxMppt > 0 &&
-    correnteMppt > correnteMaxMppt
-  ) {
-    problemasTecnicos.push(
-      "Corrente do MPPT ultrapassa o limite informado."
-    );
-  }
-
   if (problemasTecnicos.length === 0) {
 
     resultadoTecnico.innerHTML =
