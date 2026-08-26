@@ -5,9 +5,9 @@ function sanitizarTextoPDF(texto) {
   if (!texto) return '';
   return texto
     .toString()
-    .replace(/&p|⚠️|❌|✔/g, '') // Remove artefatos de ícones
+    .replace(/&p|⚠️|❌|✔/g, '') // Remove artefatos e ícones
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // Remove acentos para compatibilidade com WinAnsiEncoding
+    .replace(/[\u0300-\u036f]/g, "") // Remove acentos para evitar quebra no PDF (WinAnsiEncoding)
     .trim();
 }
 
@@ -21,13 +21,13 @@ function formatarTipoConexao(valor) {
 }
 
 // ==========================================
-// 2. FUNÇÃO PRINCIPAL DE GERAÇÃO DO PDF
+// 2. CONSTRUTOR DO DOCUMENTO PDF (PDF-LIB)
 // ==========================================
-async function gerarMemorialPDF(dadosProjeto) {
+async function construirDocumentoPDF(dadosProjeto) {
   const { PDFDocument, StandardFonts, rgb } = PDFLib;
 
   const pdfDoc = await PDFDocument.create();
-  let page = pdfDoc.addPage([595.28, 841.89]); // A4
+  let page = pdfDoc.addPage([595.28, 841.89]); // Folha A4
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
@@ -126,69 +126,65 @@ async function gerarMemorialPDF(dadosProjeto) {
 }
 
 // ==========================================
-// 3. EXECUÇÃO NO CLIQUE DO BOTÃO
+// 3. FUNÇÃO CHAMADA DIRETO PELO ONCLICK DO BOTÃO
 // ==========================================
-document.addEventListener('DOMContentLoaded', () => {
-  const btnGerar = document.getElementById('btnGerarPDF') || document.querySelector('.btn-gerar-pdf');
-
-  if (btnGerar) {
-    btnGerar.addEventListener('click', async (e) => {
-      e.preventDefault();
-
-      try {
-        // Coleta/Mapeamento dos dados do formulário/sistema
-        const dadosProjeto = {
-          nomeProjeto: document.getElementById('nomeProjeto')?.value || 'Teste de Homologacao',
-          cliente: {
-            nome: document.getElementById('clienteNome')?.value || 'Leonardo Cercilier da Cruz',
-            cpfCnpj: document.getElementById('clienteCpf')?.value || ''
-          },
-          rt: {
-            nome: document.getElementById('rtNome')?.value || '',
-            crea: document.getElementById('rtCrea')?.value || '',
-            uf: document.getElementById('rtUf')?.value || ''
-          },
-          sistema: {
-            fabricanteModulo: document.getElementById('fabModulo')?.value || 'JA Solar',
-            modeloModulo: document.getElementById('modModulo')?.value || 'JAM 72D30-595/GB',
-            potenciaModulo: 595,
-            qtdModulos: 14,
-            potenciaDC: '8.33',
-            fabricanteInversor: document.getElementById('fabInversor')?.value || 'GROWATT',
-            modeloInversor: document.getElementById('modInversor')?.value || 'MIN 9000TL-X',
-            potenciaInversor: 9,
-            qtdInversor: 1,
-            potenciaAC: '9.00',
-            ratioDcAc: '0.926',
-            qtdStrings: 1,
-            vmpString: '589.54',
-            vocString: '700.28'
-          },
-          conexao: {
-            tipoConexao: document.getElementById('tipoConexao')?.value || 'monofasica',
-            tensaoNominal: 220
-          },
-          analise: {
-            status: 'ATENCAO / INCONSISTENTE',
-            inconsistencias: [
-              `Voc corrigido pela temp. minima (-10C): 825.46V (Excede limite max. do inversor: 600V).`,
-              `Vmp da String (589.54V) esta fora da faixa MPPT do inversor (60V a 550V).`
-            ]
-          }
-        };
-
-        // Gera o PDF e dispara o download
-        const pdfBytes = await gerarMemorialPDF(dadosProjeto);
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = `Memorial_Descritivo_${dadosProjeto.nomeProjeto.replace(/\s+/g, '_')}.pdf`;
-        link.click();
-
-      } catch (erro) {
-        alert('Erro ao gerar o PDF: ' + erro.message);
-        console.error(erro);
+async function gerarMemorialDescritivoPDF() {
+  try {
+    // Coleta dos dados da página ou fallback de teste
+    const dadosProjeto = {
+      nomeProjeto: document.getElementById('nomeProjeto')?.value || 'Teste',
+      cliente: {
+        nome: document.getElementById('clienteNome')?.value || 'Leonardo Cercilier da Cruz',
+        cpfCnpj: document.getElementById('clienteCpf')?.value || ''
+      },
+      rt: {
+        nome: document.getElementById('rtNome')?.value || '',
+        crea: document.getElementById('rtCrea')?.value || '',
+        uf: document.getElementById('rtUf')?.value || ''
+      },
+      sistema: {
+        fabricanteModulo: document.getElementById('fabModulo')?.value || 'JA Solar',
+        modeloModulo: document.getElementById('modModulo')?.value || 'JAM 72D30-595/GB',
+        potenciaModulo: 595,
+        qtdModulos: 14,
+        potenciaDC: '8.33',
+        fabricanteInversor: document.getElementById('fabInversor')?.value || 'GROWATT',
+        modeloInversor: document.getElementById('modInversor')?.value || 'MIN 9000TL-X',
+        potenciaInversor: 9,
+        qtdInversor: 1,
+        potenciaAC: '9.00',
+        ratioDcAc: '0.926',
+        qtdStrings: 1,
+        vmpString: '589.54',
+        vocString: '700.28'
+      },
+      conexao: {
+        tipoConexao: document.getElementById('tipoConexao')?.value || 'monofasica',
+        tensaoNominal: 220
+      },
+      analise: {
+        status: 'ATENCAO / INCONSISTENTE',
+        inconsistencias: [
+          'Voc corrigido pela temp. minima (-10C): 825.46V (Excede limite max. do inversor: 600V).',
+          'Vmp da String (589.54V) esta fora da faixa MPPT do inversor (60V a 550V).'
+        ]
       }
-    });
+    };
+
+    // Gera os bytes do PDF
+    const pdfBytes = await construirDocumentoPDF(dadosProjeto);
+
+    // Dispara o download no navegador (inclusive no celular)
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `Memorial_Descritivo_${sanitizarTextoPDF(dadosProjeto.nomeProjeto)}.pdf`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+  } catch (erro) {
+    alert('Erro ao gerar o PDF: ' + erro.message);
+    console.error(erro);
   }
-});
+}
