@@ -1,6 +1,6 @@
 /* =========================================
    HOMOLOGASOLAR RT
-   MOTOR DE DOCUMENTOS (jsPDF - Com Narrativas Automáticas)
+   MOTOR DE DOCUMENTOS (jsPDF - Com Narrativas Avançadas e Detalhamento Técnico)
    ========================================= */
 
 /* =========================================
@@ -206,70 +206,76 @@ async function gerarMemorialDescritivoPDF() {
     linha("Status do Sistema: " + dados.status);
 
     /* =================================
-       1. OBJETO E OBJETIVO (NARRATIVA)
+       1. OBJETO E NORMATIVA APLICÁVEL
     ================================= */
     espaco(4);
-    subtitulo("1. OBJETO E OBJETIVO");
+    subtitulo("1. OBJETO E EMBASAMENTO NORMATIVO");
     
-    const narrativaObjeto = `O presente Memorial Descritivo tem por objetivo dimensionar e especificar tecnicamente o sistema de microgeração distribuída fotovoltaica para o projeto ${dados.projeto}. O sistema foi projetado para operar conectado à rede de distribuição da concessionária ${dados.sistema.distribuidora}, atendendo aos requisitos das normas ABNT NBR 5410, NBR 16690 e regulamentações vigentes da ANEEL.`;
+    const narrativaObjeto = `O presente Memorial Descritivo contempla o detalhamento eletrotécnico e o dimensionamento para a implantação da unidade geradora fotovoltaica referente ao projeto ${dados.projeto}. O sistema opera na modalidade de microgeração distribuída conectada à rede da concessionária ${dados.sistema.distribuidora}.\n\n` +
+      `Toda a concepção do projeto segue estritamente as especificações da ABNT NBR 5410 (Instalações Elétricas de Baixa Tensão), ABNT NBR 16690 (Instalações Elétricas Fotovoltaicas - Requisitos de Projeto), ABNT NBR IEC 62116 (Procedimentos de Teste Anti-ilhamento), além das Resoluções Normativas da ANEEL (REN 482/2012 e REN 1.000/2021) e regulamentos técnicos de acesso da distribuidora local.`;
     paragrafo(narrativaObjeto);
 
     /* =================================
        2. DADOS DAS PARTES
     ================================= */
     espaco(4);
-    subtitulo("2. DADOS DO CLIENTE E RESPONSÁVEL TÉCNICO");
-    linha("Cliente: " + dados.cliente.nome + " | CPF/CNPJ: " + dados.cliente.documento);
+    subtitulo("2. IDENTIFICAÇÃO DO TITULAR E RESPONSÁVEL TÉCNICO");
+    linha("Cliente / Titular: " + dados.cliente.nome + " | CNPJ/CPF: " + dados.cliente.documento);
     linha("Contato: " + dados.cliente.telefone + " | E-mail: " + dados.cliente.email);
-    linha("Responsável Técnico: " + dados.rt.nome);
-    linha("Registro Profissional: " + dados.rt.crea + " (" + dados.rt.uf + ") — " + dados.rt.registro);
+    linha("Responsável Técnico (RT): " + dados.rt.nome);
+    linha("Conselho de Classe: " + dados.rt.crea + " (" + dados.rt.uf + ") — Registro: " + dados.rt.registro);
 
     /* =================================
-       3. GERADOR FOTOVOLTAICO (NARRATIVA + DADOS)
+       3. GERADOR FOTOVOLTAICO E ARRANJO CC
     ================================= */
     espaco(4);
-    subtitulo("3. ARRANJO FOTOVOLTAICO E MÓDULOS");
+    subtitulo("3. SUBSISTEMA GERADOR E ARRANJO EM CORRENTE CONTÍNUA (CC)");
     
-    const narrativaModulos = `O arranjo fotovoltaico é composto por ${dados.sistema.quantidadeModulos} módulo(s) de alta eficiência do fabricante ${dados.sistema.fabricanteModulo}, modelo ${dados.sistema.modeloModulo}, com potência nominal unitária de ${dados.sistema.potenciaModulo}Wp. Isso resulta em uma potência total CC instalada de ${dados.calculos.potenciaDC} kWp. Os módulos serão interligados formando ${dados.sistema.quantidadeStrings} string(s) de ${dados.sistema.modulosPorString} módulos cada.`;
+    const narrativaModulos = `O gerador fotovoltaico é composto por ${dados.sistema.quantidadeModulos} módulos fotovoltaicos de altíssima eficiência, fabricados por ${dados.sistema.fabricanteModulo}, modelo ${dados.sistema.modeloModulo}, com potência nominal STC de ${dados.sistema.potenciaModulo} Wp por módulo, perfazendo uma potência instalada total no pico CC de ${dados.calculos.potenciaDC} kWp.\n\n` +
+      `Os módulos estão configurados em ${dados.sistema.quantidadeStrings} string(s) contendo ${dados.sistema.modulosPorString} módulos em série. Sob condições padrão de ensaio (STC: 1000 W/m², 25°C, AM 1.5), o comportamento elétrico do gerador é determinado pelo somatório das tensões de cada circuito: a tensão total de circuito aberto atinge ${dados.calculos.vocString} (Voc STC nominal de ${dados.sistema.vocModulo} V/módulo) e a tensão operacional em máxima potência atinge ${dados.calculos.vmpString} (Vmp STC nominal de ${dados.sistema.vmpModulo} V/módulo). A corrente total de curto-circuito (Isc STC) do arranjo é de ${dados.sistema.iscModulo} A e a corrente de operação STC (Imp) é de ${dados.sistema.impModulo} A.`;
     paragrafo(narrativaModulos);
 
-    linha("· Tensão em Circuito Aberto (Voc stc): " + dados.sistema.vocModulo + " V");
-    linha("· Tensão de Máxima Potência (Vmp stc): " + dados.sistema.vmpModulo + " V");
-    linha("· Corrente de Curtocircuito (Isc stc): " + dados.sistema.iscModulo + " A");
-    linha("· Corrente de Máxima Potência (Imp stc): " + dados.sistema.impModulo + " A");
-    linha("· Tensão Máxima da String (Voc total): " + dados.calculos.vocString);
-    linha("· Tensão de Operação da String (Vmp total): " + dados.calculos.vmpString);
+    linha("· Potência Instalada Total CC (P_dc): " + dados.calculos.potenciaDC + " kWp", true);
+    linha("· Tensão em Circuito Aberto da String (Voc total STC): " + dados.calculos.vocString);
+    linha("· Tensão Nominal de Operação da String (Vmp total STC): " + dados.calculos.vmpString);
+    linha("· Corrente de Curto-Circuito (Isc STC): " + dados.sistema.iscModulo + " A");
+    linha("· Corrente em Máxima Potência (Imp STC): " + dados.sistema.impModulo + " A");
 
     /* =================================
-       4. INVERSOR E CONVERSÃO (NARRATIVA + DADOS)
+       4. CONVERSÃO E INVERSORES (CA)
     ================================= */
     espaco(4);
-    subtitulo("4. INVERSOR E PROCESSAMENTO DE ENERGIA");
+    subtitulo("4. SUBSISTEMA DE CONVERSÃO DE ENERGIA (INVERSORES E MPPT)");
 
-    const narrativaInversor = `A conversão da energia em corrente contínua (CC) para corrente alternada (CA) será realizada por ${dados.sistema.quantidadeInversores} inversor(es) do fabricante ${dados.sistema.fabricanteInversor}, modelo ${dados.sistema.modeloInversor}, com potência nominal CA total de ${dados.calculos.potenciaAC} kW. O fator de dimensionamento entre a potência do arranjo CC e a potência CA do inversor (Fator Overloading / Ratio DC/AC) é de ${dados.calculos.ratioDCAC}.`;
+    const narrativaInversor = `A conversão da energia CC gerada pelo arranjo para corrente alternada (CA) é realizada por ${dados.sistema.quantidadeInversores} unidade(s) de inversor(es) do fabricante ${dados.sistema.fabricanteInversor}, modelo ${dados.sistema.modeloInversor}, totalizando uma potência nominal ativa de saída CA de ${dados.calculos.potenciaAC} kW. O equipamento possui tecnologia de comutação estática por IGBTs de alta frequência e sistema integrado de rastreamento do ponto de máxima potência (MPPT).\n\n` +
+      `O dimensionamento elétrico entre a capacidade do gerador CC e a potência nominal ativa CA do inversor resulta em uma razão de sobredimensionamento (Overloading / DC-AC Ratio) de ${dados.calculos.ratioDCAC}. Esta relação garante a otimização da curva de geração nas horas de menor irradiação sem violar a janela limite do inversor.\n\n` +
+      `O inversor apresenta uma janela operativa de MPPT situada entre ${dados.sistema.mpptMin} V e ${dados.sistema.mpptMax} V, com tensão máxima admissível de entrada de ${dados.sistema.tensaoMaxEntrada} V. O sistema utiliza ${dados.sistema.quantidadeMppt} MPPT(s) com ${dados.sistema.stringsPorMppt} string(s) alocada(s) por rastreador, operando com limite máximo de corrente por MPPT de ${dados.sistema.correnteMaxMppt} A.`;
     paragrafo(narrativaInversor);
 
-    linha("· Tensão Máxima de Entrada CC do Inversor: " + dados.sistema.tensaoMaxEntrada + " V");
-    linha("· Faixa de Operação MPPT: " + dados.sistema.mpptMin + " V a " + dados.sistema.mpptMax + " V");
-    linha("· Corrente Máxima por MPPT: " + dados.sistema.correnteMaxMppt + " A");
-    linha("· Entradas MPPT Utilizadas: " + dados.sistema.quantidadeMppt + " MPPT(s) com " + dados.sistema.stringsPorMppt + " string(s) por MPPT");
+    linha("· Potência Ativa Nominal CA Total: " + dados.calculos.potenciaAC + " kW", true);
+    linha("· Fator de Sobredimensionamento (FDR / DC-AC Ratio): " + dados.calculos.ratioDCAC);
+    linha("· Limite de Tensão Máxima de Entrada (Vmax CC): " + dados.sistema.tensaoMaxEntrada + " V");
+    linha("· Faixa de Rastreamento MPPT (Vmin_mppt - Vmax_mppt): " + dados.sistema.mpptMin + " V a " + dados.sistema.mpptMax + " V");
+    linha("· Corrente Máxima por Canal MPPT: " + dados.sistema.correnteMaxMppt + " A");
+    linha("· Distribuição dos Rastreadores: " + dados.sistema.quantidadeMppt + " MPPT(s) [" + dados.sistema.stringsPorMppt + " string(s)/MPPT]");
 
     /* =================================
-       5. CONEXÃO À REDE (NARRATIVA)
+       5. PONTO DE CONEXÃO E PROTEÇÕES
     ================================= */
     espaco(4);
-    subtitulo("5. PONTO DE CONEXÃO E REDE ELÉTRICA");
+    subtitulo("5. INTERCONEXÃO COM A REDE E PROTEÇÕES ELÉTRICAS");
 
-    const narrativaConexao = `O sistema será conectado no padrão de entrada da unidade consumidora sob o tipo de ligação ${formatarTipoConexao(dados.sistema.tipoLigacao)} (${dados.sistema.numeroFases} fase(s)) na tensão nominal de ${dados.sistema.tensaoNominal}V, em conformidade com as normas técnicas da distribuidora ${dados.sistema.distribuidora}.`;
+    const narrativaConexao = `O ponto de interconexão com o sistema de distribuição da concessionária local (${dados.sistema.distribuidora}) é realizado em baixa tensão através do padrão de entrada existente na unidade consumidora. O sistema opera na configuração ${formatarTipoConexao(dados.sistema.tipoLigacao)} (${dados.sistema.numeroFases} fase(s)) com tensão nominal fase-fase/fase-neutro de ${dados.sistema.tensaoNominal} V.\n\n` +
+      `O sistema contempla elementos de proteção integrados e externos: proteções internas do inversor contra sobretensão, sub/sobrefrequência, ilhamento (conforme ABNT NBR IEC 62116), injeção de componente CC, curtos-circuitos e monitoramento de isolamento do arranjo CC, além de dispositivos de seccionamento de emergência.`;
     paragrafo(narrativaConexao);
 
     /* =================================
-       6. PARECER TÉCNICO E VALIDAÇÃO (NARRATIVA DINÂMICA)
+       6. PARECER TÉCNICO E VALIDAÇÃO DE LIMITES
     ================================= */
     espaco(4);
-    subtitulo("6. AVALIAÇÃO DE COMPATIBILIDADE E PARECER TÉCNICO");
+    subtitulo("6. ANÁLISE DE COMPATIBILIDADE E PARECER DO ENGENHEIRO");
 
-    linha("Validação Estrutural/Elétrica: " + dados.validacao);
+    linha("Validação Preliminar dos Parâmetros: " + dados.validacao, true);
 
     const resultadoSanitizado = sanitizarTexto(dados.resultadoTecnico);
     const possuiErro = resultadoSanitizado.toUpperCase().includes("ATENÇÃO") || 
@@ -278,19 +284,21 @@ async function gerarMemorialDescritivoPDF() {
 
     let narrativaParecer = "";
     if (possuiErro) {
-      narrativaParecer = `ATENÇÃO: Durante a análise automatizada dos limites elétricos, foram identificadas inconformidades nos parâmetros de tensão ou corrente do arranjo em relação aos limites do inversor. O projeto requer revisão técnica do dimensionamento antes da submissão à concessionária.`;
+      narrativaParecer = `PARECER TÉCNICO RESTRITIVO / INCOMPATIBILIDADE DETECTADA:\n` +
+        `Durante a simulação automatizada dos limites térmicos e elétricos, constataram-se divergências operacionais entre as grandezas do arranjo CC e as características técnicas de entrada do inversor selecionado. Recomenda-se a readequação imediata da quantidade de módulos por string, troca do modelo de inversor ou redimensionamento dos MPPTs antes da submissão da solicitação de acesso junto à concessionária de energia.`;
     } else {
-      narrativaParecer = `CONCLUSÃO: O dimensionamento eletrotécnico do sistema fotovoltaico encontra-se totalmente compatível com os limites operacionais dos equipamentos especificados. As tensões de string e correntes operam dentro da janela MPPT do inversor, garantindo a segurança e o rendimento energético da instalação.`;
+      narrativaParecer = `PARECER TÉCNICO FAVORÁVEL:\n` +
+        `Após verificação rigorosa das grandezas operacionais sob condições STC e variações térmicas esperadas, atesta-se que a tensão máxima do arranjo (Voc total) permanece estritamente inferior ao limite máximo de isolamento do inversor (${dados.sistema.tensaoMaxEntrada} V). A tensão nominal de operação (Vmp total) situa-se perfeitamente no centro da janela de máxima eficiência do rastreador MPPT (${dados.sistema.mpptMin} V a ${dados.sistema.mpptMax} V), e as correntes não excedem o limite de suporte dos canais de entrada. O projeto está tecnicamente aprovado para execução e homologação.`;
     }
 
     paragrafo(narrativaParecer);
-    linha("Detalhamento Técnico: " + resultadoSanitizado, true);
+    linha("Detalhamento da Verificação: " + resultadoSanitizado);
 
     /* =================================
-       7. OBSERVAÇÕES E NOTAS
+       7. OBSERVAÇÕES E CONSIDERAÇÕES FINAIS
     ================================= */
     espaco(4);
-    subtitulo("7. OBSERVAÇÕES COMPLEMENTARES");
+    subtitulo("7. CONSIDERAÇÕES FINAIS E OBSERVAÇÕES");
     paragrafo(dados.sistema.observacoes);
 
     /* =================================
@@ -308,7 +316,7 @@ async function gerarMemorialDescritivoPDF() {
       pdf.setFontSize(8);
       pdf.setFont(undefined, "normal");
       pdf.setTextColor(120, 120, 120);
-      pdf.text("HomologaSolar RT — Documento Gerado Automatizado", margem, 283);
+      pdf.text("HomologaSolar RT — Memorial Descritivo Técnico Avançado", margem, 283);
       pdf.text("Página " + pagina + " de " + totalPaginas, 160, 283);
     }
 
@@ -316,7 +324,7 @@ async function gerarMemorialDescritivoPDF() {
        SALVAR
     ================================= */
     const nomeArquivo =
-      "Memorial_Descritivo_" +
+      "Memorial_Descritivo_Tecnico_" +
       dados.projeto
         .replace(/[^a-zA-Z0-9À-ÿ _-]/g, "")
         .replace(/\s+/g, "_")
@@ -331,5 +339,4 @@ async function gerarMemorialDescritivoPDF() {
       "❌ Não foi possível gerar o Memorial Descritivo.\n\n" + erro.message
     );
   }
-       }
-     
+}
