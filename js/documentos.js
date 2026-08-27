@@ -8,14 +8,19 @@
  * @param {String} nomeArquivo Nome do arquivo com .pdf
  * @param {String} modo 'visualizar' | 'baixar' | 'perguntar'
  */
-function finalizarPDF(pdf, nomeArquivo, modo = 'perguntar') {
+function finalizarPDF(pdf, nomeArquivo, modo) {
   let acao = modo;
 
-  if (modo === 'perguntar') {
+  // Se o modo for um evento do navegador (clique) ou não for passado, força 'perguntar'
+  if (!acao || typeof acao !== 'string' || acao === 'perguntar') {
+    acao = 'perguntar';
+  }
+
+  if (acao === 'perguntar') {
     const querVisualizar = confirm(
       "Deseja VISUALIZAR o documento antes de baixar?\n\n" +
       "• Clique em OK para Visualizar em nova aba\n" +
-      "• Clique em Cancelar para Baixar Direto"
+      "• Clique em CANCELAR para Baixar direto"
     );
     acao = querVisualizar ? 'visualizar' : 'baixar';
   }
@@ -24,13 +29,14 @@ function finalizarPDF(pdf, nomeArquivo, modo = 'perguntar') {
     const pdfBlobUrl = pdf.output('bloburl');
     const novaAba = window.open(pdfBlobUrl, '_blank');
     if (!novaAba) {
-      alert("⚠️ O navegador bloqueou a abertura da nova aba. Por favor, permita pop-ups para este site ou utilize o download direto.");
+      alert("⚠️ O navegador bloqueou a abertura da nova aba. Permitindo o download direto.");
       pdf.save(nomeArquivo);
     }
   } else {
     pdf.save(nomeArquivo);
   }
 }
+
 
 
 
