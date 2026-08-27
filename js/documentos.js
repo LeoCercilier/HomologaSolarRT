@@ -1,6 +1,6 @@
 /* =========================================
    HOMOLOGASOLAR RT
-   MOTOR DE DOCUMENTOS (jsPDF - Com Narrativas Avançadas e Detalhamento Técnico)
+   MOTOR DE DOCUMENTOS (jsPDF - Com Narrativas Avançadas e Proteção Anti-Sobreposição)
    ========================================= */
 
 /**
@@ -12,7 +12,6 @@
 function finalizarPDF(pdf, nomeArquivo, modo) {
   let acao = modo;
 
-  // Se o modo for um evento do navegador (clique) ou não for passado, força 'perguntar'
   if (!acao || typeof acao !== 'string' || acao === 'perguntar') {
     acao = 'perguntar';
   }
@@ -39,8 +38,12 @@ function finalizarPDF(pdf, nomeArquivo, modo) {
 }
 
 /* =========================================
-   FUNÇÕES AUXILIARES DE TRATAMENTO DE TEXTO
+   FUNÇÕES AUXILIARES DE TRATAMENTO DE TEXTO E PÁGINAS
 ========================================= */
+
+const MARGEM_PADRAO = 20;
+const LARGURA_UTIL_PADRAO = 170;
+const LIMITE_INFERIOR_PAGINA = 265; // Evita sobreposição do rodapé que fica em Y:283
 
 function sanitizarTexto(texto) {
   if (texto === null || texto === undefined) return "";
@@ -72,6 +75,39 @@ function documentoValor(valor, padrao = "—") {
     return padrao;
   }
   return valor;
+}
+
+/**
+ * Garante que o cursor Y não invada o rodapé, adicionando uma página se necessário
+ */
+function checarEInserirQuebraPagina(pdf, alturaNecessaria, cursorY) {
+  if (cursorY + alturaNecessaria > LIMITE_INFERIOR_PAGINA) {
+    pdf.addPage();
+    return 25; // Reinicia o cursor no topo da nova página
+  }
+  return cursorY;
+}
+
+/**
+ * Escreve parágrafos longos garantindo que quebras de página ocorram suavemente entre linhas
+ */
+function escreverTextoFluido(pdf, texto, cursorY, tamanhoFonte = 9, espacamentoLinha = 4.2) {
+  pdf.setFontSize(tamanhoFonte);
+  pdf.setFont(undefined, "normal");
+  pdf.setTextColor(60, 60, 60);
+
+  const textoSanitizado = sanitizarTexto(texto);
+  const linhas = pdf.splitTextToSize(textoSanitizado, LARGURA_UTIL_PADRAO);
+
+  let y = cursorY;
+
+  for (let i = 0; i < linhas.length; i++) {
+    y = checarEInserirQuebraPagina(pdf, espacamentoLinha, y);
+    pdf.text(linhas[i], MARGEM_PADRAO, y);
+    y += espacamentoLinha;
+  }
+
+  return y + 2; // Retorna o Y atualizado com margem de segurança
 }
 
 /* =========================================
@@ -165,33 +201,23 @@ async function gerarMemorialDescritivoPDF(modo = 'perguntar') {
     }
 
     const pdf = new jsPDFClass("p", "mm", "a4");
-
-    const margem = 20;
-    const largura = 170;
     let y = 20;
 
-    function verificarPagina(altura = 10) {
-      if (y + altura > 270) {
-        pdf.addPage();
-        y = 25;
-      }
-    }
-
     function titulo(texto) {
-      verificarPagina(15);
+      y = checarEInserirQuebraPagina(pdf, 15, y);
       pdf.setFontSize(15);
       pdf.setFont(undefined, "bold");
       pdf.setTextColor(26, 82, 118);
-      pdf.text(sanitizarTexto(texto), margem, y);
+      pdf.text(sanitizarTexto(texto), MARGEM_PADRAO, y);
       y += 8;
     }
 
     function subtitulo(texto) {
-      verificarPagina(12);
+      y = checarEInserirQuebraPagina(pdf, 12, y);
       pdf.setFontSize(11);
       pdf.setFont(undefined, "bold");
       pdf.setTextColor(41, 128, 185);
-      pdf.text(sanitizarTexto(texto), margem, y);
+      pdf.text(sanitizarTexto(texto), MARGEM_PADRAO, y);
       y += 6;
     }
 
@@ -201,24 +227,11 @@ async function gerarMemorialDescritivoPDF(modo = 'perguntar') {
       pdf.setTextColor(40, 40, 40);
 
       const textoTratado = sanitizarTexto(texto);
-      const linhas = pdf.splitTextToSize(textoTratado, largura);
+      const linhas = pdf.splitTextToSize(textoTratado, LARGURA_UTIL_PADRAO);
 
-      verificarPagina(linhas.length * 4.5 + 2);
-      pdf.text(linhas, margem, y);
+      y = checarEInserirQuebraPagina(pdf, linhas.length * 4.5 + 2, y);
+      pdf.text(linhas, MARGEM_PADRAO, y);
       y += linhas.length * 4.5 + 2;
-    }
-
-    function paragrafo(texto) {
-      pdf.setFontSize(9);
-      pdf.setFont(undefined, "normal");
-      pdf.setTextColor(60, 60, 60);
-
-      const textoTratado = sanitizarTexto(texto);
-      const linhas = pdf.splitTextToSize(textoTratado, largura);
-
-      verificarPagina(linhas.length * 4 + 3);
-      pdf.text(linhas, margem, y);
-      y += linhas.length * 4 + 3;
     }
 
     function espaco(tamanho = 4) {
@@ -231,7 +244,7 @@ async function gerarMemorialDescritivoPDF(modo = 'perguntar') {
 
     pdf.setDrawColor(200, 200, 200);
     pdf.setLineWidth(0.4);
-    pdf.line(margem, y, margem + largura, y);
+    pdf.line(MARGEM_PADRAO, y, MARGEM_PADRAO + LARGURA_UTIL_PADRAO, y);
     espaco(5);
 
     linha("Projeto: " + dados.projeto, true);
@@ -243,7 +256,7 @@ async function gerarMemorialDescritivoPDF(modo = 'perguntar') {
     
     const narrativaObjeto = `O presente Memorial Descritivo contempla o detalhamento eletrotécnico e o dimensionamento para a implantação da unidade geradora fotovoltaica referente ao projeto ${dados.projeto}. O sistema opera na modalidade de microgeração distribuída conectada à rede da concessionária ${dados.sistema.distribuidora}.\n\n` +
       `Toda a concepção do projeto segue estritamente as especificações da ABNT NBR 5410 (Instalações Elétricas de Baixa Tensão), ABNT NBR 16690 (Instalações Elétricas Fotovoltaicas - Requisitos de Projeto), ABNT NBR IEC 62116 (Procedimentos de Teste Anti-ilhamento), além das Resoluções Normativas da ANEEL (REN 482/2012 e REN 1.000/2021) e regulamentos técnicos de acesso da distribuidora local.`;
-    paragrafo(narrativaObjeto);
+    y = escreverTextoFluido(pdf, narrativaObjeto, y);
 
     /* 2. DADOS DAS PARTES */
     espaco(4);
@@ -259,7 +272,7 @@ async function gerarMemorialDescritivoPDF(modo = 'perguntar') {
     
     const narrativaModulos = `O gerador fotovoltaico é composto por ${dados.sistema.quantidadeModulos} módulos fotovoltaicos de altíssima eficiência, fabricados por ${dados.sistema.fabricanteModulo}, modelo ${dados.sistema.modeloModulo}, com potência nominal STC de ${dados.sistema.potenciaModulo} Wp por módulo, perfazendo uma potência instalada total no pico CC de ${dados.calculos.potenciaDC} kWp.\n\n` +
       `Os módulos estão configurados em ${dados.sistema.quantidadeStrings} string(s) contendo ${dados.sistema.modulosPorString} módulos em série. Sob condições padrão de ensaio (STC: 1000 W/m², 25°C, AM 1.5), o comportamento elétrico do gerador é determinado pelo somatório das tensões de cada circuito: a tensão total de circuito aberto atinge ${dados.calculos.vocString} (Voc STC nominal de ${dados.sistema.vocModulo} V/módulo) e a tensão operacional em máxima potência atinge ${dados.calculos.vmpString} (Vmp STC nominal de ${dados.sistema.vmpModulo} V/módulo). A corrente total de curto-circuito (Isc STC) do arranjo é de ${dados.sistema.iscModulo} A e a corrente de operação STC (Imp) é de ${dados.sistema.impModulo} A.`;
-    paragrafo(narrativaModulos);
+    y = escreverTextoFluido(pdf, narrativaModulos, y);
 
     linha("· Potência Instalada Total CC (P_dc): " + dados.calculos.potenciaDC + " kWp", true);
     linha("· Tensão em Circuito Aberto da String (Voc total STC): " + dados.calculos.vocString);
@@ -274,7 +287,7 @@ async function gerarMemorialDescritivoPDF(modo = 'perguntar') {
     const narrativaInversor = `A conversão da energia CC gerada pelo arranjo para corrente alternada (CA) é realizada por ${dados.sistema.quantidadeInversores} unidade(s) de inversor(es) do fabricante ${dados.sistema.fabricanteInversor}, modelo ${dados.sistema.modeloInversor}, totalizando uma potência nominal ativa de saída CA de ${dados.calculos.potenciaAC} kW. O equipamento possui tecnologia de comutação estática por IGBTs de alta frequência e sistema integrado de rastreamento do ponto de máxima potência (MPPT).\n\n` +
       `O dimensionamento elétrico entre a capacidade do gerador CC e a potência nominal ativa CA do inversor resulta em uma razão de sobredimensionamento (Overloading / DC-AC Ratio) de ${dados.calculos.ratioDCAC}. Esta relação garante a otimização da curva de geração nas horas de menor irradiação sem violar a janela limite do inversor.\n\n` +
       `O inversor apresenta uma janela operativa de MPPT situada entre ${dados.sistema.mpptMin} V e ${dados.sistema.mpptMax} V, com tensão máxima admissível de entrada de ${dados.sistema.tensaoMaxEntrada} V. O sistema utiliza ${dados.sistema.quantidadeMppt} MPPT(s) com ${dados.sistema.stringsPorMppt} string(s) alocada(s) por rastreador, operando com limite máximo de corrente por MPPT de ${dados.sistema.correnteMaxMppt} A.`;
-    paragrafo(narrativaInversor);
+    y = escreverTextoFluido(pdf, narrativaInversor, y);
 
     linha("· Potência Ativa Nominal CA Total: " + dados.calculos.potenciaAC + " kW", true);
     linha("· Fator de Sobredimensionamento (FDR / DC-AC Ratio): " + dados.calculos.ratioDCAC);
@@ -289,7 +302,7 @@ async function gerarMemorialDescritivoPDF(modo = 'perguntar') {
 
     const narrativaConexao = `O ponto de interconexão com o sistema de distribuição da concessionária local (${dados.sistema.distribuidora}) é realizado em baixa tensão através do padrão de entrada existente na unidade consumidora. O sistema opera na configuração ${formatarTipoConexao(dados.sistema.tipoLigacao)} (${dados.sistema.numeroFases} fase(s)) com tensão nominal fase-fase/fase-neutro de ${dados.sistema.tensaoNominal} V.\n\n` +
       `O sistema contempla elementos de proteção integrados e externos: proteções internas do inversor contra sobretensão, sub/sobrefrequência, ilhamento (conforme ABNT NBR IEC 62116), injeção de componente CC, curtos-circuitos e monitoramento de isolamento do arranjo CC, além de dispositivos de seccionamento de emergência.`;
-    paragrafo(narrativaConexao);
+    y = escreverTextoFluido(pdf, narrativaConexao, y);
 
     /* 6. PARECER TÉCNICO E VALIDAÇÃO DE LIMITES */
     espaco(4);
@@ -311,13 +324,13 @@ async function gerarMemorialDescritivoPDF(modo = 'perguntar') {
         `Após verificação rigorosa das grandezas operacionais sob condições STC e variações térmicas esperadas, atesta-se que a tensão máxima do arranjo (Voc total) permanece estritamente inferior ao limite máximo de isolamento do inversor (${dados.sistema.tensaoMaxEntrada} V). A tensão nominal de operação (Vmp total) situa-se perfeitamente no centro da janela de máxima eficiência do rastreador MPPT (${dados.sistema.mpptMin} V a ${dados.sistema.mpptMax} V), e as correntes não excedem o limite de suporte dos canais de entrada. O projeto está tecnicamente aprovado para execução e homologação.`;
     }
 
-    paragrafo(narrativaParecer);
+    y = escreverTextoFluido(pdf, narrativaParecer, y);
     linha("Detalhamento da Verificação: " + resultadoSanitizado);
 
     /* 7. OBSERVAÇÕES E CONSIDERAÇÕES FINAIS */
     espaco(4);
     subtitulo("7. CONSIDERAÇÕES FINAIS E OBSERVAÇÕES");
-    paragrafo(dados.sistema.observacoes);
+    y = escreverTextoFluido(pdf, dados.sistema.observacoes, y);
 
     /* RODAPÉ E MOLDURA DE PÁGINAS */
     const totalPaginas = pdf.internal.getNumberOfPages();
@@ -332,7 +345,7 @@ async function gerarMemorialDescritivoPDF(modo = 'perguntar') {
       pdf.setFontSize(8);
       pdf.setFont(undefined, "normal");
       pdf.setTextColor(120, 120, 120);
-      pdf.text("HomologaSolar RT — Memorial Descritivo Técnico Avançado", margem, 283);
+      pdf.text("HomologaSolar RT — Memorial Descritivo Técnico Avançado", MARGEM_PADRAO, 283);
       pdf.text("Página " + pagina + " de " + totalPaginas, 160, 283);
     }
 
@@ -367,8 +380,6 @@ async function gerarProcuracaoPDF(modo = 'perguntar') {
     }
 
     const pdf = new jsPDFClass("p", "mm", "a4");
-    const margem = 20;
-    const largura = 170;
     let y = 25;
 
     function espaco(tamanho = 5) {
@@ -397,9 +408,10 @@ async function gerarProcuracaoPDF(modo = 'perguntar') {
       pdf.setTextColor(40, 40, 40);
 
       const textoTratado = sanitizarTexto(texto);
-      const linhas = pdf.splitTextToSize(textoTratado, largura);
+      const linhas = pdf.splitTextToSize(textoTratado, LARGURA_UTIL_PADRAO);
 
-      pdf.text(linhas, margem, y, { align: alinhamento });
+      y = checarEInserirQuebraPagina(pdf, linhas.length * (tamanhoFonte * 0.45) + 3, y);
+      pdf.text(linhas, MARGEM_PADRAO, y, { align: alinhamento });
       y += linhas.length * (tamanhoFonte * 0.45) + 3;
     }
 
@@ -409,7 +421,7 @@ async function gerarProcuracaoPDF(modo = 'perguntar') {
 
     pdf.setDrawColor(200, 200, 200);
     pdf.setLineWidth(0.4);
-    pdf.line(margem, y, margem + largura, y);
+    pdf.line(MARGEM_PADRAO, y, MARGEM_PADRAO + LARGURA_UTIL_PADRAO, y);
     espaco(8);
 
     /* Outorgante (Cliente) */
@@ -447,9 +459,11 @@ async function gerarProcuracaoPDF(modo = 'perguntar') {
     const dataFormatada = `Brasil, ${dataAtual.getDate()} de ${meses[dataAtual.getMonth()]} de ${dataAtual.getFullYear()}.`;
     blocoTexto(dataFormatada, "center", 10);
 
-    espaco(25);
+    espaco(20);
 
-    /* Campo de Assinatura */
+    /* PROTEÇÃO DO BLOCO DE ASSINATURA */
+    y = checarEInserirQuebraPagina(pdf, 35, y);
+
     pdf.setDrawColor(100, 100, 100);
     pdf.setLineWidth(0.5);
     pdf.line(45, y, 165, y);
@@ -468,15 +482,19 @@ async function gerarProcuracaoPDF(modo = 'perguntar') {
     y += 4;
     pdf.text("Assinatura do Outorgante (Titular)", 105, y, { align: "center" });
 
-    /* Moldura da página */
-    pdf.setDrawColor(210, 210, 210);
-    pdf.setLineWidth(0.3);
-    pdf.rect(10, 10, 190, 277);
+    /* Moldura */
+    const totalPaginas = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPaginas; i++) {
+      pdf.setPage(i);
+      pdf.setDrawColor(210, 210, 210);
+      pdf.setLineWidth(0.3);
+      pdf.rect(10, 10, 190, 277);
 
-    pdf.setFontSize(8);
-    pdf.setTextColor(120, 120, 120);
-    pdf.text("HomologaSolar RT — Documento Oficial de Representação", margem, 283);
-    pdf.text("Página 1 de 1", 165, 283);
+      pdf.setFontSize(8);
+      pdf.setTextColor(120, 120, 120);
+      pdf.text("HomologaSolar RT — Documento Oficial de Representação", MARGEM_PADRAO, 283);
+      pdf.text("Página " + i + " de " + totalPaginas, 165, 283);
+    }
 
     /* Salvar */
     const nomeArquivo = "Procuracao_Homologacao_" + dados.projeto.replace(/[^a-zA-Z0-9À-ÿ _-]/g, "").replace(/\s+/g, "_").substring(0, 60) + ".pdf";
@@ -502,8 +520,6 @@ async function gerarTermoResponsabilidadePDF(modo = 'perguntar') {
     }
 
     const pdf = new jsPDFClass("p", "mm", "a4");
-    const margem = 20;
-    const largura = 170;
     let y = 25;
 
     function espaco(tamanho = 5) {
@@ -532,9 +548,10 @@ async function gerarTermoResponsabilidadePDF(modo = 'perguntar') {
       pdf.setTextColor(40, 40, 40);
 
       const textoTratado = sanitizarTexto(texto);
-      const linhas = pdf.splitTextToSize(textoTratado, largura);
+      const linhas = pdf.splitTextToSize(textoTratado, LARGURA_UTIL_PADRAO);
 
-      pdf.text(linhas, margem, y, { align: alinhamento });
+      y = checarEInserirQuebraPagina(pdf, linhas.length * (tamanhoFonte * 0.45) + 3, y);
+      pdf.text(linhas, MARGEM_PADRAO, y, { align: alinhamento });
       y += linhas.length * (tamanhoFonte * 0.45) + 3;
     }
 
@@ -544,7 +561,7 @@ async function gerarTermoResponsabilidadePDF(modo = 'perguntar') {
 
     pdf.setDrawColor(200, 200, 200);
     pdf.setLineWidth(0.4);
-    pdf.line(margem, y, margem + largura, y);
+    pdf.line(MARGEM_PADRAO, y, MARGEM_PADRAO + LARGURA_UTIL_PADRAO, y);
     espaco(8);
 
     /* Dados do RT */
@@ -584,9 +601,11 @@ async function gerarTermoResponsabilidadePDF(modo = 'perguntar') {
     const dataFormatada = `Brasil, ${dataAtual.getDate()} de ${meses[dataAtual.getMonth()]} de ${dataAtual.getFullYear()}.`;
     blocoTexto(dataFormatada, "center", 9.5);
 
-    espaco(22);
+    espaco(18);
 
-    /* Campo de Assinatura do RT */
+    /* PROTEÇÃO DO BLOCO DE ASSINATURA */
+    y = checarEInserirQuebraPagina(pdf, 35, y);
+
     pdf.setDrawColor(100, 100, 100);
     pdf.setLineWidth(0.5);
     pdf.line(45, y, 165, y);
@@ -606,14 +625,18 @@ async function gerarTermoResponsabilidadePDF(modo = 'perguntar') {
     pdf.text("Assinatura do Engenheiro / Técnico", 105, y, { align: "center" });
 
     /* Moldura */
-    pdf.setDrawColor(210, 210, 210);
-    pdf.setLineWidth(0.3);
-    pdf.rect(10, 10, 190, 277);
+    const totalPaginas = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPaginas; i++) {
+      pdf.setPage(i);
+      pdf.setDrawColor(210, 210, 210);
+      pdf.setLineWidth(0.3);
+      pdf.rect(10, 10, 190, 277);
 
-    pdf.setFontSize(8);
-    pdf.setTextColor(120, 120, 120);
-    pdf.text("HomologaSolar RT — Declaração de Responsabilidade Técnica", margem, 283);
-    pdf.text("Página 1 de 1", 165, 283);
+      pdf.setFontSize(8);
+      pdf.setTextColor(120, 120, 120);
+      pdf.text("HomologaSolar RT — Declaração de Responsabilidade Técnica", MARGEM_PADRAO, 283);
+      pdf.text("Página " + i + " de " + totalPaginas, 165, 283);
+    }
 
     /* Salvar */
     const nomeArquivo = "Declaracao_Responsabilidade_Tecnica_" + dados.projeto.replace(/[^a-zA-Z0-9À-ÿ _-]/g, "").replace(/\s+/g, "_").substring(0, 60) + ".pdf";
@@ -639,8 +662,6 @@ async function gerarFormularioAcessoPDF(modo = 'perguntar') {
     }
 
     const pdf = new jsPDFClass("p", "mm", "a4");
-    const margem = 20;
-    const largura = 170;
     let y = 20;
 
     function espaco(tamanho = 4) {
@@ -656,14 +677,16 @@ async function gerarFormularioAcessoPDF(modo = 'perguntar') {
     }
 
     function secao(texto) {
+      y = checarEInserirQuebraPagina(pdf, 10, y);
       pdf.setFontSize(10);
       pdf.setFont(undefined, "bold");
       pdf.setTextColor(41, 128, 185);
-      pdf.text(sanitizarTexto(texto), margem, y);
+      pdf.text(sanitizarTexto(texto), MARGEM_PADRAO, y);
       y += 5;
     }
 
-    function itemTabela(rotulo, valor, xColuna = margem, larguraColuna = 80) {
+    function itemTabela(rotulo, valor, xColuna = MARGEM_PADRAO, larguraColuna = 80) {
+      y = checarEInserirQuebraPagina(pdf, 5, y);
       pdf.setFontSize(8.5);
       pdf.setFont(undefined, "bold");
       pdf.setTextColor(50, 50, 50);
@@ -678,69 +701,68 @@ async function gerarFormularioAcessoPDF(modo = 'perguntar') {
     titulo("FICHA DE DADOS PARA SOLICITAÇÃO DE ACESSO");
     pdf.setDrawColor(200, 200, 200);
     pdf.setLineWidth(0.4);
-    pdf.line(margem, y, margem + largura, y);
+    pdf.line(MARGEM_PADRAO, y, MARGEM_PADRAO + LARGURA_UTIL_PADRAO, y);
     espaco(6);
 
     /* 1. DADOS CADASTRAIS */
     secao("1. DADOS DO TITULAR E DA UNIDADE CONSUMIDORA");
-    itemTabela("Nome / Razão Social", dados.cliente.nome, margem, 45); y += 4.5;
-    itemTabela("CPF / CNPJ", dados.cliente.documento, margem, 45); y += 4.5;
-    itemTabela("Telefone", dados.cliente.telefone, margem, 45);
+    itemTabela("Nome / Razão Social", dados.cliente.nome, MARGEM_PADRAO, 45); y += 4.5;
+    itemTabela("CPF / CNPJ", dados.cliente.documento, MARGEM_PADRAO, 45); y += 4.5;
+    itemTabela("Telefone", dados.cliente.telefone, MARGEM_PADRAO, 45);
     itemTabela("E-mail", dados.cliente.email, 105, 20); y += 6;
 
     /* 2. RESPONSÁVEL TÉCNICO */
     secao("2. DADOS DO RESPONSÁVEL TÉCNICO (RT)");
-    itemTabela("Engenheiro / Técnico", dados.rt.nome, margem, 45); y += 4.5;
-    itemTabela("Conselho de Classe", dados.rt.crea + " (" + dados.rt.uf + ")", margem, 45);
+    itemTabela("Engenheiro / Técnico", dados.rt.nome, MARGEM_PADRAO, 45); y += 4.5;
+    itemTabela("Conselho de Classe", dados.rt.crea + " (" + dados.rt.uf + ")", MARGEM_PADRAO, 45);
     itemTabela("Nº Registro", dados.rt.registro, 105, 25); y += 6;
 
     /* 3. PARÂMETROS DA REDE */
     secao("3. PARÂMETROS DA CONEXÃO E DISTRIBUIDORA");
-    itemTabela("Concessionária", dados.sistema.distribuidora, margem, 45);
+    itemTabela("Concessionária", dados.sistema.distribuidora, MARGEM_PADRAO, 45);
     itemTabela("Tipo de Conexão", formatarTipoConexao(dados.sistema.tipoLigacao), 105, 30); y += 4.5;
-    itemTabela("Nº de Fases", dados.sistema.numeroFases, margem, 45);
+    itemTabela("Nº de Fases", dados.sistema.numeroFases, MARGEM_PADRAO, 45);
     itemTabela("Tensão Nominal", dados.sistema.tensaoNominal + " V", 105, 30); y += 6;
 
     /* 4. GERADOR CC */
     secao("4. DADOS DO GERADOR FOTOVOLTAICO (CC)");
-    itemTabela("Fabricante dos Módulos", dados.sistema.fabricanteModulo, margem, 45); y += 4.5;
-    itemTabela("Modelo dos Módulos", dados.sistema.modeloModulo, margem, 45); y += 4.5;
-    itemTabela("Potência Unitária", dados.sistema.potenciaModulo + " Wp", margem, 45);
+    itemTabela("Fabricante dos Módulos", dados.sistema.fabricanteModulo, MARGEM_PADRAO, 45); y += 4.5;
+    itemTabela("Modelo dos Módulos", dados.sistema.modeloModulo, MARGEM_PADRAO, 45); y += 4.5;
+    itemTabela("Potência Unitária", dados.sistema.potenciaModulo + " Wp", MARGEM_PADRAO, 45);
     itemTabela("Qtd. Total Módulos", dados.sistema.quantidadeModulos + " un.", 105, 35); y += 4.5;
-    itemTabela("Potência Total CC", dados.calculos.potenciaDC + " kWp", margem, 45);
+    itemTabela("Potência Total CC", dados.calculos.potenciaDC + " kWp", MARGEM_PADRAO, 45);
     itemTabela("Arranjo Físico", dados.sistema.quantidadeStrings + " string(s) x " + dados.sistema.modulosPorString + " mod.", 105, 35); y += 4.5;
-    itemTabela("Tensão Open Circuit (Voc)", dados.calculos.vocString, margem, 45);
+    itemTabela("Tensão Open Circuit (Voc)", dados.calculos.vocString, MARGEM_PADRAO, 45);
     itemTabela("Tensão Operacional (Vmp)", dados.calculos.vmpString, 105, 35); y += 6;
 
     /* 5. INVERSOR CA */
     secao("5. DADOS DO SISTEMA DE CONVERSÃO (CA)");
-    itemTabela("Fabricante Inversor", dados.sistema.fabricanteInversor, margem, 45); y += 4.5;
-    itemTabela("Modelo Inversor", dados.sistema.modeloInversor, margem, 45); y += 4.5;
-    itemTabela("Potência Nominal CA", dados.calculos.potenciaAC + " kW", margem, 45);
+    itemTabela("Fabricante Inversor", dados.sistema.fabricanteInversor, MARGEM_PADRAO, 45); y += 4.5;
+    itemTabela("Modelo Inversor", dados.sistema.modeloInversor, MARGEM_PADRAO, 45); y += 4.5;
+    itemTabela("Potência Nominal CA", dados.calculos.potenciaAC + " kW", MARGEM_PADRAO, 45);
     itemTabela("Qtd. Inversores", dados.sistema.quantidadeInversores + " un.", 105, 30); y += 4.5;
-    itemTabela("Razão DC/AC (FDR)", dados.calculos.ratioDCAC, margem, 45);
+    itemTabela("Razão DC/AC (FDR)", dados.calculos.ratioDCAC, MARGEM_PADRAO, 45);
     itemTabela("Janela MPPT", dados.sistema.mpptMin + "V a " + dados.sistema.mpptMax + "V", 105, 30); y += 6;
 
     /* 6. DIAGNÓSTICO DO ROTEADOR */
     secao("6. PARECER AUTOMÁTICO DO SISTEMA");
-    itemTabela("Validação Elétrica", dados.validacao, margem, 45); y += 4.5;
+    itemTabela("Validação Elétrica", dados.validacao, MARGEM_PADRAO, 45); y += 4.5;
     
-    pdf.setFontSize(8);
-    pdf.setFont(undefined, "normal");
-    pdf.setTextColor(60, 60, 60);
-    const textoRes = pdf.splitTextToSize(sanitizarTexto(dados.resultadoTecnico), largura);
-    pdf.text(textoRes, margem, y);
-    y += textoRes.length * 3.8 + 6;
+    y = escreverTextoFluido(pdf, dados.resultadoTecnico, y, 8, 3.8);
 
     /* Moldura */
-    pdf.setDrawColor(210, 210, 210);
-    pdf.setLineWidth(0.3);
-    pdf.rect(10, 10, 190, 277);
+    const totalPaginas = pdf.internal.getNumberOfPages();
+    for (let i = 1; i <= totalPaginas; i++) {
+      pdf.setPage(i);
+      pdf.setDrawColor(210, 210, 210);
+      pdf.setLineWidth(0.3);
+      pdf.rect(10, 10, 190, 277);
 
-    pdf.setFontSize(8);
-    pdf.setTextColor(120, 120, 120);
-    pdf.text("HomologaSolar RT — Ficha Resumo de Acesso", margem, 283);
-    pdf.text("Página 1 de 1", 165, 283);
+      pdf.setFontSize(8);
+      pdf.setTextColor(120, 120, 120);
+      pdf.text("HomologaSolar RT — Ficha Resumo de Acesso", MARGEM_PADRAO, 283);
+      pdf.text("Página " + i + " de " + totalPaginas, 165, 283);
+    }
 
     /* Salvar */
     const nomeArquivo = "Ficha_Solicitacao_Acesso_" + dados.projeto.replace(/[^a-zA-Z0-9À-ÿ _-]/g, "").replace(/\s+/g, "_").substring(0, 60) + ".pdf";
@@ -766,19 +788,10 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
     }
 
     const pdf = new jsPDFClass("p", "mm", "a4");
-    const margem = 20;
-    const largura = 170;
     let y = 20;
 
     function espaco(tamanho = 4) {
       y += tamanho;
-    }
-
-    function verificarPagina(altura = 10) {
-      if (y + altura > 270) {
-        pdf.addPage();
-        y = 20;
-      }
     }
 
     function titulo(texto) {
@@ -790,15 +803,16 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
     }
 
     function secao(texto) {
-      verificarPagina(12);
+      y = checarEInserirQuebraPagina(pdf, 12, y);
       pdf.setFontSize(10);
       pdf.setFont(undefined, "bold");
       pdf.setTextColor(41, 128, 185);
-      pdf.text(sanitizarTexto(texto), margem, y);
+      pdf.text(sanitizarTexto(texto), MARGEM_PADRAO, y);
       y += 5;
     }
 
-    function itemTabela(rotulo, valor, xColuna = margem, larguraColuna = 80) {
+    function itemTabela(rotulo, valor, xColuna = MARGEM_PADRAO, larguraColuna = 80) {
+      y = checarEInserirQuebraPagina(pdf, 5, y);
       pdf.setFontSize(8.5);
       pdf.setFont(undefined, "bold");
       pdf.setTextColor(50, 50, 50);
@@ -810,11 +824,11 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
     }
 
     function itemChecklist(item, statusPadrao = "[  ] OK   [  ] N/A") {
-      verificarPagina(6);
+      y = checarEInserirQuebraPagina(pdf, 6, y);
       pdf.setFontSize(8.5);
       pdf.setFont(undefined, "normal");
       pdf.setTextColor(40, 40, 40);
-      pdf.text("• " + sanitizarTexto(item), margem + 2, y);
+      pdf.text("• " + sanitizarTexto(item), MARGEM_PADRAO + 2, y);
 
       pdf.setFont(undefined, "bold");
       pdf.setTextColor(80, 80, 80);
@@ -826,50 +840,51 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
     titulo("RELATÓRIO DE VISTORIA E CHECKLIST DE COMISSIONAMENTO");
     pdf.setDrawColor(200, 200, 200);
     pdf.setLineWidth(0.4);
-    pdf.line(margem, y, margem + largura, y);
+    pdf.line(MARGEM_PADRAO, y, MARGEM_PADRAO + LARGURA_UTIL_PADRAO, y);
     espaco(6);
 
     /* 1. DADOS DO PROJETO */
     secao("1. IDENTIFICAÇÃO GERAL DA INSTALAÇÃO");
-    itemTabela("Projeto", dados.projeto, margem, 45);
+    itemTabela("Projeto", dados.projeto, MARGEM_PADRAO, 45);
     itemTabela("Distribuidora", dados.sistema.distribuidora, 105, 30); y += 4.5;
-    itemTabela("Titular / Cliente", dados.cliente.nome, margem, 45); y += 4.5;
-    itemTabela("Responsável Técnico", dados.rt.nome, margem, 45);
+    itemTabela("Titular / Cliente", dados.cliente.nome, MARGEM_PADRAO, 45); y += 4.5;
+    itemTabela("Responsável Técnico", dados.rt.nome, MARGEM_PADRAO, 45);
     itemTabela("Registro RT", dados.rt.crea + " / " + dados.rt.registro, 105, 30); y += 6;
 
     /* 2. EQUIPAMENTOS INSTALADOS */
     secao("2. RESUMO DOS EQUIPAMENTOS COMISSIONADOS");
-    itemTabela("Módulos Fotovoltaicos", dados.sistema.quantidadeModulos + "x " + dados.sistema.fabricanteModulo + " " + dados.sistema.potenciaModulo + "Wp", margem, 45); y += 4.5;
-    itemTabela("Inversor(es) CA", dados.sistema.quantidadeInversores + "x " + dados.sistema.fabricanteInversor + " " + dados.sistema.modeloInversor + " (" + dados.calculos.potenciaAC + " kW)", margem, 45); y += 4.5;
-    itemTabela("Configuração de Strings", dados.sistema.quantidadeStrings + " string(s) contendo " + dados.sistema.modulosPorString + " módulos cada", margem, 45); y += 6;
+    itemTabela("Módulos Fotovoltaicos", dados.sistema.quantidadeModulos + "x " + dados.sistema.fabricanteModulo + " " + dados.sistema.potenciaModulo + "Wp", MARGEM_PADRAO, 45); y += 4.5;
+    itemTabela("Inversor(es) CA", dados.sistema.quantidadeInversores + "x " + dados.sistema.fabricanteInversor + " " + dados.sistema.modeloInversor + " (" + dados.calculos.potenciaAC + " kW)", MARGEM_PADRAO, 45); y += 4.5;
+    itemTabela("Configuração de Strings", dados.sistema.quantidadeStrings + " string(s) contendo " + dados.sistema.modulosPorString + " módulos cada", MARGEM_PADRAO, 45); y += 6;
 
     /* 3. ENSAIOS E MEDIÇÕES ELÉTRICAS DE CAMPO */
     secao("3. COMPARAÇÃO DE PARÂMETROS: TEÓRICO CALCULADO VS. MEDIDO EM CAMPO");
     
     // Tabela Header
+    y = checarEInserirQuebraPagina(pdf, 10, y);
     pdf.setFillColor(240, 240, 240);
-    pdf.rect(margem, y, largura, 6, "F");
+    pdf.rect(MARGEM_PADRAO, y, LARGURA_UTIL_PADRAO, 6, "F");
     pdf.setFontSize(8);
     pdf.setFont(undefined, "bold");
     pdf.setTextColor(40, 40, 40);
-    pdf.text("Grandeza Eletrotécnica", margem + 3, y + 4.2);
-    pdf.text("Valor Teórico Calculado", margem + 70, y + 4.2);
-    pdf.text("Valor Medido na Vistoria", margem + 122, y + 4.2);
+    pdf.text("Grandeza Eletrotécnica", MARGEM_PADRAO + 3, y + 4.2);
+    pdf.text("Valor Teórico Calculado", MARGEM_PADRAO + 70, y + 4.2);
+    pdf.text("Valor Medido na Vistoria", MARGEM_PADRAO + 122, y + 4.2);
     y += 8;
 
     // Linhas de medição
     pdf.setFont(undefined, "normal");
-    itemTabela("Tensão de Circuito Aberto (Voc String)", dados.calculos.vocString, margem + 3, 67);
-    pdf.text("[ ______________ ] V", margem + 122, y); y += 5.5;
+    itemTabela("Tensão de Circuito Aberto (Voc String)", dados.calculos.vocString, MARGEM_PADRAO + 3, 67);
+    pdf.text("[ ______________ ] V", MARGEM_PADRAO + 122, y); y += 5.5;
 
-    itemTabela("Tensão de Operação Nominal (Vmp String)", dados.calculos.vmpString, margem + 3, 67);
-    pdf.text("[ ______________ ] V", margem + 122, y); y += 5.5;
+    itemTabela("Tensão de Operação Nominal (Vmp String)", dados.calculos.vmpString, MARGEM_PADRAO + 3, 67);
+    pdf.text("[ ______________ ] V", MARGEM_PADRAO + 122, y); y += 5.5;
 
-    itemTabela("Corrente Operacional / Curtos (Imp/Isc)", dados.sistema.impModulo + " A / " + dados.sistema.iscModulo + " A", margem + 3, 67);
-    pdf.text("[ ______________ ] A", margem + 122, y); y += 5.5;
+    itemTabela("Corrente Operacional / Curtos (Imp/Isc)", dados.sistema.impModulo + " A / " + dados.sistema.iscModulo + " A", MARGEM_PADRAO + 3, 67);
+    pdf.text("[ ______________ ] A", MARGEM_PADRAO + 122, y); y += 5.5;
 
-    itemTabela("Tensão da Rede CA (Fase-Fase / Fase-N)", dados.sistema.tensaoNominal + " V (" + formatarTipoConexao(dados.sistema.tipoLigacao) + ")", margem + 3, 67);
-    pdf.text("[ ______________ ] V", margem + 122, y); y += 7;
+    itemTabela("Tensão da Rede CA (Fase-Fase / Fase-N)", dados.sistema.tensaoNominal + " V (" + formatarTipoConexao(dados.sistema.tipoLigacao) + ")", MARGEM_PADRAO + 3, 67);
+    pdf.text("[ ______________ ] V", MARGEM_PADRAO + 122, y); y += 7;
 
     /* 4. CHECKLIST DE INSPEÇÃO FÍSICA E SEGURANÇA */
     secao("4. CHECKLIST DE INSPEÇÃO FÍSICA E CONFORMIDADE NORMATIVA");
@@ -883,37 +898,32 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
 
     /* 5. TERMO DE ACEITE E ASSINATURA */
     secao("5. PARECER DA VISTORIA E LIBERAÇÃO PARA OPERAÇÃO");
-    pdf.setFontSize(8.5);
-    pdf.setFont(undefined, "normal");
-    pdf.setTextColor(60, 60, 60);
     const textoParecer = "Atesto que o sistema de microgeração fotovoltaica descrito neste relatório foi inspecionado, testado e comissionado de acordo com as especificações do projeto eletrotécnico e normativas técnicas aplicáveis, encontrando-se em condições adequadas para operação em teste / conexão à rede da concessionária.";
-    const linhasParecer = pdf.splitTextToSize(textoParecer, largura);
-    pdf.text(linhasParecer, margem, y);
-    y += linhasParecer.length * 3.8 + 12;
+    y = escreverTextoFluido(pdf, textoParecer, y, 8.5, 3.8);
 
-    /* Assinaturas */
-    verificarPagina(30);
+    /* PROTEÇÃO DO BLOCO DE ASSINATURAS DUPLAS */
+    y = checarEInserirQuebraPagina(pdf, 30, y);
     pdf.setDrawColor(100, 100, 100);
     pdf.setLineWidth(0.4);
     
     // Linha RT
-    pdf.line(margem + 5, y, margem + 75, y);
+    pdf.line(MARGEM_PADRAO + 5, y, MARGEM_PADRAO + 75, y);
     // Linha Cliente / Técnico Instalação
-    pdf.line(margem + 95, y, margem + 165, y);
+    pdf.line(MARGEM_PADRAO + 95, y, MARGEM_PADRAO + 165, y);
     y += 4;
 
     pdf.setFontSize(8.5);
     pdf.setFont(undefined, "bold");
     pdf.setTextColor(40, 40, 40);
-    pdf.text(sanitizarTexto(dados.rt.nome), margem + 40, y, { align: "center" });
-    pdf.text("Técnico Responsável / Cliente", margem + 130, y, { align: "center" });
+    pdf.text(sanitizarTexto(dados.rt.nome), MARGEM_PADRAO + 40, y, { align: "center" });
+    pdf.text("Técnico Responsável / Cliente", MARGEM_PADRAO + 130, y, { align: "center" });
     y += 3.5;
 
     pdf.setFont(undefined, "normal");
     pdf.setFontSize(7.5);
     pdf.setTextColor(100, 100, 100);
-    pdf.text(`RT — ${sanitizarTexto(dados.rt.crea)} ${sanitizarTexto(dados.rt.registro)}`, margem + 40, y, { align: "center" });
-    pdf.text("Assinatura de Recebimento de Campo", margem + 130, y, { align: "center" });
+    pdf.text(`RT — ${sanitizarTexto(dados.rt.crea)} ${sanitizarTexto(dados.rt.registro)}`, MARGEM_PADRAO + 40, y, { align: "center" });
+    pdf.text("Assinatura de Recebimento de Campo", MARGEM_PADRAO + 130, y, { align: "center" });
 
     /* Moldura */
     const totalPaginas = pdf.internal.getNumberOfPages();
@@ -925,7 +935,7 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
 
       pdf.setFontSize(8);
       pdf.setTextColor(120, 120, 120);
-      pdf.text("HomologaSolar RT — Checklist de Comissionamento e Vistoria", margem, 283);
+      pdf.text("HomologaSolar RT — Checklist de Comissionamento e Vistoria", MARGEM_PADRAO, 283);
       pdf.text("Página " + i + " de " + totalPaginas, 165, 283);
     }
 
