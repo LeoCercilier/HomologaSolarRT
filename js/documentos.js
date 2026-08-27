@@ -390,13 +390,6 @@ async function gerarMemorialDescritivoPDF(modo = 'perguntar') {
    1. FUNÇÕES AUXILIARES E CAPTURA DE DADOS
 ========================================= */
 
-function sanitizarTexto(texto) {
-  if (texto === null || texto === undefined) return "";
-  return String(texto)
-    .replace(/&p|⚠️|❌|✔/g, "")
-    .trim();
-}
-
 function formatarTipoConexao(valor) {
   if (!valor) return "—";
   const mapa = {
