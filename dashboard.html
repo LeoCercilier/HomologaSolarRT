@@ -1366,6 +1366,13 @@ async function carregarPendencias() {
             documento
         );
 
+		        if (
+            documento.tipo_documento === "memorial_descritivo" ||
+            documento.tipo_documento === "diagrama_unifilar"
+        ) {
+            return;
+        }
+
         const projeto =
             documento.projetos;
 
