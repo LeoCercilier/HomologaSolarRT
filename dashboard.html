@@ -1663,6 +1663,14 @@ async function carregarPendencias() {
 				documentos.forEach(
 				documento => {
 
+	              if (
+                    documento.tipo_documento === "memorial_descritivo" ||
+                    documento.tipo_documento === "diagrama_unifilar"
+                ) {
+                    return;
+						}
+			
+
                 const item =
 				document.createElement(
 				"div"
