@@ -412,6 +412,7 @@ async function gerarProcuracaoPDF(modo = 'perguntar') {
 
       y = checarEInserirQuebraPagina(pdf, linhas.length * (tamanhoFonte * 0.45) + 3, y);
       
+      // Renderização linha a linha com margem padrão (20mm) para evitar estouro
       for (let i = 0; i < linhas.length; i++) {
         pdf.text(linhas[i], MARGEM_PADRAO, y);
         y += (tamanhoFonte * 0.45) + 1;
@@ -711,6 +712,7 @@ async function gerarFormularioAcessoPDF(modo = 'perguntar') {
       pdf.setFont(undefined, "normal");
       pdf.setTextColor(80, 80, 80);
       
+      // Quebra automática para valores longos de colunas
       const valorSanitizado = sanitizarTexto(valor);
       const larguraDisponivel = (xColuna > MARGEM_PADRAO) ? 65 : (LARGURA_UTIL_PADRAO - larguraRotulo);
       const linhasValor = pdf.splitTextToSize(valorSanitizado, larguraDisponivel);
@@ -883,6 +885,7 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
     /* 3. ENSAIOS E MEDIÇÕES ELÉTRICAS DE CAMPO */
     secao("3. COMPARAÇÃO DE PARÂMETROS: TEÓRICO CALCULADO VS. MEDIDO EM CAMPO");
     
+    // Tabela Header
     y = checarEInserirQuebraPagina(pdf, 10, y);
     pdf.setFillColor(240, 240, 240);
     pdf.rect(MARGEM_PADRAO, y, LARGURA_UTIL_PADRAO, 6, "F");
@@ -894,6 +897,7 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
     pdf.text("Valor Medido na Vistoria", MARGEM_PADRAO + 122, y + 4.2);
     y += 8;
 
+    // Linhas de medição
     pdf.setFont(undefined, "normal");
     itemTabela("Tensão de Circuito Aberto (Voc)", dados.calculos.vocString, MARGEM_PADRAO + 3, 65);
     pdf.text("[ ______________ ] V", MARGEM_PADRAO + 122, y); y += 5.5;
@@ -927,7 +931,9 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
     pdf.setDrawColor(100, 100, 100);
     pdf.setLineWidth(0.4);
     
+    // Linha RT
     pdf.line(MARGEM_PADRAO + 5, y, MARGEM_PADRAO + 75, y);
+    // Linha Cliente / Técnico Instalação
     pdf.line(MARGEM_PADRAO + 95, y, MARGEM_PADRAO + 165, y);
     y += 4;
 
@@ -968,51 +974,78 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
   }
 }
 
-/* =========================================================
-   6. DIAGRAMA UNIFILAR TÉCNICO
-========================================================= */
 
-function obterValorCampo(idHtml, chaveStorage, valorPadrao = "N/A") {
-  const el = document.getElementById(idHtml);
-  if (el && el.value && el.value.trim() !== "") {
-    return el.value.trim();
-  }
-  const storageVal = localStorage.getItem(chaveStorage);
-  if (storageVal && storageVal.trim() !== "") {
-    return storageVal.trim();
-  }
-  return valorPadrao;
-}
 
-function gerarSVGUnifilar(dados = {}) {
+
+
+function gerarSVGUnifilar(dados) {
   const largura = 1120;
   const altura = 790;
 
-  const cliente = dados.cliente || {};
-  const sistema = dados.sistema || {};
-  const rt = dados.rt || {};
-  const calculos = dados.calculos || {};
+  // Garante acesso ao objeto config interno caso os dados venham aninhados
+  const cfg = dados.config || dados.configuracao || {};
 
-  const clienteNome = cliente.nome || dados.clienteNome || obterValorCampo('clienteNome', 'cliente_nome');
-  const clienteDoc = cliente.documento || dados.clienteDocumento || obterValorCampo('clienteDocumento', 'cliente_documento');
-  const nomeProjeto = dados.projeto || dados.nomeProjeto || obterValorCampo('nomeProjeto', 'nome_projeto', 'Projeto Fotovoltaico');
-  const distribuidora = sistema.distribuidora || dados.distribuidora || obterValorCampo('distribuidora', 'distribuidora', 'Concessionária Local');
-  const tipoConexao = sistema.tipoLigacao || dados.tipoConexao || obterValorCampo('tipoConexao', 'tipo_conexao', 'monofasico');
+  // 1. DADOS DO CLIENTE E PROJETO
+  const clienteNome = dados.clienteNome || dados.cliente_nome || dados.nomeCliente || "N/A";
+  const clienteDoc = dados.clienteDocumento || dados.cliente_documento || dados.documentoCliente || "N/A";
+  const nomeProjeto = dados.nomeProjeto || dados.nome_projeto || "Projeto Fotovoltaico";
+  const distribuidora = dados.distribuidora || dados.concessionaria || cfg.distribuidora || "Concessionária Local";
+  const tipoConexao = dados.tipoConexao || dados.tipo_conexao || dados.tipoLigacao || "monofasico";
 
-  const fabModulo = sistema.fabricanteModulo || dados.fabModulo || obterValorCampo('fabModulo', 'fabricante_modulo', 'Genérico');
-  const modModulo = sistema.modeloModulo || dados.modModulo || obterValorCampo('modModulo', 'modelo_modulo', '');
-  const fabInversor = sistema.fabricanteInversor || dados.fabInversor || obterValorCampo('fabInversor', 'fabricante_inversor', 'Genérico');
-  const modInversor = sistema.modeloInversor || dados.modInversor || obterValorCampo('modInversor', 'modelo_inversor', '');
+  // 2. DADOS DOS MÓDULOS (Busca em dados diretos, no config ou variações)
+  const fabModulo = dados.fabModulo || dados.fabricanteModulo || dados.fabricante_modulo || cfg.fabricante_modulo || "Genérico";
+  const modModulo = dados.modModulo || dados.modeloModulo || dados.modelo_modulo || cfg.modelo_modulo || "";
+  const qtdModulos = dados.qtdModulos || dados.quantidadeModulos || dados.modulos_qtd || "N/A";
 
-  const potDC = calculos.potenciaDC || dados.potenciaDC || obterValorCampo('potenciaDC', 'potencia_dc', '0.00');
-  const potAC = calculos.potenciaAC || dados.potenciaAC || obterValorCampo('potenciaAC', 'potencia_ac', '0.00');
-  const vocStr = calculos.vocString || dados.vocString || obterValorCampo('vocString', 'voc_string', 'N/A');
-  const vmpStr = calculos.vmpString || dados.vmpString || obterValorCampo('vmpString', 'vmp_string', 'N/A');
+  // 3. DADOS DO INVERSOR (Busca em dados diretos, no config.fabricante_inversor ou variações)
+  const fabInversor = dados.fabInversor || dados.fabricanteInversor || dados.fabricante_inversor || cfg.fabricante_inversor || "Genérico";
+  const modInversor = dados.modInversor || dados.modeloInversor || dados.modelo_inversor || cfg.modelo_inversor || "";
 
-  const rtNome = rt.nome || dados.rtNome || obterValorCampo('rtNome', 'rt_nome', 'Não informado');
-  const rtCrea = rt.crea || dados.rtCrea || obterValorCampo('rtCrea', 'rt_crea', 'N/A');
-  const rtUf = rt.uf || dados.rtUf || obterValorCampo('rtUf', 'rt_uf', '');
-  const rtRegistro = rt.registro || dados.rtRegistro || obterValorCampo('rtRegistro', 'rt_registro', '');
+  // 4. POTÊNCIAS E GRANDEZAS ELÉTRICAS
+  const potDC = dados.potenciaDC || dados.potencia_dc || dados.potenciaDCKWp || "0.00";
+  const potAC = dados.potenciaAC || dados.potencia_ac || dados.potenciaACKW || "0.00";
+  const vocStr = dados.vocString || dados.voc_string || dados.voc || "N/A";
+  const vmpStr = dados.vmpString || dados.vmp_string || dados.vmp || "N/A";
+
+  // 5. RESPONSÁVEL TÉCNICO (RT)
+  const rtNome = dados.rtNome || dados.rt_nome || cfg.rt_nome || "Não informado";
+  const rtCrea = dados.rtCrea || dados.rt_crea || cfg.rt_crea || "N/A";
+  const rtUf = dados.rtUf || dados.rt_uf || cfg.rt_uf || "";
+  const rtRegistro = dados.rtRegistro || dados.rt_registro || cfg.rt_registro || "";
+
+  // ... (o restante do código que desenha o <svg> continua exatamente o mesmo)
+   
+
+
+/* =========================================================
+   DIAGRAMA UNIFILAR TÉCNICO COMPATÍVEL COM PROJETO-DETALHES
+========================================================= */
+
+function gerarSVGUnifilar(dados) {
+  const largura = 1120;
+  const altura = 790;
+
+  // Mapeamento dos IDs reais do seu projeto-detalhes.html
+  const clienteNome = dados.clienteNome || "N/A";
+  const clienteDoc = dados.clienteDocumento || "N/A";
+  const nomeProjeto = dados.nomeProjeto || "Projeto Fotovoltaico";
+  
+  const fabModulo = dados.fabModulo || "Genérico";
+  const modModulo = dados.modModulo || "";
+  const fabInversor = dados.fabInversor || "Genérico";
+  const modInversor = dados.modInversor || "";
+  const distribuidora = dados.distribuidora || "Concessionária Local";
+  const tipoConexao = dados.tipoConexao || "monofasico";
+  
+  const potDC = dados.potenciaDC || "0.00";
+  const potAC = dados.potenciaAC || "0.00";
+  const vocStr = dados.vocString || "N/A";
+  const vmpStr = dados.vmpString || "N/A";
+
+  const rtNome = dados.rtNome || "Não informado";
+  const rtCrea = dados.rtCrea || "N/A";
+  const rtUf = dados.rtUf || "";
+  const rtRegistro = dados.rtRegistro || "";
 
   return `
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${largura} ${altura}" width="100%" height="100%" style="background:#ffffff; font-family: sans-serif;">
@@ -1099,7 +1132,7 @@ function gerarSVGUnifilar(dados = {}) {
       <text x="45" y="25" text-anchor="middle" font-size="10" font-weight="bold">DISTRIBUIDORA</text>
       <text x="45" y="40" text-anchor="middle" font-size="9" font-weight="bold">${distribuidora}</text>
       <text x="45" y="115" text-anchor="middle" font-size="8.5">Medidor Bidirecional</text>
-      <text x="45" y="130" text-anchor="middle" font-size="8.5">Ligação: ${String(tipoConexao).toUpperCase()}</text>
+      <text x="45" y="130" text-anchor="middle" font-size="8.5">Ligação: ${tipoConexao.toUpperCase()}</text>
     </g>
 
     <!-- NOTAS TÉCNICAS -->
@@ -1139,13 +1172,7 @@ function gerarSVGUnifilar(dados = {}) {
 
 async function gerarDiagramaUnifilarPDF(modo = 'perguntar') {
   try {
-    let dados = {};
-    try {
-      dados = obterDadosDocumento();
-    } catch (e) {
-      console.warn("Não foi possível ler dados do sistemaAtivo, utilizando formulário/localStorage:", e);
-    }
-
+    const dados = obterDadosDocumento();
     const jsPDFClass = window.jsPDF || (window.jspdf && window.jspdf.jsPDF);
 
     if (!jsPDFClass) {
@@ -1173,9 +1200,7 @@ async function gerarDiagramaUnifilarPDF(modo = 'perguntar') {
       pdf.addImage(imgData, "PNG", 10, 15, 277, 138);
 
       URL.revokeObjectURL(url);
-      
-      const nomeProjeto = dados.projeto || obterValorCampo('nomeProjeto', 'nome_projeto', 'Projeto');
-      const nomeArquivo = "Unifilar_" + nomeProjeto.replace(/[^a-zA-Z0-9À-ÿ _-]/g, "").replace(/\s+/g, "_") + ".pdf";
+      const nomeArquivo = "Unifilar_" + (dados.clienteNome || "Projeto").replace(/\s+/g, "_") + ".pdf";
       
       finalizarPDF(pdf, nomeArquivo, modo);
     };
