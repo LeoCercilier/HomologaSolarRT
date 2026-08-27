@@ -978,6 +978,45 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
 
 
 
+function gerarSVGUnifilar(dados) {
+  const largura = 1120;
+  const altura = 790;
+
+  // Garante acesso ao objeto config interno caso os dados venham aninhados
+  const cfg = dados.config || dados.configuracao || {};
+
+  // 1. DADOS DO CLIENTE E PROJETO
+  const clienteNome = dados.clienteNome || dados.cliente_nome || dados.nomeCliente || "N/A";
+  const clienteDoc = dados.clienteDocumento || dados.cliente_documento || dados.documentoCliente || "N/A";
+  const nomeProjeto = dados.nomeProjeto || dados.nome_projeto || "Projeto Fotovoltaico";
+  const distribuidora = dados.distribuidora || dados.concessionaria || cfg.distribuidora || "Concessionária Local";
+  const tipoConexao = dados.tipoConexao || dados.tipo_conexao || dados.tipoLigacao || "monofasico";
+
+  // 2. DADOS DOS MÓDULOS (Busca em dados diretos, no config ou variações)
+  const fabModulo = dados.fabModulo || dados.fabricanteModulo || dados.fabricante_modulo || cfg.fabricante_modulo || "Genérico";
+  const modModulo = dados.modModulo || dados.modeloModulo || dados.modelo_modulo || cfg.modelo_modulo || "";
+  const qtdModulos = dados.qtdModulos || dados.quantidadeModulos || dados.modulos_qtd || "N/A";
+
+  // 3. DADOS DO INVERSOR (Busca em dados diretos, no config.fabricante_inversor ou variações)
+  const fabInversor = dados.fabInversor || dados.fabricanteInversor || dados.fabricante_inversor || cfg.fabricante_inversor || "Genérico";
+  const modInversor = dados.modInversor || dados.modeloInversor || dados.modelo_inversor || cfg.modelo_inversor || "";
+
+  // 4. POTÊNCIAS E GRANDEZAS ELÉTRICAS
+  const potDC = dados.potenciaDC || dados.potencia_dc || dados.potenciaDCKWp || "0.00";
+  const potAC = dados.potenciaAC || dados.potencia_ac || dados.potenciaACKW || "0.00";
+  const vocStr = dados.vocString || dados.voc_string || dados.voc || "N/A";
+  const vmpStr = dados.vmpString || dados.vmp_string || dados.vmp || "N/A";
+
+  // 5. RESPONSÁVEL TÉCNICO (RT)
+  const rtNome = dados.rtNome || dados.rt_nome || cfg.rt_nome || "Não informado";
+  const rtCrea = dados.rtCrea || dados.rt_crea || cfg.rt_crea || "N/A";
+  const rtUf = dados.rtUf || dados.rt_uf || cfg.rt_uf || "";
+  const rtRegistro = dados.rtRegistro || dados.rt_registro || cfg.rt_registro || "";
+
+  // ... (o restante do código que desenha o <svg> continua exatamente o mesmo)
+   
+
+
 /* =========================================================
    DIAGRAMA UNIFILAR TÉCNICO COMPATÍVEL COM PROJETO-DETALHES
 ========================================================= */
