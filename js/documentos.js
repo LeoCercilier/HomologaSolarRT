@@ -973,3 +973,203 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
     alert("❌ Não foi possível gerar o Relatório de Vistoria.\n\n" + erro.message);
   }
 }
+
+
+
+
+
+/* =========================================================
+   DIAGRAMA UNIFILAR TÉCNICO COMPATÍVEL COM PROJETO-DETALHES
+========================================================= */
+
+function gerarSVGUnifilar(dados) {
+  const largura = 1120;
+  const altura = 790;
+
+  // Mapeamento dos IDs reais do seu projeto-detalhes.html
+  const clienteNome = dados.clienteNome || "N/A";
+  const clienteDoc = dados.clienteDocumento || "N/A";
+  const nomeProjeto = dados.nomeProjeto || "Projeto Fotovoltaico";
+  
+  const fabModulo = dados.fabModulo || "Genérico";
+  const modModulo = dados.modModulo || "";
+  const fabInversor = dados.fabInversor || "Genérico";
+  const modInversor = dados.modInversor || "";
+  const distribuidora = dados.distribuidora || "Concessionária Local";
+  const tipoConexao = dados.tipoConexao || "monofasico";
+  
+  const potDC = dados.potenciaDC || "0.00";
+  const potAC = dados.potenciaAC || "0.00";
+  const vocStr = dados.vocString || "N/A";
+  const vmpStr = dados.vmpString || "N/A";
+
+  const rtNome = dados.rtNome || "Não informado";
+  const rtCrea = dados.rtCrea || "N/A";
+  const rtUf = dados.rtUf || "";
+  const rtRegistro = dados.rtRegistro || "";
+
+  return `
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${largura} ${altura}" width="100%" height="100%" style="background:#ffffff; font-family: sans-serif;">
+    <rect x="15" y="15" width="1090" height="760" fill="none" stroke="#000" stroke-width="2"/>
+    <rect x="20" y="20" width="1080" height="750" fill="none" stroke="#000" stroke-width="0.8"/>
+
+    <text x="560" y="45" text-anchor="middle" font-size="15" font-weight="bold">DIAGRAMA UNIFILAR TÉCNICO DE MICROGERAÇÃO FOTOVOLTAICA</text>
+
+    <!-- ARRANJO CC -->
+    <g transform="translate(40, 100)">
+      <rect x="0" y="0" width="130" height="220" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <line x1="15" y1="35" x2="115" y2="35" stroke="#000" stroke-width="1"/>
+      <line x1="15" y1="65" x2="115" y2="65" stroke="#000" stroke-width="1"/>
+      <line x1="65" y1="10" x2="65" y2="90" stroke="#000" stroke-width="1"/>
+      <text x="65" y="115" text-anchor="middle" font-size="10" font-weight="bold">GERADOR CC</text>
+      <text x="65" y="135" text-anchor="middle" font-size="9">${fabModulo}</text>
+      <text x="65" y="150" text-anchor="middle" font-size="8">${modModulo}</text>
+      <text x="65" y="170" text-anchor="middle" font-size="9" font-weight="bold">Ppot: ${potDC} kWp</text>
+      <text x="65" y="188" text-anchor="middle" font-size="8">Voc: ${vocStr}</text>
+      <text x="65" y="203" text-anchor="middle" font-size="8">Vmp: ${vmpStr}</text>
+    </g>
+
+    <line x1="170" y1="210" x2="250" y2="210" stroke="#000" stroke-width="2"/>
+    <text x="210" y="200" text-anchor="middle" font-size="8">Cabo CC 6mm²</text>
+
+    <!-- STRINGBOX -->
+    <g transform="translate(250, 130)">
+      <rect x="0" y="0" width="110" height="160" stroke="#000" stroke-width="1" stroke-dasharray="4,3" fill="none"/>
+      <text x="55" y="20" text-anchor="middle" font-size="9" font-weight="bold">STRINGBOX CC</text>
+      <circle cx="55" cy="50" r="4" fill="#000"/>
+      <line x1="55" y1="54" x2="55" y2="70" stroke="#000" stroke-width="1.5"/>
+      <line x1="50" y1="70" x2="60" y2="80" stroke="#000" stroke-width="2"/>
+      <text x="55" y="95" text-anchor="middle" font-size="8">Seccionadora</text>
+      <rect x="35" y="110" width="40" height="30" fill="#fff" stroke="#000" stroke-width="1.2"/>
+      <path d="M 45,135 L 55,115 L 65,135" fill="none" stroke="#000" stroke-width="1"/>
+      <text x="55" y="152" text-anchor="middle" font-size="7.5">DPS CC 1000V</text>
+    </g>
+
+    <line x1="360" y1="210" x2="430" y2="210" stroke="#000" stroke-width="2"/>
+
+    <!-- INVERSOR -->
+    <g transform="translate(430, 120)">
+      <rect x="0" y="0" width="150" height="180" fill="#fff" stroke="#000" stroke-width="2"/>
+      <line x1="0" y1="180" x2="150" y2="0" stroke="#000" stroke-width="1" stroke-dasharray="2,2"/>
+      <text x="30" y="140" font-size="14" font-weight="bold">=</text>
+      <text x="95" y="50" font-size="14" font-weight="bold">~</text>
+      <rect x="10" y="60" width="130" height="75" fill="#fff" stroke="#000" stroke-width="0.8"/>
+      <text x="75" y="75" text-anchor="middle" font-size="10" font-weight="bold">INVERSOR CA/CC</text>
+      <text x="75" y="90" text-anchor="middle" font-size="8">${fabInversor}</text>
+      <text x="75" y="103" text-anchor="middle" font-size="8">${modInversor}</text>
+      <text x="75" y="120" text-anchor="middle" font-size="9" font-weight="bold">Pnom: ${potAC} kW</text>
+    </g>
+
+    <line x1="580" y1="210" x2="660" y2="210" stroke="#000" stroke-width="2.5"/>
+
+    <!-- QUADRO DE PROTEÇÃO CA -->
+    <g transform="translate(660, 110)">
+      <rect x="0" y="0" width="170" height="200" stroke="#000" stroke-width="1.2" stroke-dasharray="5,3" fill="none"/>
+      <text x="85" y="20" text-anchor="middle" font-size="9" font-weight="bold">PROTEÇÃO CA (AC BOX)</text>
+      <g transform="translate(25, 40)">
+        <rect x="0" y="0" width="35" height="50" fill="#fff" stroke="#000" stroke-width="1.2"/>
+        <line x1="5" y1="25" x2="30" y2="25" stroke="#000" stroke-width="1.5"/>
+        <text x="17" y="62" text-anchor="middle" font-size="8" font-weight="bold">DTM CA</text>
+      </g>
+      <g transform="translate(110, 40)">
+        <rect x="0" y="0" width="35" height="50" fill="#fff" stroke="#000" stroke-width="1.2"/>
+        <circle cx="17" cy="25" r="8" fill="none" stroke="#000" stroke-width="1"/>
+        <text x="17" y="62" text-anchor="middle" font-size="8" font-weight="bold">IDR 30mA</text>
+      </g>
+      <g transform="translate(60, 120)">
+        <rect x="0" y="0" width="50" height="35" fill="#fff" stroke="#000" stroke-width="1.2"/>
+        <path d="M 10,28 L 25,7 L 40,28" fill="none" stroke="#000" stroke-width="1"/>
+        <text x="25" y="48" text-anchor="middle" font-size="8" font-weight="bold">DPS CA</text>
+      </g>
+    </g>
+
+    <line x1="830" y1="210" x2="920" y2="210" stroke="#000" stroke-width="2.5"/>
+
+    <!-- PADRÃO / MEDIDOR -->
+    <g transform="translate(920, 140)">
+      <circle cx="45" cy="70" r="30" fill="#fff" stroke="#000" stroke-width="2"/>
+      <circle cx="45" cy="70" r="24" fill="none" stroke="#000" stroke-width="0.8"/>
+      <path d="M 30,70 L 60,70 M 50,62 L 60,70 L 50,78 M 40,78 L 30,70 L 40,62" stroke="#000" stroke-width="1.2" fill="none"/>
+      <text x="45" y="25" text-anchor="middle" font-size="10" font-weight="bold">DISTRIBUIDORA</text>
+      <text x="45" y="40" text-anchor="middle" font-size="9" font-weight="bold">${distribuidora}</text>
+      <text x="45" y="115" text-anchor="middle" font-size="8.5">Medidor Bidirecional</text>
+      <text x="45" y="130" text-anchor="middle" font-size="8.5">Ligação: ${tipoConexao.toUpperCase()}</text>
+    </g>
+
+    <!-- NOTAS TÉCNICAS -->
+    <g transform="translate(30, 390)">
+      <rect x="0" y="0" width="1060" height="200" fill="#fff" stroke="#000" stroke-width="1"/>
+      <text x="15" y="20" font-size="10" font-weight="bold">NOTAS TÉCNICAS E CONDIÇÕES DE PROJETO (ABNT NBR 5410 / NBR 16690):</text>
+      <text x="15" y="40" font-size="8.5">1. A instalação respeita os parâmetros de segurança contra surtos e sobrecorrentes da NBR 5410 / NBR 16690.</text>
+      <text x="15" y="58" font-size="8.5">2. Condutores CC resistentes à radiação UV e não halogenados (1.8kV CC).</text>
+      <text x="15" y="76" font-size="8.5">3. Sistema de anti-ilhamento ativo integrado ao inversor conforme IEC 62116.</text>
+      <text x="15" y="94" font-size="8.5">4. Equipotencialização do arranjo conectada diretamente ao BEP da instalação.</text>
+    </g>
+
+    <!-- SELO DE ENGENHARIA -->
+    <g transform="translate(30, 600)">
+      <rect x="0" y="0" width="1060" height="150" fill="#fff" stroke="#000" stroke-width="1.5"/>
+      <line x1="0" y1="35" x2="1060" y2="35" stroke="#000" stroke-width="1"/>
+      <line x1="380" y1="0" x2="380" y2="150" stroke="#000" stroke-width="1"/>
+      <line x1="750" y1="0" x2="750" y2="150" stroke="#000" stroke-width="1"/>
+
+      <text x="15" y="22" font-size="12" font-weight="bold">HOMOLOGASOLAR RT</text>
+      <text x="15" y="55" font-size="9.5" font-weight="bold">PROJETO: ${nomeProjeto}</text>
+      <text x="15" y="73" font-size="9">DISTRIBUIDORA: ${distribuidora}</text>
+
+      <text x="395" y="22" font-size="10" font-weight="bold">TITULAR DA UC</text>
+      <text x="395" y="55" font-size="9" font-weight="bold">CLIENTE: ${clienteNome}</text>
+      <text x="395" y="73" font-size="9">CPF/CNPJ: ${clienteDoc}</text>
+      <text x="395" y="115" font-size="8.5">POTÊNCIA: ${potDC} kWp (CC) / ${potAC} kW (CA)</text>
+
+      <text x="765" y="22" font-size="10" font-weight="bold">RESPONSÁVEL TÉCNICO</text>
+      <text x="765" y="55" font-size="9" font-weight="bold">RT: ${rtNome}</text>
+      <text x="765" y="73" font-size="9">REGISTRO: ${rtCrea} (${rtUf}) ${rtRegistro}</text>
+      <text x="765" y="115" font-size="8.5">FOLHA: 01/01 — DIAGRAMA UNIFILAR</text>
+    </g>
+  </svg>
+  `;
+}
+
+async function gerarDiagramaUnifilarPDF(modo = 'perguntar') {
+  try {
+    const dados = obterDadosDocumento();
+    const jsPDFClass = window.jsPDF || (window.jspdf && window.jspdf.jsPDF);
+
+    if (!jsPDFClass) {
+      throw new Error("Biblioteca jsPDF não encontrada.");
+    }
+
+    const pdf = new jsPDFClass("l", "mm", "a4"); 
+    const svgString = gerarSVGUnifilar(dados);
+
+    const img = new Image();
+    const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+    const url = URL.createObjectURL(svgBlob);
+
+    img.onload = function () {
+      const canvas = document.createElement("canvas");
+      canvas.width = 1600;
+      canvas.height = 800;
+      const ctx = canvas.getContext("2d");
+
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      const imgData = canvas.toDataURL("image/png");
+      pdf.addImage(imgData, "PNG", 10, 15, 277, 138);
+
+      URL.revokeObjectURL(url);
+      const nomeArquivo = "Unifilar_" + (dados.clienteNome || "Projeto").replace(/\s+/g, "_") + ".pdf";
+      
+      finalizarPDF(pdf, nomeArquivo, modo);
+    };
+
+    img.src = url;
+
+  } catch (erro) {
+    console.error(erro);
+    alert("❌ Erro ao gerar Unifilar: " + erro.message);
+  }
+}
