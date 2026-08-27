@@ -41,8 +41,8 @@ function finalizarPDF(pdf, nomeArquivo, modo) {
    FUNÇÕES AUXILIARES DE TRATAMENTO DE TEXTO E PÁGINAS
 ========================================= */
 
-const MARGEM_PADRAO = 20;
-const LARGURA_UTIL_PADRAO = 170;
+const MARGEM_PADRAO = 20; // Margem esquerda de 20mm
+const LARGURA_UTIL_PADRAO = 170; // 210mm - 40mm (margens esq/dir) = 170mm exatos
 const LIMITE_INFERIOR_PAGINA = 265; // Evita sobreposição do rodapé que fica em Y:283
 
 function sanitizarTexto(texto) {
@@ -387,22 +387,22 @@ async function gerarProcuracaoPDF(modo = 'perguntar') {
     }
 
     function titulo(texto) {
-      pdf.setFontSize(14);
+      pdf.setFontSize(13);
       pdf.setFont(undefined, "bold");
       pdf.setTextColor(26, 82, 118);
       pdf.text(sanitizarTexto(texto), 105, y, { align: "center" });
-      y += 8;
+      y += 7;
     }
 
     function subtitulo(texto) {
-      pdf.setFontSize(10);
+      pdf.setFontSize(9.5);
       pdf.setFont(undefined, "bold");
       pdf.setTextColor(41, 128, 185);
       pdf.text(sanitizarTexto(texto), 105, y, { align: "center" });
       y += 6;
     }
 
-    function blocoTexto(texto, alinhamento = "justify", tamanhoFonte = 10, negrito = false) {
+    function blocoTexto(texto, tamanhoFonte = 9.5, negrito = false) {
       pdf.setFontSize(tamanhoFonte);
       pdf.setFont(undefined, negrito ? "bold" : "normal");
       pdf.setTextColor(40, 40, 40);
@@ -411,8 +411,13 @@ async function gerarProcuracaoPDF(modo = 'perguntar') {
       const linhas = pdf.splitTextToSize(textoTratado, LARGURA_UTIL_PADRAO);
 
       y = checarEInserirQuebraPagina(pdf, linhas.length * (tamanhoFonte * 0.45) + 3, y);
-      pdf.text(linhas, MARGEM_PADRAO, y, { align: alinhamento });
-      y += linhas.length * (tamanhoFonte * 0.45) + 3;
+      
+      // Renderização linha a linha com margem padrão (20mm) para evitar estouro
+      for (let i = 0; i < linhas.length; i++) {
+        pdf.text(linhas[i], MARGEM_PADRAO, y);
+        y += (tamanhoFonte * 0.45) + 1;
+      }
+      y += 2;
     }
 
     /* Cabeçalho */
@@ -425,41 +430,45 @@ async function gerarProcuracaoPDF(modo = 'perguntar') {
     espaco(8);
 
     /* Outorgante (Cliente) */
-    blocoTexto("OUTORGANTE (TITULAR DA UNIDADE CONSUMIDORA):", "left", 10, true);
-    blocoTexto(`Nome / Razão Social: ${dados.cliente.nome}\nCPF / CNPJ: ${dados.cliente.documento}\nTelefone: ${dados.cliente.telefone} | E-mail: ${dados.cliente.email}`, "left", 9.5);
+    blocoTexto("OUTORGANTE (TITULAR DA UNIDADE CONSUMIDORA):", 10, true);
+    blocoTexto(`Nome / Razão Social: ${dados.cliente.nome}\nCPF / CNPJ: ${dados.cliente.documento}\nTelefone: ${dados.cliente.telefone} | E-mail: ${dados.cliente.email}`, 9.5);
 
-    espaco(5);
+    espaco(4);
 
     /* Outorgado (RT) */
-    blocoTexto("OUTORGADO (RESPONSÁVEL TÉCNICO):", "left", 10, true);
-    blocoTexto(`Nome do Profissional: ${dados.rt.nome}\nConselho Profissional: ${dados.rt.crea} (${dados.rt.uf}) — Registro: ${dados.rt.registro}`, "left", 9.5);
+    blocoTexto("OUTORGADO (RESPONSÁVEL TÉCNICO):", 10, true);
+    blocoTexto(`Nome do Profissional: ${dados.rt.nome}\nConselho Profissional: ${dados.rt.crea} (${dados.rt.uf}) — Registro: ${dados.rt.registro}`, 9.5);
 
-    espaco(6);
+    espaco(4);
 
     /* Poderes concedidos */
-    blocoTexto("PODERES ESPECÍFICOS E PODERES DE REPRESENTAÇÃO:", "left", 10, true);
+    blocoTexto("PODERES ESPECÍFICOS E PODERES DE REPRESENTAÇÃO:", 10, true);
     
     const textoPoderes = `Por este instrumento particular de procuração, o OUTORGANTE nomeia e constitui o OUTORGADO como seu bastante procurador para representá-lo exclusivamente perante a concessionária de energia elétrica ${dados.sistema.distribuidora}, com o objetivo específico de praticar todos os atos necessários para a SOLICITAÇÃO DE ACESSO, VISTORIA E HOMOLOGAÇÃO do sistema de microgeração fotovoltaica referente ao projeto ${dados.projeto}.\n\n` +
       `Os poderes aqui conferidos incluem, mas não se limitam a: solicitar parecer de acesso, preencher e assinar formulários técnicos de cadastramento da unidade geradora, apresentar memoriais descritivos, ART/TRT, diagramas elétricos e documentos de suporte, efetuar agendamentos de vistoria técnica, receber termos de notificação, exigências ou aprovações técnicas, e assinar o Acordo de Operação / Relacionamento Operacional junto à distribuidora.`;
     
-    blocoTexto(textoPoderes, "justify", 9.5);
+    y = escreverTextoFluido(pdf, textoPoderes, y, 9.5, 4.2);
 
-    espaco(6);
+    espaco(4);
 
     /* Validade e Rescisão */
-    blocoTexto("VALIDADE E ABRANGÊNCIA:", "left", 10, true);
+    blocoTexto("VALIDADE E ABRANGÊNCIA:", 10, true);
     const textoValidade = `A presente procuração é válida estritamente pelo período necessário para a conclusão de todas as etapas do processo de conexão e homologação do sistema gerador no endereço de atendimento, encerrando seus efeitos automaticamente após a emissão do Relatório de Vistoria e Aprovada a Conexão pela ${dados.sistema.distribuidora}.`;
-    blocoTexto(textoValidade, "justify", 9.5);
+    y = escreverTextoFluido(pdf, textoValidade, y, 9.5, 4.2);
 
-    espaco(12);
+    espaco(8);
 
     /* Data e Local */
     const dataAtual = new Date();
     const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     const dataFormatada = `Brasil, ${dataAtual.getDate()} de ${meses[dataAtual.getMonth()]} de ${dataAtual.getFullYear()}.`;
-    blocoTexto(dataFormatada, "center", 10);
+    
+    pdf.setFontSize(10);
+    pdf.setFont(undefined, "normal");
+    pdf.setTextColor(40, 40, 40);
+    pdf.text(dataFormatada, 105, y, { align: "center" });
 
-    espaco(20);
+    espaco(18);
 
     /* PROTEÇÃO DO BLOCO DE ASSINATURA */
     y = checarEInserirQuebraPagina(pdf, 35, y);
@@ -542,7 +551,7 @@ async function gerarTermoResponsabilidadePDF(modo = 'perguntar') {
       y += 6;
     }
 
-    function blocoTexto(texto, alinhamento = "justify", tamanhoFonte = 9.5, negrito = false) {
+    function blocoTexto(texto, tamanhoFonte = 9.5, negrito = false) {
       pdf.setFontSize(tamanhoFonte);
       pdf.setFont(undefined, negrito ? "bold" : "normal");
       pdf.setTextColor(40, 40, 40);
@@ -551,8 +560,12 @@ async function gerarTermoResponsabilidadePDF(modo = 'perguntar') {
       const linhas = pdf.splitTextToSize(textoTratado, LARGURA_UTIL_PADRAO);
 
       y = checarEInserirQuebraPagina(pdf, linhas.length * (tamanhoFonte * 0.45) + 3, y);
-      pdf.text(linhas, MARGEM_PADRAO, y, { align: alinhamento });
-      y += linhas.length * (tamanhoFonte * 0.45) + 3;
+
+      for (let i = 0; i < linhas.length; i++) {
+        pdf.text(linhas[i], MARGEM_PADRAO, y);
+        y += (tamanhoFonte * 0.45) + 1;
+      }
+      y += 2;
     }
 
     /* Cabeçalho */
@@ -565,41 +578,45 @@ async function gerarTermoResponsabilidadePDF(modo = 'perguntar') {
     espaco(8);
 
     /* Dados do RT */
-    blocoTexto("1. IDENTIFICAÇÃO DO RESPONSÁVEL TÉCNICO (DECLARANTE):", "left", 10, true);
-    blocoTexto(`Nome do Profissional: ${dados.rt.nome}\nConselho de Classe / Registro: ${dados.rt.crea} (${dados.rt.uf}) — ${dados.rt.registro}\nContato Técnico: ${dados.cliente.email}`, "left", 9);
+    blocoTexto("1. IDENTIFICAÇÃO DO RESPONSÁVEL TÉCNICO (DECLARANTE):", 10, true);
+    blocoTexto(`Nome do Profissional: ${dados.rt.nome}\nConselho de Classe / Registro: ${dados.rt.crea} (${dados.rt.uf}) — ${dados.rt.registro}\nContato Técnico: ${dados.cliente.email}`, 9);
 
     espaco(4);
 
     /* Dados da Unidade e Projeto */
-    blocoTexto("2. DADOS DA UNIDADE CONSUMIDORA E PROJETO:", "left", 10, true);
-    blocoTexto(`Titular / Cliente: ${dados.cliente.nome} | CPF/CNPJ: ${dados.cliente.documento}\nProjeto: ${dados.projeto}\nDistribuidora de Energia: ${dados.sistema.distribuidora}\nCapacidade Instalada: ${dados.calculos.potenciaDC} kWp (CC) / ${dados.calculos.potenciaAC} kW (CA)`, "left", 9);
+    blocoTexto("2. DADOS DA UNIDADE CONSUMIDORA E PROJETO:", 10, true);
+    blocoTexto(`Titular / Cliente: ${dados.cliente.nome} | CPF/CNPJ: ${dados.cliente.documento}\nProjeto: ${dados.projeto}\nDistribuidora de Energia: ${dados.sistema.distribuidora}\nCapacidade Instalada: ${dados.calculos.potenciaDC} kWp (CC) / ${dados.calculos.potenciaAC} kW (CA)`, 9);
 
-    espaco(6);
+    espaco(4);
 
     /* Termos da Declaração */
-    blocoTexto("3. TERMO DE DECLARAÇÃO E COMPROMISSO TÉCNICO:", "left", 10, true);
+    blocoTexto("3. TERMO DE DECLARAÇÃO E COMPROMISSO TÉCNICO:", 10, true);
 
     const textoDeclaracao = `Eu, ${dados.rt.nome}, devidamente habilitado(a) e registrado(a) no conselho profissional competente sob o nº ${dados.rt.registro}, na qualidade de Responsável Técnico pelo projeto e dimensionamento elétrico da unidade geradora acima identificada, DECLARO para os devidos fins de direito e junto à concessionária ${dados.sistema.distribuidora} que:\n\n` +
       `1. O projeto eletrotécnico foi elaborado em estrita observância às normas técnicas brasileiras vigentes, em especial a ABNT NBR 5410 (Instalações Elétricas de Baixa Tensão), ABNT NBR 16690 (Instalações Elétricas Fotovoltaicas - Requisitos de Projeto) e ABNT NBR IEC 62116 (Sistemas de Conversão de Energia Fotovoltaica - Procedimento de Teste Anti-ilhamento).\n\n` +
       `2. Os equipamentos especificados (${dados.sistema.quantidadeInversores} inversor(es) ${dados.sistema.fabricanteInversor} ${dados.sistema.modeloInversor} e ${dados.sistema.quantidadeModulos} módulos ${dados.sistema.fabricanteModulo}) possuem certificação e registro compulsório e atendem aos requisitos de segurança e qualidade exigidos pela ANEEL e INMETRO.\n\n` +
       `3. O sistema de proteção contra surtos (DPS), aterramento, seccionamento e proteção anti-ilhamento foi dimensionado para garantir a integridade da rede de distribuição e a segurança das pessoas e instalações.`;
 
-    blocoTexto(textoDeclaracao, "justify", 9);
+    y = escreverTextoFluido(pdf, textoDeclaracao, y, 9, 4.0);
 
-    espaco(6);
+    espaco(4);
 
     /* Responsabilidade e Anotação */
-    blocoTexto("4. ANOTAÇÃO DE RESPONSABILIDADE TÉCNICA (ART/TRT):", "left", 10, true);
+    blocoTexto("4. ANOTAÇÃO DE RESPONSABILIDADE TÉCNICA (ART/TRT):", 10, true);
     const textoART = `Atesto ainda que a respectiva Anotação/Termo de Responsabilidade Técnica (ART/TRT) correspondente a este projeto foi devidamente emitida e recolhida junto ao conselho profissional de classe, assumindo integral responsabilidade legal e técnica pelas informações prestadas neste documento.`;
-    blocoTexto(textoART, "justify", 9);
+    y = escreverTextoFluido(pdf, textoART, y, 9, 4.0);
 
-    espaco(10);
+    espaco(8);
 
     /* Local e Data */
     const dataAtual = new Date();
     const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
     const dataFormatada = `Brasil, ${dataAtual.getDate()} de ${meses[dataAtual.getMonth()]} de ${dataAtual.getFullYear()}.`;
-    blocoTexto(dataFormatada, "center", 9.5);
+    
+    pdf.setFontSize(9.5);
+    pdf.setFont(undefined, "normal");
+    pdf.setTextColor(40, 40, 40);
+    pdf.text(dataFormatada, 105, y, { align: "center" });
 
     espaco(18);
 
@@ -685,7 +702,7 @@ async function gerarFormularioAcessoPDF(modo = 'perguntar') {
       y += 5;
     }
 
-    function itemTabela(rotulo, valor, xColuna = MARGEM_PADRAO, larguraColuna = 80) {
+    function itemTabela(rotulo, valor, xColuna = MARGEM_PADRAO, larguraRotulo = 45) {
       y = checarEInserirQuebraPagina(pdf, 5, y);
       pdf.setFontSize(8.5);
       pdf.setFont(undefined, "bold");
@@ -694,7 +711,12 @@ async function gerarFormularioAcessoPDF(modo = 'perguntar') {
 
       pdf.setFont(undefined, "normal");
       pdf.setTextColor(80, 80, 80);
-      pdf.text(sanitizarTexto(valor), xColuna + larguraColuna, y);
+      
+      // Quebra automática para valores longos de colunas
+      const valorSanitizado = sanitizarTexto(valor);
+      const larguraDisponivel = (xColuna > MARGEM_PADRAO) ? 65 : (LARGURA_UTIL_PADRAO - larguraRotulo);
+      const linhasValor = pdf.splitTextToSize(valorSanitizado, larguraDisponivel);
+      pdf.text(linhasValor, xColuna + larguraRotulo, y);
     }
 
     /* Cabeçalho */
@@ -706,47 +728,47 @@ async function gerarFormularioAcessoPDF(modo = 'perguntar') {
 
     /* 1. DADOS CADASTRAIS */
     secao("1. DADOS DO TITULAR E DA UNIDADE CONSUMIDORA");
-    itemTabela("Nome / Razão Social", dados.cliente.nome, MARGEM_PADRAO, 45); y += 4.5;
-    itemTabela("CPF / CNPJ", dados.cliente.documento, MARGEM_PADRAO, 45); y += 4.5;
-    itemTabela("Telefone", dados.cliente.telefone, MARGEM_PADRAO, 45);
+    itemTabela("Nome / Razão Social", dados.cliente.nome, MARGEM_PADRAO, 40); y += 4.5;
+    itemTabela("CPF / CNPJ", dados.cliente.documento, MARGEM_PADRAO, 40); y += 4.5;
+    itemTabela("Telefone", dados.cliente.telefone, MARGEM_PADRAO, 40);
     itemTabela("E-mail", dados.cliente.email, 105, 20); y += 6;
 
     /* 2. RESPONSÁVEL TÉCNICO */
     secao("2. DADOS DO RESPONSÁVEL TÉCNICO (RT)");
-    itemTabela("Engenheiro / Técnico", dados.rt.nome, MARGEM_PADRAO, 45); y += 4.5;
-    itemTabela("Conselho de Classe", dados.rt.crea + " (" + dados.rt.uf + ")", MARGEM_PADRAO, 45);
+    itemTabela("Engenheiro / Técnico", dados.rt.nome, MARGEM_PADRAO, 40); y += 4.5;
+    itemTabela("Conselho de Classe", dados.rt.crea + " (" + dados.rt.uf + ")", MARGEM_PADRAO, 40);
     itemTabela("Nº Registro", dados.rt.registro, 105, 25); y += 6;
 
     /* 3. PARÂMETROS DA REDE */
     secao("3. PARÂMETROS DA CONEXÃO E DISTRIBUIDORA");
-    itemTabela("Concessionária", dados.sistema.distribuidora, MARGEM_PADRAO, 45);
+    itemTabela("Concessionária", dados.sistema.distribuidora, MARGEM_PADRAO, 40);
     itemTabela("Tipo de Conexão", formatarTipoConexao(dados.sistema.tipoLigacao), 105, 30); y += 4.5;
-    itemTabela("Nº de Fases", dados.sistema.numeroFases, MARGEM_PADRAO, 45);
+    itemTabela("Nº de Fases", dados.sistema.numeroFases, MARGEM_PADRAO, 40);
     itemTabela("Tensão Nominal", dados.sistema.tensaoNominal + " V", 105, 30); y += 6;
 
     /* 4. GERADOR CC */
     secao("4. DADOS DO GERADOR FOTOVOLTAICO (CC)");
-    itemTabela("Fabricante dos Módulos", dados.sistema.fabricanteModulo, MARGEM_PADRAO, 45); y += 4.5;
-    itemTabela("Modelo dos Módulos", dados.sistema.modeloModulo, MARGEM_PADRAO, 45); y += 4.5;
-    itemTabela("Potência Unitária", dados.sistema.potenciaModulo + " Wp", MARGEM_PADRAO, 45);
+    itemTabela("Fabricante Módulos", dados.sistema.fabricanteModulo, MARGEM_PADRAO, 40); y += 4.5;
+    itemTabela("Modelo Módulos", dados.sistema.modeloModulo, MARGEM_PADRAO, 40); y += 4.5;
+    itemTabela("Potência Unitária", dados.sistema.potenciaModulo + " Wp", MARGEM_PADRAO, 40);
     itemTabela("Qtd. Total Módulos", dados.sistema.quantidadeModulos + " un.", 105, 35); y += 4.5;
-    itemTabela("Potência Total CC", dados.calculos.potenciaDC + " kWp", MARGEM_PADRAO, 45);
+    itemTabela("Potência Total CC", dados.calculos.potenciaDC + " kWp", MARGEM_PADRAO, 40);
     itemTabela("Arranjo Físico", dados.sistema.quantidadeStrings + " string(s) x " + dados.sistema.modulosPorString + " mod.", 105, 35); y += 4.5;
-    itemTabela("Tensão Open Circuit (Voc)", dados.calculos.vocString, MARGEM_PADRAO, 45);
-    itemTabela("Tensão Operacional (Vmp)", dados.calculos.vmpString, 105, 35); y += 6;
+    itemTabela("Tensão Open Circuit", dados.calculos.vocString, MARGEM_PADRAO, 40);
+    itemTabela("Tensão Operacional", dados.calculos.vmpString, 105, 35); y += 6;
 
     /* 5. INVERSOR CA */
     secao("5. DADOS DO SISTEMA DE CONVERSÃO (CA)");
-    itemTabela("Fabricante Inversor", dados.sistema.fabricanteInversor, MARGEM_PADRAO, 45); y += 4.5;
-    itemTabela("Modelo Inversor", dados.sistema.modeloInversor, MARGEM_PADRAO, 45); y += 4.5;
-    itemTabela("Potência Nominal CA", dados.calculos.potenciaAC + " kW", MARGEM_PADRAO, 45);
+    itemTabela("Fabricante Inversor", dados.sistema.fabricanteInversor, MARGEM_PADRAO, 40); y += 4.5;
+    itemTabela("Modelo Inversor", dados.sistema.modeloInversor, MARGEM_PADRAO, 40); y += 4.5;
+    itemTabela("Potência Nominal CA", dados.calculos.potenciaAC + " kW", MARGEM_PADRAO, 40);
     itemTabela("Qtd. Inversores", dados.sistema.quantidadeInversores + " un.", 105, 30); y += 4.5;
-    itemTabela("Razão DC/AC (FDR)", dados.calculos.ratioDCAC, MARGEM_PADRAO, 45);
+    itemTabela("Razão DC/AC (FDR)", dados.calculos.ratioDCAC, MARGEM_PADRAO, 40);
     itemTabela("Janela MPPT", dados.sistema.mpptMin + "V a " + dados.sistema.mpptMax + "V", 105, 30); y += 6;
 
     /* 6. DIAGNÓSTICO DO ROTEADOR */
     secao("6. PARECER AUTOMÁTICO DO SISTEMA");
-    itemTabela("Validação Elétrica", dados.validacao, MARGEM_PADRAO, 45); y += 4.5;
+    itemTabela("Validação Elétrica", dados.validacao, MARGEM_PADRAO, 40); y += 4.5;
     
     y = escreverTextoFluido(pdf, dados.resultadoTecnico, y, 8, 3.8);
 
@@ -811,7 +833,7 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
       y += 5;
     }
 
-    function itemTabela(rotulo, valor, xColuna = MARGEM_PADRAO, larguraColuna = 80) {
+    function itemTabela(rotulo, valor, xColuna = MARGEM_PADRAO, larguraRotulo = 45) {
       y = checarEInserirQuebraPagina(pdf, 5, y);
       pdf.setFontSize(8.5);
       pdf.setFont(undefined, "bold");
@@ -820,7 +842,7 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
 
       pdf.setFont(undefined, "normal");
       pdf.setTextColor(80, 80, 80);
-      pdf.text(sanitizarTexto(valor), xColuna + larguraColuna, y);
+      pdf.text(sanitizarTexto(valor), xColuna + larguraRotulo, y);
     }
 
     function itemChecklist(item, statusPadrao = "[  ] OK   [  ] N/A") {
@@ -828,12 +850,15 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
       pdf.setFontSize(8.5);
       pdf.setFont(undefined, "normal");
       pdf.setTextColor(40, 40, 40);
-      pdf.text("• " + sanitizarTexto(item), MARGEM_PADRAO + 2, y);
+      
+      const itemTratado = sanitizarTexto(item);
+      const linhasItem = pdf.splitTextToSize("• " + itemTratado, 130);
+      pdf.text(linhasItem, MARGEM_PADRAO + 2, y);
 
       pdf.setFont(undefined, "bold");
       pdf.setTextColor(80, 80, 80);
       pdf.text(statusPadrao, 155, y);
-      y += 5;
+      y += (linhasItem.length * 4) + 1;
     }
 
     /* Cabeçalho */
@@ -845,17 +870,17 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
 
     /* 1. DADOS DO PROJETO */
     secao("1. IDENTIFICAÇÃO GERAL DA INSTALAÇÃO");
-    itemTabela("Projeto", dados.projeto, MARGEM_PADRAO, 45);
-    itemTabela("Distribuidora", dados.sistema.distribuidora, 105, 30); y += 4.5;
-    itemTabela("Titular / Cliente", dados.cliente.nome, MARGEM_PADRAO, 45); y += 4.5;
-    itemTabela("Responsável Técnico", dados.rt.nome, MARGEM_PADRAO, 45);
-    itemTabela("Registro RT", dados.rt.crea + " / " + dados.rt.registro, 105, 30); y += 6;
+    itemTabela("Projeto", dados.projeto, MARGEM_PADRAO, 40);
+    itemTabela("Distribuidora", dados.sistema.distribuidora, 105, 25); y += 4.5;
+    itemTabela("Titular / Cliente", dados.cliente.nome, MARGEM_PADRAO, 40); y += 4.5;
+    itemTabela("Responsável Técnico", dados.rt.nome, MARGEM_PADRAO, 40);
+    itemTabela("Registro RT", dados.rt.crea + " / " + dados.rt.registro, 105, 25); y += 6;
 
     /* 2. EQUIPAMENTOS INSTALADOS */
     secao("2. RESUMO DOS EQUIPAMENTOS COMISSIONADOS");
-    itemTabela("Módulos Fotovoltaicos", dados.sistema.quantidadeModulos + "x " + dados.sistema.fabricanteModulo + " " + dados.sistema.potenciaModulo + "Wp", MARGEM_PADRAO, 45); y += 4.5;
-    itemTabela("Inversor(es) CA", dados.sistema.quantidadeInversores + "x " + dados.sistema.fabricanteInversor + " " + dados.sistema.modeloInversor + " (" + dados.calculos.potenciaAC + " kW)", MARGEM_PADRAO, 45); y += 4.5;
-    itemTabela("Configuração de Strings", dados.sistema.quantidadeStrings + " string(s) contendo " + dados.sistema.modulosPorString + " módulos cada", MARGEM_PADRAO, 45); y += 6;
+    itemTabela("Módulos Fotovoltaicos", dados.sistema.quantidadeModulos + "x " + dados.sistema.fabricanteModulo + " " + dados.sistema.potenciaModulo + "Wp", MARGEM_PADRAO, 40); y += 4.5;
+    itemTabela("Inversor(es) CA", dados.sistema.quantidadeInversores + "x " + dados.sistema.fabricanteInversor + " " + dados.sistema.modeloInversor + " (" + dados.calculos.potenciaAC + " kW)", MARGEM_PADRAO, 40); y += 4.5;
+    itemTabela("Configuração de Strings", dados.sistema.quantidadeStrings + " string(s) contendo " + dados.sistema.modulosPorString + " módulos cada", MARGEM_PADRAO, 40); y += 6;
 
     /* 3. ENSAIOS E MEDIÇÕES ELÉTRICAS DE CAMPO */
     secao("3. COMPARAÇÃO DE PARÂMETROS: TEÓRICO CALCULADO VS. MEDIDO EM CAMPO");
@@ -874,16 +899,16 @@ async function gerarRelatorioVistoriaPDF(modo = 'perguntar') {
 
     // Linhas de medição
     pdf.setFont(undefined, "normal");
-    itemTabela("Tensão de Circuito Aberto (Voc String)", dados.calculos.vocString, MARGEM_PADRAO + 3, 67);
+    itemTabela("Tensão de Circuito Aberto (Voc)", dados.calculos.vocString, MARGEM_PADRAO + 3, 65);
     pdf.text("[ ______________ ] V", MARGEM_PADRAO + 122, y); y += 5.5;
 
-    itemTabela("Tensão de Operação Nominal (Vmp String)", dados.calculos.vmpString, MARGEM_PADRAO + 3, 67);
+    itemTabela("Tensão de Operação (Vmp)", dados.calculos.vmpString, MARGEM_PADRAO + 3, 65);
     pdf.text("[ ______________ ] V", MARGEM_PADRAO + 122, y); y += 5.5;
 
-    itemTabela("Corrente Operacional / Curtos (Imp/Isc)", dados.sistema.impModulo + " A / " + dados.sistema.iscModulo + " A", MARGEM_PADRAO + 3, 67);
+    itemTabela("Corrente Operacional (Imp/Isc)", dados.sistema.impModulo + " A / " + dados.sistema.iscModulo + " A", MARGEM_PADRAO + 3, 65);
     pdf.text("[ ______________ ] A", MARGEM_PADRAO + 122, y); y += 5.5;
 
-    itemTabela("Tensão da Rede CA (Fase-Fase / Fase-N)", dados.sistema.tensaoNominal + " V (" + formatarTipoConexao(dados.sistema.tipoLigacao) + ")", MARGEM_PADRAO + 3, 67);
+    itemTabela("Tensão da Rede CA", dados.sistema.tensaoNominal + " V (" + formatarTipoConexao(dados.sistema.tipoLigacao) + ")", MARGEM_PADRAO + 3, 65);
     pdf.text("[ ______________ ] V", MARGEM_PADRAO + 122, y); y += 7;
 
     /* 4. CHECKLIST DE INSPEÇÃO FÍSICA E SEGURANÇA */
