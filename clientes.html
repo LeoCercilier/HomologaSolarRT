@@ -735,49 +735,81 @@ async function iniciar() {
 
 async function carregarClientes() {
 
-  const {
-    data,
-    error
-  } =
-  await supabaseClient
-    .from("clientes")
-    .select(`
-      id,
-      nome,
-      cpf_cnpj,
-      email,
-      telefone,
-      endereco,
-      numero,
-      complemento,
-      bairro,
-      cidade,
-      estado,
-      cep
-    `)
-    .eq(
-      "organizacao_id",
-      organizacaoAtual
-    )
-    .order(
-      "nome",
-      {
-        ascending: true
-      }
+  console.log("1 - iniciar carregarClientes");
+  console.log("Organização atual:", organizacaoAtual);
+
+
+  try {
+
+    const {
+      data,
+      error
+    } =
+    await supabaseClient
+      .from("clientes")
+      .select(`
+        id,
+        nome,
+        cpf_cnpj,
+        email,
+        telefone,
+        endereco,
+        numero,
+        complemento,
+        bairro,
+        cidade,
+        estado,
+        cep
+      `)
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      )
+      .order(
+        "nome",
+        {
+          ascending: true
+        }
+      );
+
+
+    console.log("2 - consulta terminou");
+    console.log("Dados:", data);
+    console.log("Erro:", error);
+
+
+    if (error)
+      throw error;
+
+
+    clientes =
+      data || [];
+
+
+    console.log(
+      "3 - chamando renderizarClientes"
     );
 
 
-  if (error)
-    throw error;
+    renderizarClientes(
+      clientes
+    );
 
 
-  clientes =
-    data || [];
+  }
 
+  catch (erro) {
 
-  renderizarClientes(
-    clientes
-  );
+    console.error(
+      "ERRO carregarClientes:",
+      erro
+    );
+
+    mostrarErro(
+      erro.message
+    );
+
+  }
 
 }
 
