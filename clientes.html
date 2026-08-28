@@ -1412,6 +1412,84 @@ const dadosCliente = {
 
 if (clienteEditando) {
 
+  let erro;
+
+const dadosCliente = {
+
+  organizacao_id:
+    organizacaoAtual,
+
+  nome:
+    document
+      .getElementById("nome")
+      .value
+      .trim(),
+
+  cpf_cnpj:
+    document
+      .getElementById("cpf_cnpj")
+      .value
+      .trim() || null,
+
+  email:
+    document
+      .getElementById("email")
+      .value
+      .trim() || null,
+
+  telefone:
+    document
+      .getElementById("telefone")
+      .value
+      .trim() || null,
+
+  endereco:
+    document
+      .getElementById("endereco")
+      .value
+      .trim() || null,
+
+  numero:
+    document
+      .getElementById("numero")
+      .value
+      .trim() || null,
+
+  complemento:
+    document
+      .getElementById("complemento")
+      .value
+      .trim() || null,
+
+  bairro:
+    document
+      .getElementById("bairro")
+      .value
+      .trim() || null,
+
+  cidade:
+    document
+      .getElementById("cidade")
+      .value
+      .trim() || null,
+
+  estado:
+    document
+      .getElementById("estado")
+      .value
+      .trim()
+      .toUpperCase() || null,
+
+  cep:
+    document
+      .getElementById("cep")
+      .value
+      .trim() || null
+};
+
+
+if (clienteEditando) {
+
   const resultado =
     await supabaseClient
       .from("clientes")
@@ -1422,7 +1500,8 @@ if (clienteEditando) {
       )
       .eq(
         "organizacao_id",
-        organizacaoAtual);
+        organizacaoAtual
+      );
 
   erro = resultado.error;
 
@@ -1441,24 +1520,20 @@ if (clienteEditando) {
 }
 
 
-if (erro)
+if (erro) {
   throw erro;
-
-        
-    
+}
 
 
-        if (error)
-          throw error;
+fecharModal();
 
+mostrarSucesso(
+  clienteEditando
+    ? "Cliente atualizado com sucesso!"
+    : "Cliente cadastrado com sucesso!"
+);
 
-        fecharModal();
-
-
-        mostrarSucesso(
-          "Cliente cadastrado com sucesso!"
-        );
-
+clienteEditando = null;
 
         await carregarClientes();
 
