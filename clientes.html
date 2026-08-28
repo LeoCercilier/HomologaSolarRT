@@ -735,11 +735,44 @@ async function iniciar() {
 
 async function carregarClientes() {
 
-  console.log("1 - iniciar carregarClientes");
-  console.log("Organização atual:", organizacaoAtual);
+  const elemento =
+    document.getElementById("lista");
+
+
+  /* DIAGNÓSTICO TEMPORÁRIO */
+
+  elemento.innerHTML = `
+    <div class="vazio">
+      🔎 1 - Iniciando carregamento...
+    </div>
+  `;
 
 
   try {
+
+    elemento.innerHTML = `
+      <div class="vazio">
+        🔎 2 - Organização identificada:<br>
+        ${escaparHtml(organizacaoAtual || "NÃO IDENTIFICADA")}
+      </div>
+    `;
+
+
+    if (!organizacaoAtual) {
+
+      throw new Error(
+        "organizaçãoAtual está vazia."
+      );
+
+    }
+
+
+    elemento.innerHTML = `
+      <div class="vazio">
+        🔎 3 - Consultando clientes no banco...
+      </div>
+    `;
+
 
     const {
       data,
@@ -773,21 +806,37 @@ async function carregarClientes() {
       );
 
 
-    console.log("2 - consulta terminou");
-    console.log("Dados:", data);
-    console.log("Erro:", error);
+    if (error) {
 
-
-    if (error)
       throw error;
+
+    }
+
+
+    elemento.innerHTML = `
+      <div class="vazio">
+        🔎 4 - Resposta recebida.<br>
+        Clientes encontrados:
+        ${data ? data.length : 0}
+      </div>
+    `;
 
 
     clientes =
       data || [];
 
 
-    console.log(
-      "3 - chamando renderizarClientes"
+    /*
+     * Pequena pausa apenas para
+     * conseguirmos visualizar o diagnóstico
+     */
+
+    await new Promise(
+      resolver =>
+        setTimeout(
+          resolver,
+          500
+        )
     );
 
 
@@ -800,10 +849,12 @@ async function carregarClientes() {
 
   catch (erro) {
 
-    console.error(
-      "ERRO carregarClientes:",
-      erro
-    );
+    elemento.innerHTML = `
+      <div class="erro">
+        ❌ ERRO AO CARREGAR CLIENTES:<br><br>
+        ${escaparHtml(erro.message)}
+      </div>
+    `;
 
     mostrarErro(
       erro.message
@@ -812,7 +863,6 @@ async function carregarClientes() {
   }
 
 }
-
 
 /* =========================================
    MOSTRAR CLIENTES
