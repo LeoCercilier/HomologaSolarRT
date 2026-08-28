@@ -1340,87 +1340,118 @@ document
 
       try {
 
-        const {
-          error
-        } =
-        await supabaseClient
-          .from("clientes")
-          .insert({
+        let erro;
 
-            organizacao_id:
-              organizacaoAtual,
+const dadosCliente = {
 
-            nome:
-              document
-                .getElementById("nome")
-                .value
-                .trim(),
+  organizacao_id:
+    organizacaoAtual,
 
-            cpf_cnpj:
-              document
-                .getElementById("cpf_cnpj")
-                .value
-                .trim() || null,
+  nome:
+    document
+      .getElementById("nome")
+      .value
+      .trim(),
 
-            email:
-              document
-                .getElementById("email")
-                .value
-                .trim() || null,
+  cpf_cnpj:
+    document
+      .getElementById("cpf_cnpj")
+      .value
+      .trim() || null,
 
-            telefone:
-              document
-                .getElementById("telefone")
-                .value
-                .trim() || null,
+  email:
+    document
+      .getElementById("email")
+      .value
+      .trim() || null,
 
-            endereco:
-              document
-                .getElementById("endereco")
-                .value
-                .trim() || null,
+  telefone:
+    document
+      .getElementById("telefone")
+      .value
+      .trim() || null,
 
-            numero:
-              document
-                .getElementById("numero")
-                .value
-                .trim() || null,
+  endereco:
+    document
+      .getElementById("endereco")
+      .value
+      .trim() || null,
 
-            complemento:
-              document
-                .getElementById("complemento")
-                .value
-                .trim() || null,
+  numero:
+    document
+      .getElementById("numero")
+      .value
+      .trim() || null,
 
-            bairro:
-              document
-                .getElementById("bairro")
-                .value
-                .trim() || null,
+  complemento:
+    document
+      .getElementById("complemento")
+      .value
+      .trim() || null,
 
-            cidade:
-              document
-                .getElementById("cidade")
-                .value
-                .trim() || null,
+  bairro:
+    document
+      .getElementById("bairro")
+      .value
+      .trim() || null,
 
-            estado:
-              document
-                .getElementById("estado")
-                .value
-                .trim()
-                .toUpperCase() || null,
+  cidade:
+    document
+      .getElementById("cidade")
+      .value
+      .trim() || null,
 
-            cep:
-              document
-                .getElementById("cep")
-                .value
-                .trim() || null,
+  estado:
+    document
+      .getElementById("estado")
+      .value
+      .trim()
+      .toUpperCase() || null,
 
-            criado_por:
-              usuarioAtual.id
+  cep:
+    document
+      .getElementById("cep")
+      .value
+      .trim() || null
+};
 
-          });
+
+if (clienteEditando) {
+
+  const resultado =
+    await supabaseClient
+      .from("clientes")
+      .update(dadosCliente)
+      .eq(
+        "id",
+        clienteEditando.id
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual);
+
+  erro = resultado.error;
+
+} else {
+
+  dadosCliente.criado_por =
+    usuarioAtual.id;
+
+  const resultado =
+    await supabaseClient
+      .from("clientes")
+      .insert(dadosCliente);
+
+  erro = resultado.error;
+
+}
+
+
+if (erro)
+  throw erro;
+
+        
+    
 
 
         if (error)
