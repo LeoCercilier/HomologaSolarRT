@@ -370,7 +370,7 @@ Carregando clientes...
 
 <div class="modal-conteudo">
 
-<h2>Novo cliente</h2>
+<h2 id="tituloModalCliente">Novo cliente</h2>
 
 
 <form id="formCliente">
@@ -549,7 +549,7 @@ Cancelar
   class="btn-principal"
   id="btnSalvar"
 >
-Salvar cliente
+<span id="textoBotaoSalvar">Salvar cliente</span>
 </button>
 
 </div>
@@ -608,6 +608,13 @@ Fechar
 ✏️ Editar dados
 </button>
 
+	<button
+  type="button"
+  class="btn-principal"
+  id="btnEditarDetalhes"
+>
+✏️ Editar
+	</button>
 
 <button
   type="button"
@@ -989,6 +996,22 @@ function filtrarClientes() {
 
 function abrirModal() {
 
+  clienteEditando = null;
+
+  document.getElementById(
+    "tituloModalCliente"
+  ).textContent =
+    "Novo cliente";
+
+  document.getElementById(
+    "textoBotaoSalvar"
+  ).textContent =
+    "Salvar cliente";
+
+  document.getElementById(
+    "formCliente"
+  ).reset();
+
   document.getElementById(
     "modal"
   ).style.display =
@@ -1010,6 +1033,64 @@ function fecharModal() {
   ).reset();
 
 }
+
+	function editarCliente(cliente) {
+
+  clienteEditando = cliente;
+
+  document.getElementById(
+    "tituloModalCliente"
+  ).textContent =
+    "Editar cliente";
+
+  document.getElementById(
+    "textoBotaoSalvar"
+  ).textContent =
+    "Salvar alterações";
+
+
+  document.getElementById("nome").value =
+    cliente.nome || "";
+
+  document.getElementById("cpf_cnpj").value =
+    cliente.cpf_cnpj || "";
+
+  document.getElementById("telefone").value =
+    cliente.telefone || "";
+
+  document.getElementById("email").value =
+    cliente.email || "";
+
+  document.getElementById("endereco").value =
+    cliente.endereco || "";
+
+  document.getElementById("numero").value =
+    cliente.numero || "";
+
+  document.getElementById("complemento").value =
+    cliente.complemento || "";
+
+  document.getElementById("bairro").value =
+    cliente.bairro || "";
+
+  document.getElementById("cidade").value =
+    cliente.cidade || "";
+
+  document.getElementById("estado").value =
+    cliente.estado || "";
+
+  document.getElementById("cep").value =
+    cliente.cep || "";
+
+
+  fecharDetalhesCliente();
+
+  document.getElementById(
+    "modal"
+  ).style.display =
+    "block";
+
+	}
 
 
 /* =========================================
@@ -1178,7 +1259,18 @@ function abrirDetalhesCliente(
 
   `;
 
+const botaoEditar =
+  document.getElementById(
+    "btnEditarDetalhes"
+  );
 
+botaoEditar.onclick =
+  function() {
+
+    editarCliente(cliente);
+
+  };
+	
   /*
    * Configura o botão excluir
    * para o cliente atualmente aberto
