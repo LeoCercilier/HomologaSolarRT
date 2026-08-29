@@ -2682,6 +2682,7 @@ if (equipamentoOriginal) {
   }
 
 		  }
+
 /* =========================================
    EXCLUIR PROJETO
 ========================================= */
@@ -2710,11 +2711,19 @@ async function excluirProjeto() {
     const confirmar = confirm(
       "⚠️ ATENÇÃO!\n\n" +
       "Você está prestes a excluir este projeto.\n\n" +
-      "Serão excluídos:\n" +
+
+      "Serão excluídos definitivamente:\n" +
       "• Projeto\n" +
       "• Sistema fotovoltaico\n" +
-      "• Checklist de documentos\n\n" +
+      "• Checklist de documentos\n" +
+      "• Arquivos anexados aos documentos\n\n" +
+
+      "⚠️ OS DOCUMENTOS E ANEXOS SERÃO " +
+      "EXCLUÍDOS DEFINITIVAMENTE E NÃO " +
+      "PODERÃO SER RECUPERADOS.\n\n" +
+
       "Esta ação não poderá ser desfeita.\n\n" +
+
       "Deseja realmente continuar?"
     );
 
@@ -2725,7 +2734,74 @@ async function excluirProjeto() {
 
 
     /* =====================================
-       1. EXCLUIR DOCUMENTOS DO BANCO
+       1. BUSCAR DOCUMENTOS E ANEXOS
+    ===================================== */
+
+    const {
+      data: documentos,
+      error: erroBuscaDocumentos
+    } =
+    await supabaseClient
+      .from("documentos_projeto")
+      .select(`
+        id,
+        caminho_storage
+      `)
+      .eq(
+        "projeto_id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      );
+
+
+    if (erroBuscaDocumentos) {
+      throw erroBuscaDocumentos;
+    }
+
+
+    /* =====================================
+       2. EXCLUIR ARQUIVOS DO STORAGE
+    ===================================== */
+
+    const caminhosArquivos =
+      (documentos || [])
+        .map(
+          documento =>
+            documento.caminho_storage
+        )
+        .filter(
+          caminho =>
+            caminho
+        );
+
+
+    if (
+      caminhosArquivos.length > 0
+    ) {
+
+      const {
+        error: erroStorage
+      } =
+      await supabaseClient
+        .storage
+        .from("documentos")
+        .remove(
+          caminhosArquivos
+        );
+
+
+      if (erroStorage) {
+        throw erroStorage;
+      }
+
+    }
+
+
+    /* =====================================
+       3. EXCLUIR DOCUMENTOS DO BANCO
     ===================================== */
 
     const {
@@ -2750,7 +2826,7 @@ async function excluirProjeto() {
 
 
     /* =====================================
-       2. EXCLUIR SISTEMA FOTOVOLTAICO
+       4. EXCLUIR SISTEMA FOTOVOLTAICO
     ===================================== */
 
     const {
@@ -2775,7 +2851,32 @@ async function excluirProjeto() {
 
 
     /* =====================================
-       3. EXCLUIR PROJETO
+       5. EXCLUIR VÍNCULO COM EQUIPAMENTOS
+    ===================================== */
+
+    const {
+      error: erroEquipamentos
+    } =
+    await supabaseClient
+      .from("projeto_equipamentos")
+      .delete()
+      .eq(
+        "projeto_id",
+        projetoId
+      )
+      .eq(
+        "organizacao_id",
+        organizacaoAtual
+      );
+
+
+    if (erroEquipamentos) {
+      throw erroEquipamentos;
+    }
+
+
+    /* =====================================
+       6. EXCLUIR PROJETO
     ===================================== */
 
     const {
@@ -2804,7 +2905,10 @@ async function excluirProjeto() {
     ===================================== */
 
     alert(
-      "✅ Projeto excluído com sucesso!"
+      "✅ Projeto excluído com sucesso!\n\n" +
+      "O projeto, seus documentos e " +
+      "arquivos anexados foram excluídos " +
+      "definitivamente."
     );
 
 
@@ -2813,7 +2917,8 @@ async function excluirProjeto() {
     ===================================== */
 
     window.location.href =
-  "dashboard.html";
+      "dashboard.html";
+
   }
 
   catch (erro) {
@@ -2831,7 +2936,7 @@ async function excluirProjeto() {
 
   }
 
-}
+	}
 
 /* =========================================
    ERRO
