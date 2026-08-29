@@ -2314,6 +2314,77 @@ async function duplicarProjeto() {
       novoProjeto.id;
 
 
+	  /* =====================================
+   COPIAR EQUIPAMENTOS DO PROJETO
+===================================== */
+
+const {
+  data: equipamentoOriginal,
+  error: erroEquipamento
+} =
+await supabaseClient
+  .from("projeto_equipamentos")
+  .select(`
+    modulo_id,
+    inversor_id,
+    quantidade_modulos,
+    quantidade_inversores
+  `)
+  .eq(
+    "projeto_id",
+    projetoId
+  )
+  .eq(
+    "organizacao_id",
+    organizacaoAtual
+  )
+  .maybeSingle();
+
+
+if (erroEquipamento)
+  throw erroEquipamento;
+
+
+/* =====================================
+   CRIAR VÍNCULO NO NOVO PROJETO
+===================================== */
+
+if (equipamentoOriginal) {
+
+  const {
+    error: erroNovoEquipamento
+  } =
+  await supabaseClient
+    .from("projeto_equipamentos")
+    .insert({
+
+      projeto_id:
+        novoProjetoId,
+
+      organizacao_id:
+        organizacaoAtual,
+
+      modulo_id:
+        equipamentoOriginal.modulo_id,
+
+      inversor_id:
+        equipamentoOriginal.inversor_id,
+
+      quantidade_modulos:
+        equipamentoOriginal.quantidade_modulos,
+
+      quantidade_inversores:
+        equipamentoOriginal.quantidade_inversores
+
+    });
+
+
+  if (erroNovoEquipamento)
+    throw erroNovoEquipamento;
+
+}
+
+
     /* =====================================
        BUSCAR SISTEMA ORIGINAL
     ===================================== */
