@@ -746,32 +746,40 @@
 
       <div class="nav-links">
 
-        <a
-          href="login.html"
-          class="btn btn-ghost"
-        >
-          Entrar
-        </a>
+  <a
+    href="login.html"
+    class="btn btn-ghost"
+  >
+    Entrar
+  </a>
 
-        <button
-          id="btnInstalarApp"
-          class="btn btn-outline"
-          style="display:none;"
-        >
-          📲 Instalar app
-        </button>
+  <button
+    id="btnInstalarApp"
+    class="btn btn-outline"
+    style="display:none;"
+  >
+    📲 Instalar app
+  </button>
 
-        <a
-          href="https://chat.whatsapp.com/DV7NiC9WgjR5NodQt42hcc?s=sh&p=a&mlu=4"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn btn-primary"
-        >
-          Criar conta grátis
-          (Solicitar no grupo)
-        </a>
+  <button
+    type="button"
+    id="btnCompartilhar"
+    class="btn btn-outline"
+  >
+    🔗 Compartilhar
+  </button>
 
-      </div>
+  <a
+    href="https://chat.whatsapp.com/DV7NiC9WgjR5NodQt42hcc?s=sh&p=a&mlu=4"
+    target="_blank"
+    rel="noopener noreferrer"
+    class="btn btn-primary"
+  >
+    Criar conta grátis
+    (Solicitar no grupo)
+  </a>
+
+	  </div>
 
     </div>
 
@@ -1719,6 +1727,144 @@ if ("serviceWorker" in navigator) {
   });
 
 }
+
+	</script>
+
+	<script>
+
+/* =========================================
+   COMPARTILHAR LANDING PAGE
+========================================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
+
+    const botao =
+      document.getElementById(
+        "btnCompartilhar"
+      );
+
+    if (!botao)
+      return;
+
+
+    botao.addEventListener(
+      "click",
+      async function () {
+
+        const dadosCompartilhamento = {
+
+          title:
+            "HomologaSolar RT",
+
+          text:
+            "Conheça o HomologaSolar RT — plataforma para organizar projetos fotovoltaicos e apoiar o processo de homologação.",
+
+          url:
+            window.location.href
+
+        };
+
+
+        /*
+         * Compartilhamento nativo
+         * Android / iPhone / navegadores compatíveis
+         */
+
+        if (
+          navigator.share
+        ) {
+
+          try {
+
+            await navigator.share(
+              dadosCompartilhamento
+            );
+
+          }
+
+          catch (erro) {
+
+            /*
+             * O usuário pode simplesmente
+             * ter fechado a janela de compartilhamento.
+             */
+
+            if (
+              erro.name !==
+              "AbortError"
+            ) {
+
+              console.error(
+                "Erro ao compartilhar:",
+                erro
+              );
+
+            }
+
+          }
+
+          return;
+
+        }
+
+
+        /*
+         * Fallback para navegadores
+         * sem navigator.share
+         */
+
+        try {
+
+          await navigator.clipboard.writeText(
+            window.location.href
+          );
+
+          alert(
+            "🔗 Link copiado!\n\n" +
+            "Agora você pode enviar o link para seus contatos."
+          );
+
+        }
+
+        catch (erro) {
+
+          /*
+           * Último fallback
+           */
+
+          const campo =
+            document.createElement(
+              "input"
+            );
+
+          campo.value =
+            window.location.href;
+
+          document.body.appendChild(
+            campo
+          );
+
+          campo.select();
+
+          document.execCommand(
+            "copy"
+          );
+
+          campo.remove();
+
+          alert(
+            "🔗 Link da página copiado!"
+          );
+
+        }
+
+      }
+    );
+
+  }
+);
 
 	</script>
 
