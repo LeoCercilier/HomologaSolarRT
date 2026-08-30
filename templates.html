@@ -1276,6 +1276,52 @@
             .value
             .trim();
 
+				/* =========================================
+   EQUIPAMENTOS DO CATÁLOGO
+========================================= */
+
+const selectModulo =
+  document.getElementById("selecao_modulo");
+
+const selectInversor =
+  document.getElementById("selecao_inversor");
+
+
+const moduloId =
+  selectModulo?.value || null;
+
+const inversorId =
+  selectInversor?.value || null;
+
+
+/* Template precisa ter equipamentos */
+
+if (!moduloId) {
+
+  throw new Error(
+    "Selecione um módulo do catálogo."
+  );
+
+}
+
+
+if (!inversorId) {
+
+  throw new Error(
+    "Selecione um inversor do catálogo."
+  );
+
+}
+
+
+/* Guardar UUIDs na configuração */
+
+configuracao.modulo_id =
+  moduloId;
+
+configuracao.inversor_id =
+  inversorId;
+
 
 			if (
 			!Array.isArray(
