@@ -1245,7 +1245,47 @@ alert(
 
 const config =
   template.configuracao || {};
+		
+const selecaoModulo =
+  document.getElementById("selecao_modulo");
 
+const selecaoInversor =
+  document.getElementById("selecao_inversor");
+
+if (selecaoModulo && config.modulo_id) {
+  selecaoModulo.value =
+    config.modulo_id;
+}
+
+if (selecaoInversor && config.inversor_id) {
+  selecaoInversor.value =
+    config.inversor_id;
+}
+
+		/* Restaurar objetos selecionados */
+
+if (config.modulo_id) {
+
+  moduloSelecionadoCatalogo =
+    catalogoModulos.find(
+      modulo =>
+        modulo.id ===
+        config.modulo_id
+    ) || null;
+
+}
+
+
+if (config.inversor_id) {
+
+  inversorSelecionadoCatalogo =
+    catalogoInversores.find(
+      inversor =>
+        inversor.id ===
+        config.inversor_id
+    ) || null;
+
+	}
 
 /* Conexão */
 
