@@ -1276,7 +1276,7 @@
             .value
             .trim();
 
-				/* =========================================
+			/* =========================================
    EQUIPAMENTOS DO CATÁLOGO
 ========================================= */
 
@@ -1288,39 +1288,46 @@ const selectInversor =
 
 
 const moduloId =
-  selectModulo?.value || null;
+  selectModulo?.value?.trim() || null;
 
 const inversorId =
-  selectInversor?.value || null;
+  selectInversor?.value?.trim() || null;
 
 
-/* Template precisa ter equipamentos */
+/*
+ * Os equipamentos são opcionais durante
+ * a criação do template.
+ *
+ * Se o usuário selecionar algum equipamento,
+ * guardamos o UUID na configuração.
+ */
 
-if (!moduloId) {
+if (moduloId) {
 
-  throw new Error(
-    "Selecione um módulo do catálogo."
-  );
+  configuracao.modulo_id =
+    moduloId;
+
+}
+
+else {
+
+  delete configuracao.modulo_id;
 
 }
 
 
-if (!inversorId) {
+if (inversorId) {
 
-  throw new Error(
-    "Selecione um inversor do catálogo."
-  );
+  configuracao.inversor_id =
+    inversorId;
 
 }
 
+else {
 
-/* Guardar UUIDs na configuração */
+  delete configuracao.inversor_id;
 
-configuracao.modulo_id =
-  moduloId;
-
-configuracao.inversor_id =
-  inversorId;
+}
 
 
 			if (
