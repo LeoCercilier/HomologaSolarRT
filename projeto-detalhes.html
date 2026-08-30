@@ -5809,10 +5809,39 @@ async function salvarDataTerminoART(
 
 }
 
+	function normalizarUuid(valor) {
+
+  if (
+    valor === null ||
+    valor === undefined ||
+    valor === "" ||
+    valor === "null" ||
+    valor === "undefined"
+  ) {
+    return null;
+  }
+
+  return valor;
+	}
+
+	function normalizarUuid(valor) {
+
+  if (
+    valor === null ||
+    valor === undefined ||
+    valor === "" ||
+    valor === "null" ||
+    valor === "undefined"
+  ) {
+    return null;
+  }
+
+  return valor;
+}
+
 /* =========================================
    SALVAR SISTEMA
 ========================================= */
-
 async function salvarSistema() {
 
   try {
@@ -5824,15 +5853,72 @@ async function salvarSistema() {
     */
 
     const moduloId =
-      document.getElementById(
-        "selecao_modulo"
-      ).value || null;
+      normalizarUuid(
+        document.getElementById(
+          "selecao_modulo"
+        ).value
+      );
 
 
     const inversorId =
-      document.getElementById(
-        "selecao_inversor"
-      ).value || null;
+      normalizarUuid(
+        document.getElementById(
+          "selecao_inversor"
+        ).value
+      );
+
+
+    console.log(
+      "DEBUG SALVAR SISTEMA:",
+      {
+        projetoId: projetoId,
+        organizacaoAtual: organizacaoAtual,
+        usuarioAtualId: usuarioAtual?.id,
+        moduloId: moduloId,
+        inversorId: inversorId
+      }
+    );
+
+
+    const projetoIdSeguro =
+      normalizarUuid(projetoId);
+
+
+    const organizacaoIdSegura =
+      normalizarUuid(organizacaoAtual);
+
+
+    const usuarioIdSeguro =
+      normalizarUuid(
+        usuarioAtual?.id
+      );
+
+
+    if (!projetoIdSeguro) {
+
+      throw new Error(
+        "O projeto não foi identificado."
+      );
+
+    }
+
+
+    if (!organizacaoIdSegura) {
+
+      throw new Error(
+        "A organização não foi identificada."
+      );
+
+    }
+
+
+    if (!usuarioIdSeguro) {
+
+      throw new Error(
+        "O usuário não foi identificado."
+      );
+
+    }
 
 
     if (!moduloId) {
@@ -5901,11 +5987,11 @@ async function salvarSistema() {
       .select("id")
       .eq(
         "projeto_id",
-        projetoId
+        projetoIdSeguro
       )
       .eq(
         "organizacao_id",
-        organizacaoAtual
+        organizacaoIdSegura
       )
       .limit(1)
       .maybeSingle();
@@ -5918,10 +6004,10 @@ async function salvarSistema() {
     const dadosEquipamento = {
 
       projeto_id:
-        projetoId,
+  projetoIdSeguro,
 
       organizacao_id:
-        organizacaoAtual,
+  organizacaoIdSegura,
 
       modulo_id:
         moduloId,
@@ -6000,11 +6086,11 @@ async function salvarSistema() {
 
     const dadosSistema = {
 
-      organizacao_id:
-        organizacaoAtual,
+  organizacao_id:
+    organizacaoIdSegura,
 
-      projeto_id:
-        projetoId,
+  projeto_id:
+    projetoIdSeguro,
 
       fabricante_modulo:
         document.getElementById(
@@ -6160,7 +6246,7 @@ async function salvarSistema() {
         ).value.trim() || null,
 
       criado_por:
-        usuarioAtual.id
+  usuarioIdSeguro
 
     };
 
