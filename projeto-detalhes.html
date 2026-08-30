@@ -6265,11 +6265,11 @@ async function salvarSistema() {
       .select("id")
       .eq(
         "projeto_id",
-        projetoId
+        projetoIdSeguro
       )
       .eq(
         "organizacao_id",
-        organizacaoAtual
+        organizacaoIdSegura
       )
       .limit(1)
       .maybeSingle();
@@ -6298,7 +6298,7 @@ async function salvarSistema() {
           )
           .eq(
             "organizacao_id",
-            organizacaoAtual
+            organizacaoIdSegura
           )
           .select()
           .single();
