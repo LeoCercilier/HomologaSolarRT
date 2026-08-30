@@ -1170,6 +1170,17 @@ function obterProjetoId() {
   return id;
 
 }
+	projetoId = obterProjetoId();
+
+console.log(
+  "DEBUG PROJETO:",
+  {
+    url: window.location.href,
+    projetoId: projetoId
+  }
+);
+
+	
 	const parametrosURL =
   new URLSearchParams(
     window.location.search
