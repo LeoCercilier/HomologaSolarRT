@@ -1170,24 +1170,6 @@ function obterProjetoId() {
   return id;
 
 }
-	projetoId = obterProjetoId();
-
-alert(
-  "DEBUG:\n\n" +
-  "Projeto: " + projetoId + "\n\n" +
-  "Organização: " + organizacaoAtual + "\n\n" +
-  "Usuário: " + (usuarioAtual?.id || "null")
-);
-	
-console.log(
-  "DEBUG PROJETO:",
-  {
-    url: window.location.href,
-    projetoId: projetoId
-  }
-);
-
-	
 	const parametrosURL =
   new URLSearchParams(
     window.location.search
@@ -1243,11 +1225,6 @@ const templateId =
   console.log(
   "Template carregado:",
   template
-);
-
-alert(
-  "Template carregado: " +
-  template.nome
 );
 
   /*
