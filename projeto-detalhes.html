@@ -1460,6 +1460,8 @@ async function iniciar() {
 
 if (modoTemplate) {
 
+  await carregarCatalogoEquipamentos();
+
   await carregarTemplateParaEdicao();
 
   document.getElementById(
@@ -1470,21 +1472,20 @@ if (modoTemplate) {
     "conteudo"
   ).style.display = "block";
 
-	const botaoProjeto =
-  document.querySelector(
-    'button[onclick="acaoBotaoProjeto()"]'
-  );
+  const botaoProjeto =
+    document.querySelector(
+      'button[onclick="acaoBotaoProjeto()"]'
+    );
 
-if (botaoProjeto) {
+  if (botaoProjeto) {
 
-  botaoProjeto.textContent =
-    "📋 Usar este template";
+    botaoProjeto.textContent =
+      "📋 Usar este template";
 
-}
+  }
 
   return;
-
-}
+	}
 
 
 /* =========================================
