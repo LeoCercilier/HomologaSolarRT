@@ -1511,6 +1511,13 @@ async function iniciar() {
 		organizacaoAtual =
   membro.organizacao_id;
 
+	  alert(
+  "DEBUG APÓS CARREGAMENTO:\n\n" +
+  "Projeto: " + projetoId + "\n\n" +
+  "Organização: " + organizacaoAtual + "\n\n" +
+  "Usuário: " + (usuarioAtual?.id || "null")
+);
+
 
 /* =========================================
    MODO TEMPLATE
