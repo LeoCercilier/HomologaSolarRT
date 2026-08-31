@@ -26,22 +26,21 @@
     }
 
     .container {
-      width: 100%;
       max-width: 700px;
       margin: auto;
-      padding: 18px 15px 40px;
+      padding: 20px 16px 40px;
     }
 
 
-    /* ================================
-       TOPO
+    /* =================================
+       CABEÇALHO
     ================================= */
 
     .topo {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
     }
 
     .topo h1 {
@@ -57,24 +56,24 @@
     }
 
 
-    /* ================================
-       DIAS
+    /* =================================
+       BARRA DE DIAS
     ================================= */
 
     .dias-container {
       background: white;
       border-radius: 14px;
-      padding: 10px;
-      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+      padding: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
       margin-bottom: 18px;
     }
 
     .dias {
       display: flex;
-      gap: 7px;
+      gap: 8px;
       overflow-x: auto;
+      padding-bottom: 4px;
       scrollbar-width: none;
-      padding-bottom: 2px;
     }
 
     .dias::-webkit-scrollbar {
@@ -82,15 +81,18 @@
     }
 
     .dia {
-      min-width: 64px;
+      min-width: 68px;
       border: 1px solid #e2e8f0;
       background: #f8fafc;
-      color: #334155;
-      border-radius: 10px;
-      padding: 8px 5px;
+      border-radius: 11px;
+      padding: 9px 5px;
       text-align: center;
       cursor: pointer;
       flex-shrink: 0;
+    }
+
+    .dia:hover {
+      border-color: #0f766e;
     }
 
     .dia.selecionado {
@@ -100,32 +102,32 @@
     }
 
     .dia .semana {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: bold;
       text-transform: uppercase;
     }
 
     .dia .numero {
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
-      margin-top: 2px;
+      margin-top: 3px;
     }
 
     .dia .indicador {
-      font-size: 9px;
-      height: 10px;
-      margin-top: 1px;
+      font-size: 10px;
+      margin-top: 2px;
+      min-height: 12px;
     }
 
 
-    /* ================================
+    /* =================================
        CABEÇALHO DO DIA
     ================================= */
 
     .cabecalho-dia {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      align-items: center;
       margin-bottom: 12px;
     }
 
@@ -138,33 +140,28 @@
       border: none;
       background: #0f766e;
       color: white;
-      padding: 9px 12px;
-      border-radius: 8px;
-      font-size: 13px;
+      padding: 10px 13px;
+      border-radius: 9px;
       font-weight: bold;
       cursor: pointer;
     }
 
 
-    /* ================================
+    /* =================================
        COMPROMISSO
     ================================= */
 
     .compromisso {
       background: white;
-      border-radius: 12px;
-      padding: 12px;
-      margin-bottom: 9px;
-      box-shadow: 0 2px 9px rgba(0,0,0,0.05);
-      border-left: 4px solid #0f766e;
-    }
-
-    .compromisso.atrasado {
-      border-left-color: #dc2626;
+      border-radius: 14px;
+      padding: 15px;
+      margin-bottom: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+      border-left: 5px solid #0f766e;
     }
 
     .compromisso.finalizado {
-      opacity: 0.6;
+      opacity: 0.65;
       border-left-color: #16a34a;
     }
 
@@ -175,56 +172,54 @@
 
     .linha-principal {
       display: flex;
-      gap: 9px;
+      gap: 10px;
       align-items: flex-start;
     }
 
     .icone {
-      font-size: 21px;
-      line-height: 1.2;
+      font-size: 22px;
     }
 
     .hora {
-      font-size: 16px;
+      font-size: 17px;
       font-weight: bold;
       color: #0f766e;
     }
 
     .titulo {
-      font-size: 14px;
       font-weight: bold;
       margin-top: 2px;
     }
 
     .cliente {
-      font-size: 13px;
+      font-size: 14px;
       color: #64748b;
-      margin-top: 4px;
+      margin-top: 5px;
     }
 
     .observacao {
-      font-size: 12px;
+      font-size: 13px;
       color: #475569;
-      margin-top: 7px;
+      margin-top: 8px;
     }
 
 
-    /* ================================
-       BOTÕES
+    /* =================================
+       BOTÕES DO COMPROMISSO
     ================================= */
 
     .acoes {
       display: flex;
       flex-wrap: wrap;
-      gap: 5px;
-      margin-top: 11px;
+      gap: 6px;
+      margin-top: 13px;
     }
 
     .acoes button {
       border: none;
-      border-radius: 6px;
-      padding: 7px 8px;
-      font-size: 11px;
+      border-radius: 7px;
+      padding: 8px 9px;
+      font-size: 12px;
       font-weight: bold;
       cursor: pointer;
     }
@@ -245,22 +240,8 @@
     }
 
 
-    /* ================================
-       VAZIO
-    ================================= */
-
-    .vazio {
-      background: white;
-      border-radius: 12px;
-      padding: 30px 20px;
-      text-align: center;
-      color: #64748b;
-      box-shadow: 0 2px 9px rgba(0,0,0,0.04);
-    }
-
-
-    /* ================================
-       MODAIS
+    /* =================================
+       MODAL
     ================================= */
 
     .modal {
@@ -268,7 +249,7 @@
       position: fixed;
       inset: 0;
       background: rgba(15,23,42,0.45);
-      padding: 18px;
+      padding: 20px;
       align-items: center;
       justify-content: center;
       z-index: 1000;
@@ -291,11 +272,10 @@
     .modal-conteudo h2 {
       margin-top: 0;
       color: #0f766e;
-      font-size: 20px;
     }
 
 
-    /* ================================
+    /* =================================
        FORMULÁRIO
     ================================= */
 
@@ -323,7 +303,7 @@
     }
 
     .campo textarea {
-      min-height: 75px;
+      min-height: 80px;
       resize: vertical;
     }
 
@@ -352,6 +332,19 @@
       color: #334155;
     }
 
+
+    /* =================================
+       SEM COMPROMISSOS
+    ================================= */
+
+    .vazio {
+      background: white;
+      border-radius: 14px;
+      padding: 30px 20px;
+      text-align: center;
+      color: #64748b;
+    }
+
   </style>
 
 </head>
@@ -359,11 +352,10 @@
 
 <body>
 
-
 <div class="container">
 
 
-  <!-- ================================
+  <!-- =================================
        TOPO
   ================================= -->
 
@@ -376,14 +368,12 @@
       ← Dashboard
     </a>
 
-    <h1>
-      📅 Agenda
-    </h1>
+    <h1>📅 Agenda</h1>
 
   </div>
 
 
-  <!-- ================================
+  <!-- =================================
        DIAS
   ================================= -->
 
@@ -397,8 +387,8 @@
   </div>
 
 
-  <!-- ================================
-       CABEÇALHO
+  <!-- =================================
+       CABEÇALHO DO DIA
   ================================= -->
 
   <div class="cabecalho-dia">
@@ -417,19 +407,17 @@
   </div>
 
 
-  <!-- ================================
-       COMPROMISSOS
+  <!-- =================================
+       LISTA
   ================================= -->
 
-  <div
-    id="listaCompromissos"
-  ></div>
+  <div id="listaCompromissos"></div>
 
 
 </div>
 
 
-<!-- ================================
+<!-- =================================
      MODAL NOVO COMPROMISSO
 ================================= -->
 
@@ -440,9 +428,7 @@
 
   <div class="modal-conteudo">
 
-    <h2>
-      📅 Novo compromisso
-    </h2>
+    <h2>📅 Novo compromisso</h2>
 
 
     <div class="campo">
@@ -479,9 +465,7 @@
         Tipo de compromisso
       </label>
 
-      <select
-        id="tipoCompromisso"
-      >
+      <select id="tipoCompromisso">
 
         <option value="Reunião com cliente">
           🤝 Reunião com cliente
@@ -568,106 +552,29 @@
 </div>
 
 
-<!-- ================================
-     MODAL ADIAR
-================================= -->
-
-<div
-  class="modal"
-  id="modalAdiar"
->
-
-  <div class="modal-conteudo">
-
-    <h2>
-      → Adiar compromisso
-    </h2>
-
-
-    <button
-      class="btn-salvar"
-      onclick="adiarParaAmanha()"
-      style="
-        width:100%;
-        margin-bottom:12px;
-        padding:12px;
-        border:none;
-        border-radius:9px;
-        font-weight:bold;
-        cursor:pointer;
-      "
-    >
-      📅 Amanhã
-    </button>
-
-
-    <div class="campo">
-
-      <label>
-        Escolher outra data
-      </label>
-
-      <input
-        type="date"
-        id="novaData"
-      >
-
-    </div>
-
-
-    <div class="botoes-modal">
-
-      <button
-        class="btn-fechar"
-        onclick="fecharModalAdiar()"
-      >
-        Cancelar
-      </button>
-
-      <button
-        class="btn-salvar"
-        onclick="salvarNovaData()"
-      >
-        Adiar
-      </button>
-
-    </div>
-
-  </div>
-
-</div>
-
-
 <script>
 
-  /* ================================
-     DADOS DE TESTE
+  /* =================================
+     CONFIGURAÇÃO INICIAL
   ================================= */
 
-  let dataSelecionada =
-    new Date();
-
+  let dataSelecionada = new Date();
 
   let compromissos = [
 
     {
       id: 1,
-      data: formatarData(
-        new Date()
-      ),
+      data: formatarData(new Date()),
       hora: "09:00",
       tipo: "Visita técnica",
       cliente: "Cliente A",
-      observacao:
-        "Conferir padrão de entrada",
+      observacao: "Conferir padrão de entrada",
       status: "pendente"
     },
 
     {
       id: 2,
-      data: formatarData(
-        new Date()
-      ),
+      data: formatarData(new Date()),
       hora: "11:30",
       tipo: "Contato com cliente",
       cliente: "Cliente B",
@@ -677,9 +584,7 @@
 
     {
       id: 3,
-      data: formatarData(
-        new Date()
-      ),
+      data: formatarData(new Date()),
       hora: "15:00",
       tipo: "Reunião com cliente",
       cliente: "Cliente C",
@@ -689,9 +594,7 @@
 
     {
       id: 4,
-      data: formatarData(
-        new Date()
-      ),
+      data: formatarData(new Date()),
       hora: "17:00",
       tipo: "Vistoria",
       cliente: "Cliente D",
@@ -702,41 +605,42 @@
   ];
 
 
-  /* ================================
+  /* =================================
      FORMATAR DATA
   ================================= */
 
   function formatarData(data) {
 
-    const ano =
-      data.getFullYear();
+    const ano = data.getFullYear();
 
     const mes =
-      String(
-        data.getMonth() + 1
-      ).padStart(2, "0");
+      String(data.getMonth() + 1)
+        .padStart(2, "0");
 
     const dia =
-      String(
-        data.getDate()
-      ).padStart(2, "0");
+      String(data.getDate())
+        .padStart(2, "0");
 
     return `${ano}-${mes}-${dia}`;
 
   }
 
 
-  /* ================================
-     TEXTO DA DATA
+  /* =================================
+     FORMATAR DATA PARA EXIBIÇÃO
   ================================= */
 
   function dataTexto(data) {
 
-    const hoje =
-      new Date();
+    const hoje = new Date();
 
-    const amanha =
-      new Date();
+    const ontem = new Date();
+
+    ontem.setDate(
+      hoje.getDate() - 1
+    );
+
+    const amanha = new Date();
 
     amanha.setDate(
       hoje.getDate() + 1
@@ -752,7 +656,6 @@
 
     }
 
-
     if (
       formatarData(data) ===
       formatarData(amanha)
@@ -762,49 +665,35 @@
 
     }
 
+    const dias =
+      [
+        "Domingo",
+        "Segunda-feira",
+        "Terça-feira",
+        "Quarta-feira",
+        "Quinta-feira",
+        "Sexta-feira",
+        "Sábado"
+      ];
 
-    const dias = [
-
-      "Domingo",
-
-      "Segunda-feira",
-
-      "Terça-feira",
-
-      "Quarta-feira",
-
-      "Quinta-feira",
-
-      "Sexta-feira",
-
-      "Sábado"
-
-    ];
-
-
-    return dias[
-      data.getDay()
-    ];
+    return dias[data.getDay()];
 
   }
 
 
-  /* ================================
+  /* =================================
      GERAR DIAS
   ================================= */
 
   function gerarDias() {
 
     const container =
-      document.getElementById(
-        "dias"
-      );
+      document.getElementById("dias");
 
     container.innerHTML = "";
 
 
-    const inicio =
-      new Date();
+    const inicio = new Date();
 
     inicio.setDate(
       inicio.getDate() - 3
@@ -826,19 +715,14 @@
 
 
       const bloco =
-        document.createElement(
-          "div"
-        );
+        document.createElement("div");
 
-      bloco.className =
-        "dia";
+      bloco.className = "dia";
 
 
       if (
         formatarData(data) ===
-        formatarData(
-          dataSelecionada
-        )
+        formatarData(dataSelecionada)
       ) {
 
         bloco.classList.add(
@@ -856,32 +740,16 @@
         );
 
 
-      let nomeDia =
-        data
-          .toLocaleDateString(
-            "pt-BR",
-            {
-              weekday: "short"
-            }
-          )
-          .replace(".", "");
-
-
-      if (
-        formatarData(data) ===
-        formatarData(new Date())
-      ) {
-
-        nomeDia =
-          "Hoje";
-
-      }
-
-
       bloco.innerHTML = `
 
         <div class="semana">
-          ${nomeDia}
+          ${data
+            .toLocaleDateString(
+              "pt-BR",
+              { weekday: "short" }
+            )
+            .replace(".", "")
+          }
         </div>
 
         <div class="numero">
@@ -895,27 +763,24 @@
       `;
 
 
-      bloco.onclick =
-        function() {
+      bloco.onclick = function() {
 
-          dataSelecionada =
-            new Date(data);
+        dataSelecionada =
+          new Date(data);
 
-          renderizar();
+        renderizar();
 
-        };
+      };
 
 
-      container.appendChild(
-        bloco
-      );
+      container.appendChild(bloco);
 
     }
 
   }
 
 
-  /* ================================
+  /* =================================
      RENDERIZAR
   ================================= */
 
@@ -928,8 +793,8 @@
   }
 
 
-  /* ================================
-     RENDERIZAR COMPROMISSOS
+  /* =================================
+     MOSTRAR COMPROMISSOS
   ================================= */
 
   function renderizarCompromissos() {
@@ -945,15 +810,11 @@
     document.getElementById(
       "tituloDia"
     ).textContent =
-      `📅 ${dataTexto(
-        dataSelecionada
-      )}`;
+      `📅 ${dataTexto(dataSelecionada)}`;
 
 
     const data =
-      formatarData(
-        dataSelecionada
-      );
+      formatarData(dataSelecionada);
 
 
     const listaDia =
@@ -963,10 +824,8 @@
             item.data === data
         )
         .sort(
-          (a, b) =>
-            a.hora.localeCompare(
-              b.hora
-            )
+          (a,b) =>
+            a.hora.localeCompare(b.hora)
         );
 
 
@@ -978,9 +837,7 @@
 
         <div class="vazio">
 
-          📭
-
-          <br><br>
+          📭<br><br>
 
           Nenhum compromisso
           para este dia.
@@ -997,42 +854,14 @@
     listaDia.forEach(
       compromisso => {
 
-
         const div =
           document.createElement(
             "div"
           );
 
 
-        const agora =
-          new Date();
-
-
-        const dataCompromisso =
-          new Date(
-            compromisso.data +
-            "T" +
-            compromisso.hora
-          );
-
-
-        const atrasado =
-          compromisso.status ===
-          "pendente" &&
-          dataCompromisso < agora;
-
-
         div.className =
           "compromisso";
-
-
-        if (atrasado) {
-
-          div.classList.add(
-            "atrasado"
-          );
-
-        }
 
 
         if (
@@ -1061,26 +890,19 @@
 
         const icones = {
 
-          "Reunião com cliente":
-            "🤝",
+          "Reunião com cliente": "🤝",
 
-          "Contato com cliente":
-            "📞",
+          "Contato com cliente": "📞",
 
-          "Visita técnica":
-            "📸",
+          "Visita técnica": "📸",
 
-          "Vistoria":
-            "🔍",
+          "Vistoria": "🔍",
 
-          "Acompanhamento de instalação":
-            "🏗️",
+          "Acompanhamento de instalação": "🏗️",
 
-          "Comissionamento":
-            "⚡",
+          "Comissionamento": "⚡",
 
-          "Outro compromisso":
-            "📌"
+          "Outro compromisso": "📌"
 
         };
 
@@ -1100,33 +922,34 @@
               <button
                 class="btn-finalizar"
                 onclick="
-                  finalizarCompromisso(
-                    ${compromisso.id}
-                  )
+                  finalizarCompromisso(${compromisso.id})
                 "
               >
-                ✓ Finalizar
+                ✓ Finalizado
               </button>
-
 
               <button
                 class="btn-adiar"
                 onclick="
-                  abrirAdiar(
-                    ${compromisso.id}
-                  )
+                  adiarAmanha(${compromisso.id})
                 "
               >
-                → Adiar
+                → Amanhã
               </button>
 
+              <button
+                class="btn-adiar"
+                onclick="
+                  adiarOutraData(${compromisso.id})
+                "
+              >
+                📅 Outra data
+              </button>
 
               <button
                 class="btn-cancelar"
                 onclick="
-                  cancelarCompromisso(
-                    ${compromisso.id}
-                  )
+                  cancelarCompromisso(${compromisso.id})
                 "
               >
                 ✕ Cancelar
@@ -1144,98 +967,29 @@
           <div class="linha-principal">
 
             <div class="icone">
-
-              ${
-                icones[
-                  compromisso.tipo
-                ] || "📌"
-              }
-
+              ${icones[compromisso.tipo] || "📌"}
             </div>
-
 
             <div>
 
               <div class="hora">
-
                 ${compromisso.hora}
-
-                ${
-                  atrasado
-                  ?
-                  `
-                    <span
-                      style="
-                        color:#dc2626;
-                        font-size:10px;
-                        margin-left:5px;
-                      "
-                    >
-                      🔴 ATRASADO
-                    </span>
-                  `
-                  :
-                  ""
-                }
-
               </div>
-
 
               <div class="titulo">
-
                 ${compromisso.tipo}
-
               </div>
-
 
               <div class="cliente">
-
                 👤 ${compromisso.cliente}
-
               </div>
-
 
               ${
                 compromisso.observacao
                 ?
                 `
                   <div class="observacao">
-
-                    📝
-                    ${compromisso.observacao}
-
-                  </div>
-                `
-                :
-                ""
-              }
-
-
-              ${
-                compromisso.status ===
-                "finalizado"
-                ?
-                `
-                  <div class="observacao">
-
-                    ✅ Finalizado
-
-                  </div>
-                `
-                :
-                ""
-              }
-
-
-              ${
-                compromisso.status ===
-                "cancelado"
-                ?
-                `
-                  <div class="observacao">
-
-                    ❌ Cancelado
-
+                    📝 ${compromisso.observacao}
                   </div>
                 `
                 :
@@ -1247,14 +1001,38 @@
           </div>
 
 
+          ${
+            compromisso.status === "finalizado"
+            ?
+            `
+              <div class="observacao">
+                ✅ Finalizado
+              </div>
+            `
+            :
+            ""
+          }
+
+
+          ${
+            compromisso.status === "cancelado"
+            ?
+            `
+              <div class="observacao">
+                ❌ Cancelado
+              </div>
+            `
+            :
+            ""
+          }
+
+
           ${botoes}
 
         `;
 
 
-        lista.appendChild(
-          div
-        );
+        lista.appendChild(div);
 
       }
     );
@@ -1262,241 +1040,11 @@
   }
 
 
-  /* ================================
+  /* =================================
      NOVO COMPROMISSO
   ================================= */
 
-  function abrirNovoCompromisso() {
-
-    document.getElementById(
-      "dataCompromisso"
-    ).value =
-      formatarData(
-        dataSelecionada
-      );
-
-
-    document.getElementById(
-      "horaCompromisso"
-    ).value = "";
-
-
-    document.getElementById(
-      "clienteCompromisso"
-    ).value = "";
-
-
-    document.getElementById(
-      "observacaoCompromisso"
-    ).value = "";
-
-
-    document.getElementById(
-      "modal"
-    ).classList.add(
-      "aberto"
-    );
-
-  }
-
-
-  function fecharModal() {
-
-    document.getElementById(
-      "modal"
-    ).classList.remove(
-      "aberto"
-    );
-
-  }
-
-
-  /* =================================
-     SALVAR
-  ================================= */
-
-  function salvarCompromisso() {
-
-    const data =
-      document.getElementById(
-        "dataCompromisso"
-      ).value;
-
-    const hora =
-      document.getElementById(
-        "horaCompromisso"
-      ).value;
-
-    const tipo =
-      document.getElementById(
-        "tipoCompromisso"
-      ).value;
-
-    const cliente =
-      document.getElementById(
-        "clienteCompromisso"
-      ).value.trim();
-
-    const observacao =
-      document.getElementById(
-        "observacaoCompromisso"
-      ).value.trim();
-
-
-    if (
-      !data ||
-      !hora ||
-      !cliente
-    ) {
-
-      alert(
-        "Informe data, horário e cliente."
-      );
-
-      return;
-
-    }
-
-
-    compromissos.push({
-
-      id:
-        Date.now(),
-
-      data,
-
-      hora,
-
-      tipo,
-
-      cliente,
-
-      observacao,
-
-      status:
-        "pendente"
-
-    });
-
-
-    dataSelecionada =
-      new Date(
-        data + "T00:00:00"
-      );
-
-
-    fecharModal();
-
-    renderizar();
-
-  }
-
-
-  /* =================================
-     FINALIZAR
-  ================================= */
-
-  function finalizarCompromisso(id) {
-
-    const item =
-      compromissos.find(
-        x => x.id === id
-      );
-
-
-    if (!item) return;
-
-
-    item.status =
-      "finalizado";
-
-
-    renderizar();
-
-  }
-
-
-  /* =================================
-     CANCELAR
-  ================================= */
-
-  function cancelarCompromisso(id) {
-
-    const confirmar =
-      confirm(
-        "Deseja cancelar este compromisso?"
-      );
-
-
-    if (!confirmar) return;
-
-
-    const item =
-      compromissos.find(
-        x => x.id === id
-      );
-
-
-    if (!item) return;
-
-
-    item.status =
-      "cancelado";
-
-
-    renderizar();
-
-  }
-
-
-  /* =================================
-     ADIAR PARA AMANHÃ
-  ================================= */
-
-  function adiarAmanha(id) {
-
-    const item =
-      compromissos.find(
-        x => x.id === id
-      );
-
-
-    if (!item) return;
-
-
-    const data =
-      new Date(
-        item.data + "T00:00:00"
-      );
-
-
-    data.setDate(
-      data.getDate() + 1
-    );
-
-
-    item.data =
-      formatarData(data);
-
-
-    dataSelecionada =
-      data;
-
-
-    renderizar();
-
-  }
-
-
-  /* =================================
-     ADIAR PARA OUTRA DATA
-  ================================= */
-
-  function adiarOutraData(id) {
-
-    const novaData =
-      prompt(
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
