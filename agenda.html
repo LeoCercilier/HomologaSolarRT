@@ -663,6 +663,23 @@
 
 <script>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
+<script>
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+</script>
+
+<script>
+
+  let dataSelecionada = new Date();
+
   let dataSelecionada = new Date();
 
 let organizacaoAtual = null;
