@@ -246,6 +246,16 @@
         SUPABASE_KEY
       );
 
+	  supabaseClient.auth.getSession().then(({ data }) => {
+
+  if (data.session) {
+
+    window.location.href = "dashboard.html";
+
+  }
+
+});
+
 
     function mostrarMensagem(texto) {
 
