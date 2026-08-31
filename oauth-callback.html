@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>HomologaSolar RT</title>
+
+</head>
+
+<body>
+
+  <p style="
+    text-align:center;
+    font-family:Arial,sans-serif;
+    margin-top:80px;
+    color:#64748b;
+  ">
+    🔐 Finalizando login...
+  </p>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="supabase-config.js"></script>
+
+
+  <script>
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    supabaseClient.auth.getSession()
+      .then(({ data }) => {
+
+        if (data.session) {
+
+          window.location.href =
+            "dashboard.html";
+
+        }
+
+        else {
+
+          window.location.href =
+            "login.html";
+
+        }
+
+      });
+
+
+  </script>
+
+</body>
+
+</html>
