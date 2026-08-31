@@ -518,15 +518,38 @@
 
     <div class="campo">
 
-      <label>
-        Cliente
-      </label>
+  <label>
+    Cliente
+  </label>
 
-      <input
-        type="text"
-        id="clienteCompromisso"
-        placeholder="Nome do cliente"
-      >
+  <select
+    id="clienteCompromisso"
+    onchange="carregarProjetosDoCliente()"
+  >
+
+    <option value="">
+      Selecione um cliente
+    </option>
+
+  </select>
+
+    </div>
+
+    <div class="campo">
+
+  <label>
+    Projeto
+  </label>
+
+  <select
+    id="projetoCompromisso"
+  >
+
+    <option value="">
+      Selecione primeiro o cliente
+    </option>
+
+  </select>
 
     </div>
 
