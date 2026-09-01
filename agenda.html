@@ -895,8 +895,8 @@ async function carregarClientes() {
     await supabaseClient
       .from("clientes")
       .select(
-        "id,nome"
-      )
+  "id,nome,telefone"
+)
       .eq(
         "organizacao_id",
         organizacaoAtual
@@ -1054,7 +1054,7 @@ async function carregarCompromissos() {
         observacao,
         status,
         criado_por,
-        clientes(nome),
+        clientes(nome,telefone),
         projetos(nome)
       `)
       .eq(
@@ -1686,22 +1686,45 @@ function fecharDetalhesCompromisso() {
    WHATSAPP
 ================================= */
 
-function abrirWhatsApp(
-  compromisso
-) {
+function abrirWhatsApp(compromisso) {
+
+  const cliente =
+    compromisso.clientes || {};
 
   const telefone =
-    compromisso.clientes?.telefone ||
-    "";
+    cliente.telefone || "";
+
+  if (!telefone) {
+
+    alert(
+      "Este cliente não possui um número de WhatsApp/telefone cadastrado."
+    );
+
+    return;
+  }
 
 
-  let mensagem;
+  const numero =
+    telefone.replace(/\D/g, "");
+
+
+  if (!numero) {
+
+    alert(
+      "O telefone cadastrado do cliente não é válido."
+    );
+
+    return;
+  }
 
 
   const dataHora =
     obterDataHoraCompromisso(
       compromisso
     );
+
+
+  let mensagem;
 
 
   if (
@@ -1712,9 +1735,7 @@ function abrirWhatsApp(
     mensagem =
       `Olá! Me perdoa o atraso, tive uns imprevistos. Podemos remarcar nosso compromisso sobre "${compromisso.tipo}"?`;
 
-  }
-
-  else {
+  } else {
 
     mensagem =
       `Olá! Sobre aquele nosso compromisso "${compromisso.tipo}", está de pé?`;
@@ -1728,31 +1749,8 @@ function abrirWhatsApp(
     );
 
 
-  let url =
-    `https://wa.me/`;
-
-
-  if (telefone) {
-
-    const numero =
-      telefone.replace(
-        /\D/g,
-        ""
-      );
-
-
-    url +=
-      numero +
-      `?text=${texto}`;
-
-  }
-
-  else {
-
-    url +=
-      `?text=${texto}`;
-
-  }
+  const url =
+    `https://wa.me/${numero}?text=${texto}`;
 
 
   window.open(
