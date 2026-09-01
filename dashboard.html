@@ -230,6 +230,93 @@
         padding: 10px 0;
     }
 
+	/* =========================================
+   FILA DE PRÓXIMOS COMPROMISSOS
+========================================= */
+
+.fila-dashboard {
+    margin-top: 20px;
+}
+
+.fila-dashboard-item {
+    background: white;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 9px;
+    box-shadow: 0 2px 9px rgba(0,0,0,.05);
+    border-left: 5px solid #16a34a;
+    cursor: pointer;
+    transition: transform 0.15s;
+}
+
+.fila-dashboard-item:active {
+    transform: scale(0.98);
+}
+
+.fila-dashboard-item.atrasado {
+    border-left-color: #dc2626;
+}
+
+.fila-dashboard-item.proximo {
+    border-left-color: #eab308;
+}
+
+.fila-dashboard-item.longe {
+    border-left-color: #16a34a;
+}
+
+.fila-dashboard-status {
+    font-size: 11px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.fila-dashboard-item.atrasado .fila-dashboard-status {
+    color: #dc2626;
+}
+
+.fila-dashboard-item.proximo .fila-dashboard-status {
+    color: #a16207;
+}
+
+.fila-dashboard-item.longe .fila-dashboard-status {
+    color: #15803d;
+}
+
+.fila-dashboard-hora {
+    font-size: 16px;
+    font-weight: bold;
+    color: #0f766e;
+}
+
+.fila-dashboard-titulo {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 3px;
+}
+
+.fila-dashboard-cliente {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+.fila-dashboard-contador {
+    font-size: 12px;
+    font-weight: bold;
+    margin-top: 7px;
+    color: #334155;
+}
+
+.fila-dashboard-vazia {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    text-align: center;
+    color: #64748b;
+    font-size: 13px;
+}
+
     .erro {
         background: #fee2e2;
         color: #991b1b;
@@ -524,6 +611,27 @@
 
     </div>
 
+	<!-- =========================================
+     PRÓXIMOS COMPROMISSOS
+========================================= -->
+
+<div class="secao fila-dashboard">
+
+    <h3>
+        ⏱️ Próximos compromissos
+    </h3>
+
+    <div id="filaCompromissosDashboard">
+
+        <div class="fila-dashboard-vazia">
+            Carregando compromissos...
+        </div>
+
+    </div>
+
+</div>
+
+	
 </div>
 
 </div><!-- =========================================
@@ -746,6 +854,8 @@ async function iniciarDashboard() {
         await carregarPendencias();
 
         await carregarProjetos();
+
+		await carregarFilaCompromissosDashboard();
 
 
         document.getElementById(
@@ -1861,6 +1971,515 @@ async function carregarPendencias() {
 				);
 
 				}
+	/* =========================================
+   FILA DE COMPROMISSOS NO DASHBOARD
+========================================= */
+
+let compromissosDashboard = [];
+
+
+/* =========================================
+   CARREGAR COMPROMISSOS
+========================================= */
+
+async function carregarFilaCompromissosDashboard() {
+
+    const container =
+        document.getElementById(
+            "filaCompromissosDashboard"
+        );
+
+    if (!container) return;
+
+
+    const {
+        data,
+        error
+    } =
+    await supabaseClient
+        .from("agenda_compromissos")
+        .select(`
+            id,
+            organizacao_id,
+            cliente_id,
+            projeto_id,
+            data,
+            hora,
+            tipo,
+            observacao,
+            status,
+            clientes (
+                nome,
+                telefone
+            ),
+            projetos (
+                nome
+            )
+        `)
+        .eq(
+            "organizacao_id",
+            organizacaoAtual
+        )
+        .order(
+            "data"
+        )
+        .order(
+            "hora"
+        );
+
+
+    if (error) {
+
+        console.error(
+            "Erro ao carregar compromissos:",
+            error
+        );
+
+        container.innerHTML = `
+            <div class="fila-dashboard-vazia">
+                ❌ Erro ao carregar compromissos.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    compromissosDashboard =
+        data || [];
+
+
+    renderizarFilaCompromissosDashboard();
+
+}
+
+
+/* =========================================
+   DATA + HORA
+========================================= */
+
+function obterDataHoraCompromissoDashboard(
+    compromisso
+) {
+
+    return new Date(
+        compromisso.data +
+        "T" +
+        compromisso.hora
+    );
+
+}
+
+
+/* =========================================
+   CONTADOR
+========================================= */
+
+function textoContadorDashboard(
+    diferenca
+) {
+
+    const segundos =
+        Math.floor(
+            Math.abs(diferenca) / 1000
+        );
+
+
+    const dias =
+        Math.floor(
+            segundos / 86400
+        );
+
+
+    const horas =
+        Math.floor(
+            (segundos % 86400) / 3600
+        );
+
+
+    const minutos =
+        Math.floor(
+            (segundos % 3600) / 60
+        );
+
+
+    const seg =
+        segundos % 60;
+
+
+    const tempo =
+        `${dias}d ${String(horas).padStart(2,"0")}:${String(minutos).padStart(2,"0")}:${String(seg).padStart(2,"0")}`;
+
+
+    if (diferenca < 0) {
+
+        return `⏰ Há ${tempo}`;
+
+    }
+
+
+    return `⏳ Em ${tempo}`;
+
+}
+
+
+/* =========================================
+   RENDERIZAR FILA
+========================================= */
+
+function renderizarFilaCompromissosDashboard() {
+
+    const container =
+        document.getElementById(
+            "filaCompromissosDashboard"
+        );
+
+
+    if (!container) return;
+
+
+    container.innerHTML = "";
+
+
+    const agora =
+        new Date();
+
+
+    const fila =
+        compromissosDashboard
+            .filter(
+                compromisso =>
+                    compromisso.status ===
+                    "pendente"
+            )
+            .map(
+                compromisso => {
+
+                    const dataHora =
+                        obterDataHoraCompromissoDashboard(
+                            compromisso
+                        );
+
+
+                    const diferenca =
+                        dataHora.getTime() -
+                        agora.getTime();
+
+
+                    return {
+                        compromisso,
+                        dataHora,
+                        diferenca
+                    };
+
+                }
+            )
+            .sort(
+                (a, b) =>
+                    a.dataHora - b.dataHora
+            );
+
+
+    if (!fila.length) {
+
+        container.innerHTML = `
+            <div class="fila-dashboard-vazia">
+                📭 Nenhum compromisso pendente na fila.
+            </div>
+        `;
+
+        return;
+    }
+
+
+    fila.forEach(
+        item => {
+
+            const compromisso =
+                item.compromisso;
+
+
+            const diferenca =
+                item.diferenca;
+
+
+            let classe =
+                "longe";
+
+
+            let textoStatus =
+                "🟢 Longe";
+
+
+            if (diferenca < 0) {
+
+                classe =
+                    "atrasado";
+
+
+                textoStatus =
+                    "🔴 Atrasado";
+
+            }
+
+            else if (
+                diferenca <=
+                24 * 60 * 60 * 1000
+            ) {
+
+                classe =
+                    "proximo";
+
+
+                textoStatus =
+                    "🟡 Próximo";
+
+            }
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                `fila-dashboard-item ${classe}`;
+
+
+            div.onclick =
+                function() {
+
+                    abrirDetalhesCompromissoDashboard(
+                        compromisso.id
+                    );
+
+                };
+
+
+            div.innerHTML = `
+
+                <div class="fila-dashboard-status">
+
+                    ${textoStatus}
+
+                </div>
+
+
+                <div class="fila-dashboard-hora">
+
+                    ${compromisso.hora}
+
+                </div>
+
+
+                <div class="fila-dashboard-titulo">
+
+                    ${
+                        compromisso.tipo ||
+                        "Compromisso"
+                    }
+
+                </div>
+
+
+                <div class="fila-dashboard-cliente">
+
+                    👤 ${
+                        compromisso.clientes?.nome ||
+                        "Cliente"
+                    }
+
+                </div>
+
+
+                <div
+                    class="fila-dashboard-contador"
+                    data-dashboard-compromisso-id="${compromisso.id}"
+                >
+
+                    ${textoContadorDashboard(
+                        diferenca
+                    )}
+
+                </div>
+
+            `;
+
+
+            container.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   ATUALIZAR CONTADORES
+========================================= */
+
+setInterval(
+    function() {
+
+        const agora =
+            new Date();
+
+
+        compromissosDashboard
+            .filter(
+                compromisso =>
+                    compromisso.status ===
+                    "pendente"
+            )
+            .forEach(
+                compromisso => {
+
+                    const elemento =
+                        document.querySelector(
+                            `[data-dashboard-compromisso-id="${compromisso.id}"]`
+                        );
+
+
+                    if (!elemento) return;
+
+
+                    const dataHora =
+                        obterDataHoraCompromissoDashboard(
+                            compromisso
+                        );
+
+
+                    const diferenca =
+                        dataHora.getTime() -
+                        agora.getTime();
+
+
+                    elemento.textContent =
+                        textoContadorDashboard(
+                            diferenca
+                        );
+
+                }
+            );
+
+    },
+    1000
+);
+
+
+/* =========================================
+   DETALHES DO COMPROMISSO
+========================================= */
+
+function abrirDetalhesCompromissoDashboard(
+    id
+) {
+
+    const compromisso =
+        compromissosDashboard.find(
+            item =>
+                item.id === id
+        );
+
+
+    if (!compromisso) return;
+
+
+    const cliente =
+        compromisso.clientes?.nome ||
+        "Cliente";
+
+
+    const projeto =
+        compromisso.projetos?.nome ||
+        "Sem projeto específico";
+
+
+    const dataFormatada =
+        compromisso.data
+            .split("-")
+            .reverse()
+            .join("/");
+
+
+    let mensagemWhatsApp =
+        "";
+
+
+    const telefone =
+        compromisso.clientes?.telefone ||
+        "";
+
+
+    if (telefone) {
+
+        let numero =
+            telefone.replace(
+                /\D/g,
+                ""
+            );
+
+
+        if (!numero.startsWith("55")) {
+
+            numero =
+                "55" + numero;
+
+        }
+
+
+        const dataHora =
+            obterDataHoraCompromissoDashboard(
+                compromisso
+            );
+
+
+        if (
+            dataHora.getTime() <
+            Date.now()
+        ) {
+
+            mensagemWhatsApp =
+                `Olá! Me perdoa o atraso, tive uns imprevistos. Podemos remarcar nosso compromisso sobre "${compromisso.tipo}"?`;
+
+        } else {
+
+            mensagemWhatsApp =
+                `Olá! Sobre aquele nosso compromisso "${compromisso.tipo}", está de pé?`;
+
+        }
+
+
+        window.open(
+            `https://wa.me/${numero}?text=${
+                encodeURIComponent(
+                    mensagemWhatsApp
+                )
+            }`,
+            "_blank"
+        );
+
+        return;
+    }
+
+
+    if (
+        compromisso.projeto_id
+    ) {
+
+        window.location.href =
+            "projeto-detalhes.html?id=" +
+            encodeURIComponent(
+                compromisso.projeto_id
+            );
+
+    }
+
+	}
+
 
 
 				/* =========================================
