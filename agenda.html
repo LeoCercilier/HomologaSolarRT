@@ -1681,8 +1681,7 @@ function fecharDetalhesCompromisso() {
 
 }
 
-
-/* =================================
+  /* =================================
    WHATSAPP
 ================================= */
 
@@ -1704,14 +1703,25 @@ function abrirWhatsApp(compromisso) {
   }
 
 
-  const numero =
+  // Remove espaços, parênteses, hífens etc.
+  let numero =
     telefone.replace(/\D/g, "");
 
 
-  if (!numero) {
+  // Se o número já tiver 55, mantém.
+  // Caso contrário, adiciona o código do Brasil.
+  if (!numero.startsWith("55")) {
+
+    numero =
+      "55" + numero;
+
+  }
+
+
+  if (numero.length < 12) {
 
     alert(
-      "O telefone cadastrado do cliente não é válido."
+      "O número de telefone cadastrado parece estar incompleto."
     );
 
     return;
@@ -1759,7 +1769,6 @@ function abrirWhatsApp(compromisso) {
   );
 
 }
-  
 /* =================================
    FILA DE COMPROMISSOS
 ================================= */
