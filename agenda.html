@@ -1598,16 +1598,17 @@ async function salvarCompromisso() {
       });
 
 
-  if (error) {
+if (error) {
 
-    console.error(error);
+  console.error(error);
 
-    alert(
-      "Erro ao salvar compromisso."
-    );
+  alert(
+    "Erro ao salvar compromisso:\n\n" +
+    error.message
+  );
 
-    return;
-  }
+  return;
+}
 
 
   fecharModal();
