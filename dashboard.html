@@ -2249,15 +2249,11 @@ function renderizarFilaCompromissosDashboard() {
                 `fila-dashboard-item ${classe}`;
 
 
-            div.onclick =
-                function() {
-
-                    abrirDetalhesCompromissoDashboard(
-                        compromisso.id
-                    );
-
-                };
-
+            div.onclick = function() {
+    window.location.href =
+        "agenda.html?compromisso=" +
+        encodeURIComponent(compromisso.id);
+};
 
             div.innerHTML = `
 
