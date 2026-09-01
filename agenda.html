@@ -352,6 +352,98 @@
       color: #334155;
     }
 
+    /* ================================
+   FILA DE COMPROMISSOS
+================================ */
+
+.fila-container {
+  margin-top: 22px;
+}
+
+.titulo-fila {
+  font-size: 17px;
+  margin: 0 0 10px;
+}
+
+.fila-item {
+  background: white;
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 9px;
+  box-shadow: 0 2px 9px rgba(0,0,0,0.05);
+  border-left: 5px solid #16a34a;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.fila-item:active {
+  transform: scale(0.98);
+}
+
+.fila-item.atrasado {
+  border-left-color: #dc2626;
+}
+
+.fila-item.proximo {
+  border-left-color: #eab308;
+}
+
+.fila-item.longe {
+  border-left-color: #16a34a;
+}
+
+.fila-status {
+  font-size: 11px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.fila-item.atrasado .fila-status {
+  color: #dc2626;
+}
+
+.fila-item.proximo .fila-status {
+  color: #a16207;
+}
+
+.fila-item.longe .fila-status {
+  color: #15803d;
+}
+
+.fila-hora {
+  font-size: 16px;
+  font-weight: bold;
+  color: #0f766e;
+}
+
+.fila-titulo {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 3px;
+}
+
+.fila-cliente {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.fila-contador {
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 7px;
+  color: #334155;
+}
+
+.fila-vazia {
+  background: white;
+  border-radius: 12px;
+  padding: 18px;
+  text-align: center;
+  color: #64748b;
+  font-size: 13px;
+}
+
   </style>
 
 </head>
@@ -425,6 +517,18 @@
     id="listaCompromissos"
   ></div>
 
+
+</div>
+
+  <!-- FILA DE PRÓXIMOS COMPROMISSOS -->
+
+<div class="fila-container">
+
+  <h2 class="titulo-fila">
+    ⏱️ Próximos compromissos
+  </h2>
+
+  <div id="filaCompromissos"></div>
 
 </div>
 
@@ -1109,6 +1213,8 @@ function renderizar() {
 
   renderizarCompromissos();
 
+  renderizarFila();
+
 }
 
 
@@ -1417,6 +1523,538 @@ function renderizarCompromissos() {
 
 }
 
+  /* =================================
+   DETALHES DO COMPROMISSO
+================================= */
+
+function abrirDetalhesCompromisso(id) {
+
+  const compromisso =
+    compromissos.find(
+      item =>
+        item.id === id
+    );
+
+
+  if (!compromisso) return;
+
+
+  const cliente =
+    compromisso.clientes?.nome ||
+    "Cliente";
+
+
+  const projeto =
+    compromisso.projetos?.nome ||
+    "Sem projeto específico";
+
+
+  const dataFormatada =
+    compromisso.data
+      .split("-")
+      .reverse()
+      .join("/");
+
+
+  document.getElementById(
+    "detalhesCompromisso"
+  ).innerHTML = `
+
+    <div class="observacao">
+
+      📅 <strong>Data:</strong>
+      ${dataFormatada}
+
+    </div>
+
+    <div class="observacao">
+
+      ⏰ <strong>Horário:</strong>
+      ${compromisso.hora}
+
+    </div>
+
+    <div class="observacao">
+
+      📌 <strong>Compromisso:</strong>
+      ${compromisso.tipo}
+
+    </div>
+
+    <div class="observacao">
+
+      👤 <strong>Cliente:</strong>
+      ${cliente}
+
+    </div>
+
+    <div class="observacao">
+
+      📁 <strong>Projeto:</strong>
+      ${projeto}
+
+    </div>
+
+    ${
+      compromisso.observacao
+      ?
+      `
+        <div class="observacao">
+
+          📝 <strong>Observação:</strong><br>
+
+          ${compromisso.observacao}
+
+        </div>
+      `
+      :
+      ""
+    }
+
+  `;
+
+
+  const btnWhatsApp =
+    document.getElementById(
+      "btnWhatsApp"
+    );
+
+
+  btnWhatsApp.onclick =
+    function() {
+
+      abrirWhatsApp(
+        compromisso
+      );
+
+    };
+
+
+  const btnProjeto =
+    document.getElementById(
+      "btnVerProjeto"
+    );
+
+
+  if (compromisso.projeto_id) {
+
+    btnProjeto.style.display =
+      "block";
+
+    btnProjeto.onclick =
+      function() {
+
+        window.location.href =
+          `projeto-detalhes.html?id=${compromisso.projeto_id}`;
+
+      };
+
+  }
+
+  else {
+
+    btnProjeto.style.display =
+      "none";
+
+  }
+
+
+  document.getElementById(
+    "modalDetalhesCompromisso"
+  ).classList.add(
+    "aberto"
+  );
+
+}
+
+
+function fecharDetalhesCompromisso() {
+
+  document.getElementById(
+    "modalDetalhesCompromisso"
+  ).classList.remove(
+    "aberto"
+  );
+
+}
+
+
+/* =================================
+   WHATSAPP
+================================= */
+
+function abrirWhatsApp(
+  compromisso
+) {
+
+  const telefone =
+    compromisso.clientes?.telefone ||
+    "";
+
+
+  let mensagem;
+
+
+  const dataHora =
+    obterDataHoraCompromisso(
+      compromisso
+    );
+
+
+  if (
+    dataHora.getTime() <
+    Date.now()
+  ) {
+
+    mensagem =
+      `Olá! Me perdoa o atraso, tive uns imprevistos. Podemos remarcar nosso compromisso sobre "${compromisso.tipo}"?`;
+
+  }
+
+  else {
+
+    mensagem =
+      `Olá! Sobre aquele nosso compromisso "${compromisso.tipo}", está de pé?`;
+
+  }
+
+
+  const texto =
+    encodeURIComponent(
+      mensagem
+    );
+
+
+  let url =
+    `https://wa.me/`;
+
+
+  if (telefone) {
+
+    const numero =
+      telefone.replace(
+        /\D/g,
+        ""
+      );
+
+
+    url +=
+      numero +
+      `?text=${texto}`;
+
+  }
+
+  else {
+
+    url +=
+      `?text=${texto}`;
+
+  }
+
+
+  window.open(
+    url,
+    "_blank"
+  );
+
+}
+  
+/* =================================
+   FILA DE COMPROMISSOS
+================================= */
+
+function obterDataHoraCompromisso(compromisso) {
+
+  return new Date(
+    compromisso.data +
+    "T" +
+    compromisso.hora
+  );
+
+}
+
+
+function renderizarFila() {
+
+  const container =
+    document.getElementById(
+      "filaCompromissos"
+    );
+
+  if (!container) return;
+
+  container.innerHTML = "";
+
+
+  const agora =
+    new Date();
+
+
+  const fila =
+    compromissos
+      .filter(
+        compromisso =>
+          compromisso.status === "pendente"
+      )
+      .map(
+        compromisso => {
+
+          const dataHora =
+            obterDataHoraCompromisso(
+              compromisso
+            );
+
+          const diferenca =
+            dataHora.getTime() -
+            agora.getTime();
+
+          return {
+            compromisso,
+            dataHora,
+            diferenca
+          };
+
+        }
+      )
+      .sort(
+        (a, b) =>
+          a.dataHora - b.dataHora
+      );
+
+
+  if (!fila.length) {
+
+    container.innerHTML = `
+
+      <div class="fila-vazia">
+
+        📭 Nenhum compromisso
+        pendente na fila.
+
+      </div>
+
+    `;
+
+    return;
+  }
+
+
+  fila.forEach(
+    item => {
+
+      const compromisso =
+        item.compromisso;
+
+
+      const diferenca =
+        item.diferenca;
+
+
+      let classe =
+        "longe";
+
+      let textoStatus =
+        "🟢 Longe";
+
+
+      if (diferenca < 0) {
+
+        classe =
+          "atrasado";
+
+        textoStatus =
+          "🔴 Atrasado";
+
+      }
+
+      else if (
+        diferenca <=
+        24 * 60 * 60 * 1000
+      ) {
+
+        classe =
+          "proximo";
+
+        textoStatus =
+          "🟡 Próximo";
+
+      }
+
+
+      const div =
+        document.createElement(
+          "div"
+        );
+
+
+      div.className =
+        `fila-item ${classe}`;
+
+
+      div.onclick =
+        function() {
+
+          abrirDetalhesCompromisso(
+            compromisso.id
+          );
+
+        };
+
+
+      div.innerHTML = `
+
+        <div class="fila-status">
+
+          ${textoStatus}
+
+        </div>
+
+
+        <div class="fila-hora">
+
+          ${compromisso.hora}
+
+        </div>
+
+
+        <div class="fila-titulo">
+
+          ${
+            compromisso.tipo ||
+            "Compromisso"
+          }
+
+        </div>
+
+
+        <div class="fila-cliente">
+
+          👤 ${
+            compromisso.clientes?.nome ||
+            "Cliente"
+          }
+
+        </div>
+
+
+        <div
+          class="fila-contador"
+          data-compromisso-id="${compromisso.id}"
+        >
+
+          ${textoContador(diferenca)}
+
+        </div>
+
+      `;
+
+
+      container.appendChild(
+        div
+      );
+
+    }
+  );
+
+}
+
+
+function textoContador(
+  diferenca
+) {
+
+  const segundos =
+    Math.floor(
+      Math.abs(diferenca) / 1000
+    );
+
+
+  const dias =
+    Math.floor(
+      segundos / 86400
+    );
+
+  const horas =
+    Math.floor(
+      (segundos % 86400) / 3600
+    );
+
+  const minutos =
+    Math.floor(
+      (segundos % 3600) / 60
+    );
+
+  const seg =
+    segundos % 60;
+
+
+  const tempo =
+    `${dias}d ${String(horas).padStart(2,"0")}:${String(minutos).padStart(2,"0")}:${String(seg).padStart(2,"0")}`;
+
+
+  if (diferenca < 0) {
+
+    return `⏰ Há ${tempo}`;
+
+  }
+
+
+  return `⏳ Em ${tempo}`;
+
+}
+
+
+/* =================================
+   ATUALIZAR CRONÔMETROS
+================================= */
+
+setInterval(
+  function() {
+
+    const agora =
+      new Date();
+
+
+    compromissos
+      .filter(
+        compromisso =>
+          compromisso.status === "pendente"
+      )
+      .forEach(
+        compromisso => {
+
+          const elemento =
+            document.querySelector(
+              `[data-compromisso-id="${compromisso.id}"]`
+            );
+
+
+          if (!elemento) return;
+
+
+          const dataHora =
+            obterDataHoraCompromisso(
+              compromisso
+            );
+
+
+          const diferenca =
+            dataHora.getTime() -
+            agora.getTime();
+
+
+          elemento.textContent =
+            textoContador(
+              diferenca
+            );
+
+        }
+      );
+
+  },
+  1000
+);
+  
 
 /* =================================
    NOVO COMPROMISSO
@@ -1963,6 +2601,61 @@ function dataTexto(data) {
 iniciarAgenda();
 
 </script>
+
+  <!-- ================================
+     MODAL DETALHES COMPROMISSO
+================================= -->
+
+<div
+  class="modal"
+  id="modalDetalhesCompromisso"
+>
+
+  <div class="modal-conteudo">
+
+    <h2>
+      📅 Compromisso
+    </h2>
+
+    <div id="detalhesCompromisso"></div>
+
+    <div class="botoes-modal">
+
+      <button
+        class="btn-fechar"
+        onclick="fecharDetalhesCompromisso()"
+      >
+        Fechar
+      </button>
+
+      <button
+        class="btn-salvar"
+        id="btnWhatsApp"
+      >
+        💬 WhatsApp
+      </button>
+
+    </div>
+
+    <button
+      id="btnVerProjeto"
+      class="btn-salvar"
+      style="
+        width:100%;
+        margin-top:8px;
+        border:none;
+        padding:12px;
+        border-radius:9px;
+        font-weight:bold;
+        cursor:pointer;
+      "
+    >
+      📁 Ver projeto
+    </button>
+
+  </div>
+
+</div>
 
 
 </body>
