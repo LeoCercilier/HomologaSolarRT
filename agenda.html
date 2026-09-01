@@ -967,8 +967,9 @@ async function carregarCompromissos() {
     console.error(error);
 
     alert(
-      "Erro ao carregar a agenda."
-    );
+  "Erro ao carregar a agenda:\n\n" +
+  error.message
+);
 
     compromissos = [];
 
