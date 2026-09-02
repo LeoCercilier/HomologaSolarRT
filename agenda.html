@@ -676,6 +676,20 @@
 
     </div>
 
+        <div class="campo">
+
+      <label>
+        📍 Endereço da tarefa
+      </label>
+
+      <input
+        type="text"
+        id="enderecoCompromisso"
+        placeholder="Rua, número, bairro, cidade..."
+      >
+
+        </div>
+
 
     <div class="botoes-modal">
 
@@ -1602,6 +1616,37 @@ function abrirDetalhesCompromisso(id) {
 
     </div>
 
+        ${
+      compromisso.endereco
+      ?
+      `
+        <div class="observacao">
+
+          📍 <strong>Endereço:</strong><br>
+          ${compromisso.endereco}
+
+        </div>
+
+        <button
+          class="btn-salvar"
+          style="
+            width:100%;
+            margin-top:10px;
+            border:none;
+            padding:12px;
+            border-radius:9px;
+            font-weight:bold;
+            cursor:pointer;
+          "
+          onclick="navegarParaEndereco('${compromisso.id}')"
+        >
+          🗺️ Iniciar navegação
+        </button>
+      `
+      :
+      ""
+        }
+
     ${
       compromisso.observacao
       ?
@@ -1673,6 +1718,41 @@ function abrirDetalhesCompromisso(id) {
   );
 
 }
+
+  function navegarParaEndereco(id) {
+
+  const compromisso =
+    compromissos.find(
+      item =>
+        item.id === id
+    );
+
+  if (
+    !compromisso ||
+    !compromisso.endereco
+  ) {
+
+    alert(
+      "Este compromisso não possui um endereço cadastrado."
+    );
+
+    return;
+  }
+
+  const destino =
+    encodeURIComponent(
+      compromisso.endereco
+    );
+
+  const url =
+    `https://www.google.com/maps/dir/?api=1&destination=${destino}`;
+
+  window.open(
+    url,
+    "_blank"
+  );
+
+  }
 
 
 function fecharDetalhesCompromisso() {
@@ -2113,6 +2193,10 @@ function abrirNovoCompromisso() {
     "observacaoCompromisso"
   ).value = "";
 
+    document.getElementById(
+    "enderecoCompromisso"
+  ).value = "";
+
 
   const selectCliente =
     document.getElementById(
@@ -2217,6 +2301,11 @@ async function salvarCompromisso() {
       "observacaoCompromisso"
     ).value.trim();
 
+    const endereco =
+    document.getElementById(
+      "enderecoCompromisso"
+    ).value.trim();
+
 
   if (
     !data ||
@@ -2261,6 +2350,8 @@ async function salvarCompromisso() {
 
         observacao:
           observacao || null,
+         endereco:
+          endereco || null,
 
         status:
           "pendente",
