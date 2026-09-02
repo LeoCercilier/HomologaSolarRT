@@ -879,6 +879,8 @@ async function iniciarAgenda() {
 
   renderizar();
 
+  abrirCompromissoDaUrl();
+
 }
 
 
@@ -1680,6 +1682,26 @@ function fecharDetalhesCompromisso() {
   );
 
 }
+
+  function abrirCompromissoDaUrl() {
+
+    const params =
+        new URLSearchParams(window.location.search);
+
+    const compromissoId =
+        params.get("compromisso");
+
+    if (!compromissoId) return;
+
+    const compromisso =
+        compromissos.find(
+            item => item.id === compromissoId
+        );
+
+    if (!compromisso) return;
+
+    abrirDetalhesCompromisso(compromissoId);
+  }
 
   /* =================================
    WHATSAPP
