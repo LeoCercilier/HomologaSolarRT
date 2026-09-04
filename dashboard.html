@@ -2002,6 +2002,159 @@ function abrirDetalhesCompromissoDashboard(
 				INICIAR
 				========================================= */
 
+		/* =========================================
+   SELECIONAR PROJETO PARA RELATÓRIOS
+========================================= */
+
+let projetosParaRelatorios = [];
+
+async function abrirSelecaoProjetoRelatorios() {
+
+    const modal =
+        document.getElementById("modalRelatorios");
+
+    const select =
+        document.getElementById("selectProjetoRelatorio");
+
+    modal.style.display = "block";
+
+    select.innerHTML =
+        `<option>Carregando projetos...</option>`;
+
+    const { data, error } =
+        await supabaseClient
+            .from("projetos")
+            .select("id,nome")
+            .eq(
+                "organizacao_id",
+                organizacaoAtual
+            )
+            .order("nome");
+
+    if (error) {
+
+        console.error(
+            "Erro ao carregar projetos:",
+            error
+        );
+
+        select.innerHTML =
+            `<option>Erro ao carregar projetos</option>`;
+
+        return;
+    }
+
+    projetosParaRelatorios =
+        data || [];
+
+    renderizarProjetosRelatorios(
+        projetosParaRelatorios
+    );
+}
+
+
+function renderizarProjetosRelatorios(
+    projetos
+) {
+
+    const select =
+        document.getElementById(
+            "selectProjetoRelatorio"
+        );
+
+    select.innerHTML = "";
+
+    if (!projetos.length) {
+
+        select.innerHTML =
+            `<option>Nenhum projeto encontrado</option>`;
+
+        return;
+    }
+
+    projetos.forEach(
+        projeto => {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value =
+                projeto.id;
+
+            option.textContent =
+                projeto.nome;
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+}
+
+
+function filtrarProjetosRelatorios() {
+
+    const pesquisa =
+        document
+            .getElementById(
+                "pesquisaProjetoRelatorio"
+            )
+            .value
+            .toLowerCase()
+            .trim();
+
+    const filtrados =
+        projetosParaRelatorios.filter(
+            projeto =>
+                projeto.nome
+                    .toLowerCase()
+                    .includes(pesquisa)
+        );
+
+    renderizarProjetosRelatorios(
+        filtrados
+    );
+}
+
+
+function abrirProjetoRelatorios() {
+
+    const select =
+        document.getElementById(
+            "selectProjetoRelatorio"
+        );
+
+    const projetoId =
+        select.value;
+
+    if (!projetoId) {
+
+        alert(
+            "Selecione um projeto."
+        );
+
+        return;
+    }
+
+    window.location.href =
+        "projeto-detalhes.html?id=" +
+        encodeURIComponent(projetoId) +
+        "#gerarRelatorios";
+}
+
+
+function fecharSelecaoProjetoRelatorios() {
+
+    document.getElementById(
+        "modalRelatorios"
+    ).style.display =
+        "none";
+
+}
+		
 				iniciarDashboard();
 
 		</script>
