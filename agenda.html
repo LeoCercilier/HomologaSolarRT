@@ -1019,6 +1019,7 @@ async function salvarRegistroEFinalizar() {
       status: "finalizado",
       tarefa_realizada: tarefa || null,
       checklist: checks,
+      observacao: obs || null,
       anexos: anexosNovos,
       atualizado_em: new Date().toISOString()
     })
