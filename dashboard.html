@@ -505,7 +505,7 @@
 
 		<button
     class="secundario"
-    onclick="window.location.href='projeto-detalhes.html#gerarRelatorios'"
+    onclick="abrirSelecaoProjetoRelatorios()"
 >
     📋 Gerar Relatórios/Doc.
 		</button>
@@ -601,7 +601,86 @@
 
 </div>
 
-</div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script>
+</div>
+
+	<!-- MODAL SELECIONAR PROJETO PARA RELATÓRIOS -->
+<div id="modalRelatorios"
+     style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,.5);
+        z-index:9999;
+        padding:20px;
+     ">
+
+    <div style="
+        background:white;
+        max-width:500px;
+        margin:80px auto;
+        padding:20px;
+        border-radius:14px;
+    ">
+
+        <h3 style="margin-top:0;">
+            📋 Selecionar projeto
+        </h3>
+
+        <input
+            type="search"
+            id="pesquisaProjetoRelatorio"
+            placeholder="🔎 Pesquisar projeto..."
+            oninput="filtrarProjetosRelatorios()"
+            style="
+                width:100%;
+                padding:12px;
+                border:1px solid #cbd5e1;
+                border-radius:9px;
+                font-size:15px;
+                margin-bottom:12px;
+            "
+        >
+
+        <select
+            id="selectProjetoRelatorio"
+            size="6"
+            style="
+                width:100%;
+                padding:10px;
+                border:1px solid #cbd5e1;
+                border-radius:9px;
+                font-size:15px;
+            "
+        ></select>
+
+        <div style="
+            display:flex;
+            gap:10px;
+            margin-top:15px;
+        ">
+
+            <button
+                class="secundario"
+                style="flex:1;"
+                onclick="fecharSelecaoProjetoRelatorios()"
+            >
+                Cancelar
+            </button>
+
+            <button
+                class="principal"
+                style="flex:1;"
+                onclick="abrirProjetoRelatorios()"
+            >
+                Abrir projeto
+            </button>
+
+        </div>
+
+    </div>
+</div>
+	
+	<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-config.js"></script><script>
 
 const supabaseClient =
     window.supabase.createClient(
