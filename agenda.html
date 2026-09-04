@@ -755,7 +755,7 @@ function abrirParaFinalizar(id) {
   abrirDetalhesCompromisso(id, true); // true = focar no registro
 }
 
-function abrirDetalhesCompromisso(id, focarRegistro = false) {
+async function abrirDetalhesCompromisso(id, focarRegistro = false) {
   const compromisso = compromissos.find(item => item.id === id);
   if (!compromisso) return;
 
@@ -834,18 +834,49 @@ function abrirDetalhesCompromisso(id, focarRegistro = false) {
     if (compromisso.checklist && compromisso.checklist.length) {
       htmlSalvo += `<strong>Checklist:</strong><br>${compromisso.checklist.map(i => `✓ ${i}`).join("<br>")}<br><br>`;
     }
-    if (compromisso.anexos && compromisso.anexos.length) {
-      htmlSalvo += `<strong>Anexos:</strong><br><div class="anexos-lista">`;
-      compromisso.anexos.forEach(a => {
-        if (a.tipo?.startsWith("image/")) {
-          htmlSalvo += `<div class="anexo-item"><img src="${a.url}" alt="${a.nome}"><div class="nome">${a.nome}</div></div>`;
-        } else {
-          htmlSalvo += `<div class="anexo-item"><div style="font-size:28px;margin-bottom:4px;">📄</div><div class="nome"><a href="${a.url}" target="_blank">${a.nome}</a></div></div>`;
-        }
-      });
-      htmlSalvo += `</div>`;
+
+if (compromisso.anexos && compromisso.anexos.length) {
+  htmlSalvo += `<strong>Anexos:</strong><br><div class="anexos-lista">`;
+
+  for (const a of compromisso.anexos) {
+
+    let urlArquivo = a.url;
+
+    if (a.path) {
+      const { data: urlData, error: urlError } =
+        await supabaseClient.storage
+          .from("anexos-agenda")
+          .createSignedUrl(a.path, 3600);
+
+      if (!urlError && urlData?.signedUrl) {
+        urlArquivo = urlData.signedUrl;
+      }
     }
-    htmlSalvo += `</div>`;
+
+    if (a.tipo?.startsWith("image/")) {
+      htmlSalvo += `
+        <div class="anexo-item">
+          <a href="${urlArquivo}" target="_blank">
+            <img src="${urlArquivo}" alt="${a.nome}">
+          </a>
+          <div class="nome">${a.nome}</div>
+        </div>
+      `;
+    } else {
+      htmlSalvo += `
+        <div class="anexo-item">
+          <div style="font-size:28px;margin-bottom:4px;">📄</div>
+          <div class="nome">
+            <a href="${urlArquivo}" target="_blank">${a.nome}</a>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  htmlSalvo += `</div>`;
+}
+    
     registroSalvo.innerHTML = htmlSalvo;
   }
 
