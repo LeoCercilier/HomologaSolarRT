@@ -7722,7 +7722,303 @@ async function excluirDocumento(
   }       
 
 iniciar();
+	
+/* =========================================
+   PESQUISA DE MÓDULOS
+========================================= */
 
+function normalizarTexto(texto) {
+
+  return String(texto || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim();
+
+}
+
+
+function pesquisarModuloCatalogo() {
+
+  const input =
+    document.getElementById("pesquisa_modulo");
+
+  const resultados =
+    document.getElementById("resultados_modulo");
+
+  const pesquisa =
+    normalizarTexto(input.value);
+
+  resultados.innerHTML = "";
+
+  if (!pesquisa) {
+
+    resultados.innerHTML = `
+      <div class="sem-resultado-equipamento">
+        Digite o fabricante, modelo ou potência para pesquisar.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  const encontrados =
+    catalogoModulos
+      .filter(modulo => {
+
+        const fabricante =
+          normalizarTexto(modulo.fabricante);
+
+        const modelo =
+          normalizarTexto(modulo.modelo);
+
+        const potencia =
+          normalizarTexto(modulo.potencia_w);
+
+        return (
+          fabricante.includes(pesquisa) ||
+          modelo.includes(pesquisa) ||
+          potencia.includes(pesquisa)
+        );
+
+      })
+      .slice(0, 15);
+
+
+  if (!encontrados.length) {
+
+    resultados.innerHTML = `
+      <div class="sem-resultado-equipamento">
+        Nenhum módulo encontrado.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  encontrados.forEach(modulo => {
+
+    const botao =
+      document.createElement("button");
+
+    botao.type = "button";
+
+    botao.className =
+      "resultado-equipamento";
+
+    botao.innerHTML = `
+      <strong>
+        ${modulo.fabricante || "Fabricante não informado"}
+      </strong>
+
+      <small>
+        ${modulo.modelo || "Modelo não informado"}
+        ${modulo.potencia_w
+          ? " • " + modulo.potencia_w + " W"
+          : ""}
+      </small>
+    `;
+
+    botao.onclick = function() {
+
+      selecionarModuloPorId(modulo.id);
+
+    };
+
+    resultados.appendChild(botao);
+
+  });
+
+}
+
+
+/* =========================================
+   SELECIONAR MÓDULO PESQUISADO
+========================================= */
+
+function selecionarModuloPorId(id) {
+
+  const modulo =
+    catalogoModulos.find(
+      item => item.id === id
+    );
+
+  if (!modulo)
+    return;
+
+
+  const input =
+    document.getElementById("pesquisa_modulo");
+
+  const hidden =
+    document.getElementById("selecao_modulo");
+
+  const resultados =
+    document.getElementById("resultados_modulo");
+
+
+  input.value =
+    `${modulo.fabricante || ""} - ${modulo.modelo || ""}`;
+
+
+  hidden.value =
+    modulo.id;
+
+
+  resultados.innerHTML = "";
+
+
+  /* Usa a função existente de seleção */
+
+  selecionarModuloCatalogo();
+
+}
+
+
+/* =========================================
+   PESQUISA DE INVERSORES
+========================================= */
+
+function pesquisarInversorCatalogo() {
+
+  const input =
+    document.getElementById("pesquisa_inversor");
+
+  const resultados =
+    document.getElementById("resultados_inversor");
+
+  const pesquisa =
+    normalizarTexto(input.value);
+
+  resultados.innerHTML = "";
+
+  if (!pesquisa) {
+
+    resultados.innerHTML = `
+      <div class="sem-resultado-equipamento">
+        Digite o fabricante, modelo ou potência para pesquisar.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  const encontrados =
+    catalogoInversores
+      .filter(inversor => {
+
+        const fabricante =
+          normalizarTexto(inversor.fabricante);
+
+        const modelo =
+          normalizarTexto(inversor.modelo);
+
+        const potencia =
+          normalizarTexto(inversor.potencia_nominal_kw);
+
+        return (
+          fabricante.includes(pesquisa) ||
+          modelo.includes(pesquisa) ||
+          potencia.includes(pesquisa)
+        );
+
+      })
+      .slice(0, 15);
+
+
+  if (!encontrados.length) {
+
+    resultados.innerHTML = `
+      <div class="sem-resultado-equipamento">
+        Nenhum inversor encontrado.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  encontrados.forEach(inversor => {
+
+    const botao =
+      document.createElement("button");
+
+    botao.type = "button";
+
+    botao.className =
+      "resultado-equipamento";
+
+    botao.innerHTML = `
+      <strong>
+        ${inversor.fabricante || "Fabricante não informado"}
+      </strong>
+
+      <small>
+        ${inversor.modelo || "Modelo não informado"}
+        ${inversor.potencia_nominal_kw
+          ? " • " + inversor.potencia_nominal_kw + " kW"
+          : ""}
+      </small>
+    `;
+
+    botao.onclick = function() {
+
+      selecionarInversorPorId(inversor.id);
+
+    };
+
+    resultados.appendChild(botao);
+
+  });
+
+}
+
+
+/* =========================================
+   SELECIONAR INVERSOR PESQUISADO
+========================================= */
+
+function selecionarInversorPorId(id) {
+
+  const inversor =
+    catalogoInversores.find(
+      item => item.id === id
+    );
+
+  if (!inversor)
+    return;
+
+
+  const input =
+    document.getElementById("pesquisa_inversor");
+
+  const hidden =
+    document.getElementById("selecao_inversor");
+
+  const resultados =
+    document.getElementById("resultados_inversor");
+
+
+  input.value =
+    `${inversor.fabricante || ""} - ${inversor.modelo || ""}`;
+
+
+  hidden.value =
+    inversor.id;
+
+
+  resultados.innerHTML = "";
+
+
+  /* Usa a função existente de seleção */
+
+  selecionarInversorCatalogo();
+
+}
+	
 </script>
 
 	<!-- MODAL SELEÇÃO DE CLIENTE -->
