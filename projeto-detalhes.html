@@ -575,14 +575,23 @@ Carregando projeto...
 <div class="campo">
 <strong>Módulo do catálogo INMETRO</strong>
 
-<select
-  id="selecao_modulo"
-  onchange="selecionarModuloCatalogo()"
+<input
+  type="text"
+  id="pesquisa_modulo"
+  placeholder="🔎 Digite fabricante ou modelo..."
+  autocomplete="off"
+  oninput="pesquisarModuloCatalogo()"
 >
-  <option value="">
-    Selecione um módulo
-  </option>
-</select>
+
+<div
+  id="resultados_modulo"
+  class="resultados-equipamentos"
+></div>
+
+<input
+  type="hidden"
+  id="selecao_modulo"
+>
 
 </div>
 
@@ -740,14 +749,23 @@ Carregando projeto...
 <div class="campo">
 <strong>Inversor do catálogo INMETRO</strong>
 
-<select
-  id="selecao_inversor"
-  onchange="selecionarInversorCatalogo()"
+<input
+  type="text"
+  id="pesquisa_inversor"
+  placeholder="🔎 Digite fabricante ou modelo..."
+  autocomplete="off"
+  oninput="pesquisarInversorCatalogo()"
 >
-  <option value="">
-    Selecione um inversor
-  </option>
-</select>
+
+<div
+  id="resultados_inversor"
+  class="resultados-equipamentos"
+></div>
+
+<input
+  type="hidden"
+  id="selecao_inversor"
+>
 
 </div>
 
